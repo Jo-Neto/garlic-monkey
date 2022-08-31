@@ -1,12 +1,35 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: ['./src/**/*.tsx'],
+  safelist: [
+    {
+      pattern: /bg-(\w*)/,
+    },
+  ],
   theme: {
     extend: {
       fontFamily: {
         brand: ['Inter'],
       },
       colors: {
+        select: {
+          white: '#FFFFFF',
+          silver: '#C0C0C0',
+          gray: '#808080',
+          black: '#000000',
+          red: '#FF0000',
+          brown: '#800000',
+          yellow: '#FFFF00',
+          olive: '#808000',
+          lime: '#00FF00',
+          green: '#008000',
+          aqua: '#00FFFF',
+          teal: '#008080',
+          blue: '#0000FF',
+          navy: '#000080',
+          fuchsia: '#FF00FF',
+          purple: '#800080',
+        },
         brand: {
           base: '#338896',
           hover: '#3FA7B8',

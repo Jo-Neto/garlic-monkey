@@ -1,7 +1,7 @@
 export const Sizes = {
-  '4/3': { width: 400, height: 300 },
-  '16/8': { width: 1600, height: 800 },
-  '16/9': { width: 1600, height: 900 },
+  '4/3': { width: 800, height: 600 },
+  '16/8': { width: 800, height: 400 },
+  '16/9': { width: 800, height: 45000 },
 };
 
 export interface WhiteBoardProps {
