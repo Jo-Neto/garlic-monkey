@@ -1,0 +1,29 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  @apply m-0 p-0 box-border outline-none;
+}
+
+html {
+  @apply w-screen h-screen leading-none;
+}
+
+body {
+  @apply w-screen h-screen flex flex-col justify-center items-center text-base overflow-x-hidden;
+  @apply overflow-hidden;
+}
+
+#root {
+  @apply w-screen h-screen flex flex-col justify-center items-center bg-body-light-200 dark:bg-body-dark;
+}
+
+ul {
+  @apply list-none;
+}
+
+input,
+select {
+  @apply p-0 leading-none m-0 focus:outline-none;
+}
