@@ -10,8 +10,9 @@ export function Radius({ radius, callback }: RadiusProps): JSX.Element {
 
   return (
     <div className="flex flex-col items-center w-24 h-fit">
-      {radius.map((r) => (
+      {radius.map((radio) => (
         <div
+          key={radio}
           className={twMerge(
             'flex items-center justify-center',
             'border-2 border-solid border-select-gray rounded-full w-radius',
@@ -20,14 +21,13 @@ export function Radius({ radius, callback }: RadiusProps): JSX.Element {
             width: `${outlineSize}px`,
             height: `${outlineSize}px`,
           }}
-          onClick={() => callback(r)}
+          onClick={() => callback(radio)}
         >
           <div
-            key={r}
             className={twMerge('bg-select-gray rounded-full w-radius')}
             style={{
-              width: `${r}px`,
-              height: `${r}px`,
+              width: `${radio}px`,
+              height: `${radio}px`,
             }}
           ></div>
         </div>
