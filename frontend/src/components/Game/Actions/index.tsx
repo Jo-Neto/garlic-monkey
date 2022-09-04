@@ -10,7 +10,9 @@ export function Actions({ functions }: ActionsProps) {
       {functions.map(({ name, callback }) => (
         <div
           key={name}
-          className={twMerge('w-fit p-3 m-1 rounded-md bg-select-gray')}
+          className={twMerge(
+            'w-fit p-3 m-1 rounded-md bg-select-gray cursor-pointer',
+          )}
           onClick={() => callback()}
         >
           {name}
