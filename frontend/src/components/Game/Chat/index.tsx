@@ -74,10 +74,10 @@ export function Chat({ className }: ChatProps) {
       )}
     >
       {messages &&
-        messages.map(({ user, message, time }) => (
+        messages.map(({ user, message, time }, index) => (
           <div
             className="w-11/12 flex flex-col items-center"
-            key={user + message + time}
+            key={user + message + time + index}
           >
             <div className="w-full flex flex-row justify-between p-2 rounded-t-md bg-slate-600 text-xs">
               <span>{user}</span>

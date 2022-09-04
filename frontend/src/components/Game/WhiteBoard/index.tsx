@@ -59,8 +59,9 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
   }
 
   function print() {
-    const data = WhiteBoardRef.current?.getSaveData();
-    console.log(data);
+    const data = WhiteBoardRef.current?.getSaveData(); // Its stringied
+    const objData = JSON.parse(data || '');
+    console.log(objData);
   }
 
   function parseToURL() {
