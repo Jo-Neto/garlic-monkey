@@ -15,9 +15,12 @@ export function Colors({
   selectedColor,
 }: ColorsProps) {
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center xlg:h-40">
       <div>{title}</div>
-      <div className="grid grid-flow-row grid-cols-3 w-fit h-fit">
+      <div
+        className="grid grid-flow-row grid-cols-3 w-fit h-fit
+                    xlg:grid-cols-1 xlg:h-full xlg:overflow-y-scroll"
+      >
         {colors.map(({ name, hex }) => (
           <div
             key={name}

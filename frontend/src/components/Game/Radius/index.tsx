@@ -11,7 +11,7 @@ export function Radius({
   callback,
   selectedRadius,
 }: RadiusProps): JSX.Element {
-  const outlineSize = Math.max(...radius) + 10;
+  const outlineSize = Math.max(...radius) + 15;
 
   return (
     <div className="flex flex-col items-center gap-2 w-24 h-fit">
@@ -21,7 +21,7 @@ export function Radius({
           className={twMerge(
             'flex items-center justify-center cursor-pointer',
             'border-2 border-solid border-select-gray rounded-full',
-            selectedRadius === radio ? 'border-gray-600' : '',
+            selectedRadius === radio ? 'border-gray-800' : '',
           )}
           style={{
             width: `${outlineSize}px`,
@@ -32,11 +32,11 @@ export function Radius({
           <div
             className={twMerge(
               'bg-select-gray rounded-full',
-              selectedRadius === radio ? 'bg-gray-600' : '',
+              selectedRadius === radio ? 'bg-gray-800' : '',
             )}
             style={{
-              width: `${radio}px`,
-              height: `${radio}px`,
+              width: `${radio + 5}px`,
+              height: `${radio + 5}px`,
             }}
           ></div>
         </div>
