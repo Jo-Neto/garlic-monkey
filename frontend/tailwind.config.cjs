@@ -11,6 +11,11 @@ module.exports = {
       fontFamily: {
         brand: ['Inter'],
       },
+      screens: {
+        xlg: { max: '1023px' },
+        xmg: { max: '767px' },
+        xsm: { max: '639px' },
+      },
       colors: {
         select: {
           white: '#FFFFFF',
