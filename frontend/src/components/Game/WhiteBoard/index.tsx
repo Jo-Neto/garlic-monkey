@@ -26,7 +26,7 @@ const COLORS = [
   { name: 'purple', hex: '#800080' },
 ];
 
-const SIZES = [10, 20, 30, 40, 50];
+const SIZES = [1, 5, 10, 15, 20, 25];
 
 export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
   const [canvasSize, setCanvasSize] = useState<CanvasSizes>({
@@ -35,7 +35,7 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
   });
   const [selectedColor, setSelectedColor] = useState<ColorObj>(COLORS[1]);
   const [bgColor, setbgColor] = useState<ColorObj>(COLORS[0]);
-  const [selectedRadius, setSelectedRadius] = useState<number>(10);
+  const [selectedRadius, setSelectedRadius] = useState<number>(SIZES[0]);
   const [gradient, setGradient] = useState<number>(100);
 
   const ContainerRef = useRef<HTMLDivElement>(null);
@@ -101,19 +101,21 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
             selectedColor={bgColor}
           />
         </div>
-        <CanvasDraw
-          ref={WhiteBoardRef}
-          brushColor={addTransparency(selectedColor.hex)}
-          backgroundColor={bgColor.hex}
-          loadTimeOffset={2}
-          hideGrid={true}
-          hideInterface={true}
-          lazyRadius={5}
-          brushRadius={selectedRadius}
-          canvasHeight={canvasSize.height}
-          canvasWidth={canvasSize.width}
-          enablePanAndZoom
-        />
+        <div className="shadow-md shadow-gray-500">
+          <CanvasDraw
+            ref={WhiteBoardRef}
+            brushColor={addTransparency(selectedColor.hex)}
+            backgroundColor={bgColor.hex}
+            loadTimeOffset={2}
+            hideGrid={true}
+            hideInterface={true}
+            lazyRadius={5}
+            brushRadius={selectedRadius}
+            canvasHeight={canvasSize.height}
+            canvasWidth={canvasSize.width}
+            enablePanAndZoom
+          />
+        </div>
         <Radius
           radius={SIZES}
           callback={setSelectedRadius}

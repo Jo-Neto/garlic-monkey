@@ -1,5 +1,5 @@
 import { WhiteBoard } from '../../components/Game/WhiteBoard';
-import { Chat } from '../../components/Game/Chat';
+// import { Chat } from '../../components/Game/Chat';
 
 export function Game() {
   return (
@@ -7,7 +7,7 @@ export function Game() {
       <div className="w-[90vw] flex items-center justify-center">
         <WhiteBoard proportion={16 / 9} />
       </div>
-      <Chat className="absolute right-0 bottom-0" />
+      {/* <Chat className="absolute right-0 bottom-0" /> */}
     </div>
   );
 }
