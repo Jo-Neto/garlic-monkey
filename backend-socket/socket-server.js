@@ -2,26 +2,22 @@ const https = require('https');
 const fs = require('fs');
 const Websocket = require('ws');
 
-
-const server = https.createServer({
-    cert: fs.readFileSync('./cert.pem'),
-    key: fs.readFileSync('./key-rsa.pem')
+const HTTPSserver = https.createServer({
+    cert: fs.readFileSync('../keys-and-certificates/cert.pem'),
+    key: fs.readFileSync('../keys-and-certificates/key-rsa.pem')
   },
     (req, res) => {
     res.writeHead(200);
     res.end('hello world\n');
 });
 
-const wss = new Websocket.WebSocketServer({ server: server });
+const wss = new Websocket.WebSocketServer({ server: HTTPSserver });
 
-wss.on('connection', function connection(ws) {
-    ws.on('message', function message(data) {
-        console.log('received: %s', data);
-    });
+const serverSetup = require('./socket-server-setup.js');
+serverSetup(wss);
+HTTPSserver.listen(9999, ()=>{ console.log('https server is listening'); });
 
-    ws.send('something');
-});
-
-server.listen(8080);
-
-module.exports = wss;
+module.exports = {
+  wss,
+  HTTPSserver
+};
