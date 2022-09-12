@@ -3,6 +3,7 @@ const activeSessionsArr = require('../../memory-active-sessions');
 
 module.exports = function onConnection(ws, req) {
     //TODO: check if parseable and is actually a string
+    //TODO assign player name to socket
     playerChoiceArr = req.headers['sec-websocket-protocol'].split(', ');
     //console.log(playerChoiceArr[0]);
     //console.log(playerChoiceArr[1]);
@@ -29,4 +30,3 @@ module.exports = function onConnection(ws, req) {
 };
 
 //TODO: send match data
-'"roomname3", "nick_name", "pass_word"'
