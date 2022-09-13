@@ -11,6 +11,20 @@ module.exports = {
       fontFamily: {
         brand: ['Inter'],
       },
+      screens: {
+        xlg: { max: '1023px' },
+        xmg: { max: '767px' },
+        xsm: { max: '639px' },
+      },
+      keyframes: {
+        wiggle: {
+          '0%, 100%': { transform: 'rotate(-3deg)' },
+          '50%': { transform: 'rotate(3deg)' },
+        },
+      },
+      animation: {
+        wiggle: 'wiggle 2s ease-in-out infinite',
+      },
       colors: {
         select: {
           white: '#FFFFFF',

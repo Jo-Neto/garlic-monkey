@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { Message } from './type';
+// import { CHAT_URL } from '../../../constants/api-urls';
 
 interface ChatProps {
   className?: string;
@@ -59,10 +60,18 @@ const TEST_MESSAGES: Message[] = [
   },
 ];
 
+// const socket = new WebSocket(CHAT_URL);
+
 export function Chat({ className }: ChatProps) {
   const [messages, setMessages] = useState<Message[] | undefined>(undefined);
 
   useEffect(() => {
+    /* socket.onmessage((message) => {
+      if (messages) {
+        const allMessages = messages;
+        allMessages.push(message);
+      }
+    }); */
     setMessages(TEST_MESSAGES);
   }, []);
 

@@ -1,12 +1,5 @@
 import { twMerge } from 'tailwind-merge';
-import { ColorObj } from './type';
-
-interface ColorsProps {
-  title: string;
-  colors: ColorObj[];
-  callback: (arg: ColorObj) => void;
-  selectedColor: ColorObj;
-}
+import { ColorsProps } from './type';
 
 export function Colors({
   title,
@@ -15,16 +8,27 @@ export function Colors({
   selectedColor,
 }: ColorsProps) {
   return (
-    <div className="flex flex-col items-center">
+    <div
+      className={twMerge(
+        'flex flex-col items-center h-fit px-2 py-3',
+        'border-8 border-select-brown rounded-l-xl',
+        'bg-select-brown bg-opacity-25',
+      )}
+    >
       <div>{title}</div>
-      <div className="grid grid-flow-row grid-cols-3 w-fit h-fit">
+      <div
+        className={twMerge(
+          'grid grid-flow-row grid-cols-3 w-fit h-fit',
+          'xlg:grid-cols-1 xlg:h-full xlg:overflow-y-scroll',
+        )}
+      >
         {colors.map(({ name, hex }) => (
           <div
             key={name}
             className={twMerge(
-              'w-5 h-5 m-1 rounded-md cursor-pointer',
+              'w-5 h-5 m-1 rounded-full cursor-pointer border-black',
               selectedColor.hex === hex
-                ? 'border-2 border-spacing-2 border-zinc-700 shadow-md shadow-gray-500'
+                ? 'border-2 border-spacing-2 shadow-md shadow-gray-500'
                 : '',
             )}
             style={{
@@ -34,6 +38,13 @@ export function Colors({
           ></div>
         ))}
       </div>
+      <div
+        className={twMerge(
+          'w-32 h-14 rounded-b-xl shadow-md shadow-gray-500',
+          'border-2 border-solid border-black',
+        )}
+        style={{ backgroundColor: selectedColor.hex }}
+      ></div>
     </div>
   );
 }

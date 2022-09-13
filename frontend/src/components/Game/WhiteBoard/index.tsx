@@ -26,7 +26,7 @@ const COLORS = [
   { name: 'purple', hex: '#800080' },
 ];
 
-const SIZES = [10, 20, 30, 40, 50];
+const SIZES = [1, 5, 10, 15, 20, 25];
 
 export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
   const [canvasSize, setCanvasSize] = useState<CanvasSizes>({
@@ -34,8 +34,7 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
     height: 500,
   });
   const [selectedColor, setSelectedColor] = useState<ColorObj>(COLORS[1]);
-  const [bgColor, setbgColor] = useState<ColorObj>(COLORS[0]);
-  const [selectedRadius, setSelectedRadius] = useState<number>(10);
+  const [selectedRadius, setSelectedRadius] = useState<number>(SIZES[0]);
   const [gradient, setGradient] = useState<number>(100);
 
   const ContainerRef = useRef<HTMLDivElement>(null);
@@ -66,7 +65,7 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
 
   function parseToURL() {
     // @ts-ignore: Unreachable code error
-    const dataUrl = WhiteBoardRef.current?.getDataURL('svg', false, bgColor);
+    const dataUrl = WhiteBoardRef.current?.getDataURL('svg', false, '#FFFFFF');
     console.log(dataUrl);
   }
 
@@ -84,36 +83,29 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
   return (
     <div
       ref={ContainerRef}
-      className="flex flex-col items-center w-full max-w-7xl h-full"
+      className="flex flex-col items-center w-full max-w-7xl h-fit"
     >
-      <div className="flex flex-row justify-between">
-        <div className="flex flex-col">
-          <Colors
-            title="Pincél"
-            colors={COLORS}
-            callback={setSelectedColor}
-            selectedColor={selectedColor}
-          />
-          <Colors
-            title="Cor de fundo"
-            colors={COLORS}
-            callback={setbgColor}
-            selectedColor={bgColor}
+      <div className="flex flex-row items-center justify-between">
+        <Colors
+          title="CORES"
+          colors={COLORS}
+          callback={setSelectedColor}
+          selectedColor={selectedColor}
+        />
+        <div className="shadow-md shadow-gray-500 border-8 border-select-brown rounded-md">
+          <CanvasDraw
+            ref={WhiteBoardRef}
+            brushColor={addTransparency(selectedColor.hex)}
+            loadTimeOffset={2}
+            hideGrid={true}
+            hideInterface={true}
+            lazyRadius={5}
+            brushRadius={selectedRadius}
+            canvasHeight={canvasSize.height}
+            canvasWidth={canvasSize.width}
+            enablePanAndZoom
           />
         </div>
-        <CanvasDraw
-          ref={WhiteBoardRef}
-          brushColor={addTransparency(selectedColor.hex)}
-          backgroundColor={bgColor.hex}
-          loadTimeOffset={2}
-          hideGrid={true}
-          hideInterface={true}
-          lazyRadius={5}
-          brushRadius={selectedRadius}
-          canvasHeight={canvasSize.height}
-          canvasWidth={canvasSize.width}
-          enablePanAndZoom
-        />
         <Radius
           radius={SIZES}
           callback={setSelectedRadius}
@@ -125,14 +117,6 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
           functions={[
             { name: 'Reset', callback: () => resetCanvas() },
             { name: 'Desfazer', callback: () => undo() },
-            {
-              name: 'Imprimir',
-              callback: () => print(),
-            },
-            {
-              name: 'Em URL',
-              callback: () => parseToURL(),
-            },
           ]}
         />
         <input
