@@ -1,5 +1,3 @@
-const plyerQntChecker = require('../library/player-amount-checker.js');
-
 class SessionObject {
     constructor(creatorWs, sessionName) {  
         this.sessionName = sessionName;
@@ -7,7 +5,8 @@ class SessionObject {
         this.isMiddleGame = false;
         this.activeSockets = [ creatorWs, null, null, null, null, null ];
         this.waitingSockets = [];
-        this.chat = []; //chat will be an array of tuple, each tuple with "player name" and "message" info
+        this.game = [];
+        this.chat = []; //chat will be an array of objects, each object with "player name" and "message content" info as properties
     };
 };
 

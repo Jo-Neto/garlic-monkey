@@ -1,24 +1,37 @@
 const activeSessionsArr = require('../../memory-active-sessions');
 
-const wsBelongsChecker = require('../library/ws-belongs-checker.js'); //return true if ws belongs to session
-const chatLogic = require('../library/chat-logic.js');
+const wsBelongsChecker = require('../library/ws-belongs-checker.js');
+const mainLogic = require('../library/main-logic.js');
 
 module.exports = function onMessage(data, isBinary, ws) {
-    ///TODO: check if parseable
-    console.log(JSON.parse(data));
-    if (ws.sID >= activeSessionsArr.length) //safety, don't try to access indexes that don't exist
+    console.log("received message from ws id = "+ws.sID);
+    let parsedData = {};
+    try { 
+        parsedData = JSON.parse(data);
+    }
+    catch( error ) {
+        console.log('WARNING -->> on-message.js -->> catch condition: '+ error );
+        return false;
+    }
+    if ( parsedData === null )
+        return false;
+    if ( ws.sID >= activeSessionsArr.length ) //safety, don't try to access indexes that don't exist //<<<<<<<<<<<<< TODO: MAYBE REMOVE THIS
         return null;
-    //check if session is not finished???????
     switch (wsBelongsChecker(activeSessionsArr[ws.sID], ws)) { //check socket state on session object
-        case null: //session is finished, to be removed
+        case null: //session is finished, to be removed //<<<<<<<<<<<<< TODO: MAYBE REMOVE THIS
+            console.log('ERROR -->> on-message.js -->> socket message in finished session');
             return null;
         case -1: //socket does not belong to session
+            console.log('ERROR -->> on-message.js -->> socket message in wrong session(wrong ws.sID)');
             return null;
         case 1: //socket belongs to waiting line
-            return null;
+            mainLogic(activeSessionsArr[ws.sID], parsedData, ws, true);
+            break;
         case 2: //socket belongs to active sockets
-            return null;
+            mainLogic(activeSessionsArr[ws.sID], parsedData, ws, false);
+            break;
+        default:
+            console.log('ERROR -->> on-message.js -->> default triggered on switch condition');
+            break;
     }
-    activeSessionsArr[ws.sID]
-    console.log(ws.sID);
 };
