@@ -34,7 +34,6 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
     height: 500,
   });
   const [selectedColor, setSelectedColor] = useState<ColorObj>(COLORS[1]);
-  const [bgColor, setbgColor] = useState<ColorObj>(COLORS[0]);
   const [selectedRadius, setSelectedRadius] = useState<number>(SIZES[0]);
   const [gradient, setGradient] = useState<number>(100);
 
@@ -66,7 +65,7 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
 
   function parseToURL() {
     // @ts-ignore: Unreachable code error
-    const dataUrl = WhiteBoardRef.current?.getDataURL('svg', false, bgColor);
+    const dataUrl = WhiteBoardRef.current?.getDataURL('svg', false, '#FFFFFF');
     console.log(dataUrl);
   }
 
@@ -84,28 +83,19 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
   return (
     <div
       ref={ContainerRef}
-      className="flex flex-col items-center w-full max-w-7xl h-full"
+      className="flex flex-col items-center w-full max-w-7xl h-fit"
     >
-      <div className="flex flex-row justify-between">
-        <div className="flex flex-col">
-          <Colors
-            title="Pincél"
-            colors={COLORS}
-            callback={setSelectedColor}
-            selectedColor={selectedColor}
-          />
-          <Colors
-            title="Cor de fundo"
-            colors={COLORS}
-            callback={setbgColor}
-            selectedColor={bgColor}
-          />
-        </div>
-        <div className="shadow-md shadow-gray-500">
+      <div className="flex flex-row items-center justify-between">
+        <Colors
+          title="CORES"
+          colors={COLORS}
+          callback={setSelectedColor}
+          selectedColor={selectedColor}
+        />
+        <div className="shadow-md shadow-gray-500 border-8 border-select-brown rounded-md">
           <CanvasDraw
             ref={WhiteBoardRef}
             brushColor={addTransparency(selectedColor.hex)}
-            backgroundColor={bgColor.hex}
             loadTimeOffset={2}
             hideGrid={true}
             hideInterface={true}
@@ -127,14 +117,6 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
           functions={[
             { name: 'Reset', callback: () => resetCanvas() },
             { name: 'Desfazer', callback: () => undo() },
-            {
-              name: 'Imprimir',
-              callback: () => print(),
-            },
-            {
-              name: 'Em URL',
-              callback: () => parseToURL(),
-            },
           ]}
         />
         <input
