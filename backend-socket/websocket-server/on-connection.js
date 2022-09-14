@@ -29,12 +29,13 @@ module.exports = function onConnection(ws, req) {
         let availableIndex = activeSessionsArr.findIndex((el) => { return el.isFinished === true ? true : false }); //check if finished match available on array for replacement
         if (availableIndex === -1) { //if no match available for replacement
             console.log('on-connection.js --> if(1-2) triggered');
+            ws.sID = activeSessionsArr.length;
             activeSessionsArr.push(new SessionObject(ws, playerChoiceArr[0])); //create new match on end of array
         } else { //if there is a match available for replacement
             console.log('on-connection.js --> else(1-2) triggered');
+            ws.sID = availableIndex;
             activeSessionsArr.splice(availableIndex, 1, new SessionObject(ws, playerChoiceArr[0]));  //create new match and replace the finished one
         }
-        ws.sID = activeSessionsArr.length;; //assign session ID for socket
     } else { //player chosen name for session found
         console.log('on-connection.js --> else(1) triggered');
         if (activeSessionsArr[matchedIndex].isFinished) { //if chosen session is finished
