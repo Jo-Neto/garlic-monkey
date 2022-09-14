@@ -13,7 +13,7 @@ module.exports = function onMessage(data, isBinary, ws) {
         console.log('WARNING -->> on-message.js -->> catch condition: '+ error );
         return false;
     }
-    if ( parsedData === null )
+    if ( parsedData === null && typeof parsedData === 'object' && !Array.isArray(parsedData) )
         return false;
     if ( ws.sID >= activeSessionsArr.length ) //safety, don't try to access indexes that don't exist //<<<<<<<<<<<<< TODO: MAYBE REMOVE THIS
         return null;
