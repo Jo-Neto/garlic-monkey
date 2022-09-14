@@ -1,7 +1,9 @@
+const redis = require('../modules/redis');
 const SessionObject = require('../objects/session-object.js');
-const activeSessionsArr = require('../../memory-active-sessions');
+//const activeSessionsArr = require('../../memory-active-sessions');
+module.exports = async function onConnection(ws, req) {
+    let activeSessionsArr = await redis.get()
 
-module.exports = function onConnection(ws, req) {
     let playerChoiceArr = [];
     try {
         playerChoiceArr = req.headers['sec-websocket-protocol'].split(', ');
@@ -23,16 +25,19 @@ module.exports = function onConnection(ws, req) {
         console.log('on-connection.js --> subprotocols type error');
         return false;
     }
+
     let matchedIndex = activeSessionsArr.findIndex((el) => { return el.sessionName === playerChoiceArr[0] ? true : false }); //find index of the first match found from player's name choice
     console.log("on-connection.js --> matchedIndex ="+ matchedIndex);
     if (matchedIndex === -1) { //didn't found session with the player's choice name
         console.log('on-connection.js --> if(1) triggered');
-        let availableIndex = activeSessionsArr.findIndex((el) => { return el.isFinished === true ? true : false }); //check if finished match available on array for replacement
+        let availableIndex = activeSessionsArr.findIndex((el) => { 
+            console.log('elem = '+ el);
+            return el.isFinished === true ? true : false }); //check if finished match available on array for replacement
         console.log('available index = '+ availableIndex);
         if (availableIndex === -1) { //if no match available for replacement
             console.log('on-connection.js --> if(1-2) triggered');
             console.log('activeSessionsArr.length = '+ activeSessionsArr.length);
-            ws.sID = activeSessionsArr.length;
+            ws.sID = 0;
             activeSessionsArr.push(new SessionObject(ws, playerChoiceArr[0])); //create new match on end of array
         } else { //if there is a match available for replacement
             console.log('on-connection.js --> else(1-2) triggered');
@@ -60,6 +65,9 @@ module.exports = function onConnection(ws, req) {
         ws.sID = matchedIndex; //assign session ID for socket
     }
     ws.garlicName = playerChoiceArr[1];
+    console.log(ws.garlicName)
+
+    redis.set(activeSessionsArr)
 };
 
 //TODO: send match data and MAYBE check if player name

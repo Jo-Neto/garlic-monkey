@@ -1,10 +1,12 @@
-const activeSessionsArr = require('../../memory-active-sessions');
-
+const redis = require('../modules/redis');
 const wsBelongsChecker = require('../library/ws-belongs-checker.js');
 const mainLogic = require('../library/main-logic.js');
-
-module.exports = function onMessage(data, isBinary, ws) {
+//const activeSessionsArr = require('../../memory-active-sessions');
+module.exports = async function onMessage(data, isBinary, ws) {
+    let activeSessionsArr = await redis.get()
+    
     console.log("received message from ws id = "+ws.sID);
+
     let parsedData = {};
     try { 
         parsedData = JSON.parse(data);
@@ -19,6 +21,8 @@ module.exports = function onMessage(data, isBinary, ws) {
         return null;
     switch (wsBelongsChecker(activeSessionsArr[ws.sID], ws)) { //check socket state on session object
         case null: //session is finished, to be removed //<<<<<<<<<<<<< TODO: MAYBE REMOVE THIS
+            console.log(ws.sID)
+            console.log(activeSessionsArr)
             console.log('ERROR -->> on-message.js -->> socket message in finished session');
             return null;
         case -1: //socket does not belong to session
@@ -34,4 +38,5 @@ module.exports = function onMessage(data, isBinary, ws) {
             console.log('ERROR -->> on-message.js -->> default triggered on switch condition');
             break;
     }
+    redis.set(JSON.stringify(activeSessionsArr))
 };
