@@ -14,7 +14,7 @@ export function Home() {
         />
       </div>
       <div className="flex flex-row">
-        <div className="flex flex-col items-center w-[38rem] h-fit gap-5 opacity-50 border-2 border-opacity-50 rounded-[0.625rem]">
+        <div className="flex flex-col items-center w-[38rem] h-fit gap-5 opacity-50 rounded-[0.625rem]">
           <span>ESCOLHA UM NICKNAME</span>
           <Input />
           <span>ESCREVA O CODIGO DA SALA OU CRIE A SUA</span>

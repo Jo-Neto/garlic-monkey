@@ -1,13 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 * {
   @apply m-0 p-0 box-border outline-none;
 }
 
 html {
   @apply w-screen h-screen leading-none;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 900;
+  font-size: 20px;
+  line-height: 27px;
 }
 
 body {
