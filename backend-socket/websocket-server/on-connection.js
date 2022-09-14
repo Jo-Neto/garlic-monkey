@@ -24,11 +24,14 @@ module.exports = function onConnection(ws, req) {
         return false;
     }
     let matchedIndex = activeSessionsArr.findIndex((el) => { return el.sessionName === playerChoiceArr[0] ? true : false }); //find index of the first match found from player's name choice
+    console.log("on-connection.js --> matchedIndex ="+ matchedIndex);
     if (matchedIndex === -1) { //didn't found session with the player's choice name
         console.log('on-connection.js --> if(1) triggered');
         let availableIndex = activeSessionsArr.findIndex((el) => { return el.isFinished === true ? true : false }); //check if finished match available on array for replacement
+        console.log('available index = '+ availableIndex);
         if (availableIndex === -1) { //if no match available for replacement
             console.log('on-connection.js --> if(1-2) triggered');
+            console.log('activeSessionsArr.length = '+ activeSessionsArr.length);
             ws.sID = activeSessionsArr.length;
             activeSessionsArr.push(new SessionObject(ws, playerChoiceArr[0])); //create new match on end of array
         } else { //if there is a match available for replacement
