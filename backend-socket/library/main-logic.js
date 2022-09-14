@@ -18,3 +18,5 @@ module.exports = function mainLogic(Session, data, playerWs, isWsActive) {
     } else
         console.log("ERROR --> main-logic.js --> else(2) ");
 }
+
+//TODO: TIMER, REPLAYER, CHANGE WAITING/PLAYING, DISCONNECTOR
