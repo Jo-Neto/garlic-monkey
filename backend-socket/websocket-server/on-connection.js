@@ -41,13 +41,14 @@ module.exports = function onConnection(ws, req) {
         }
     } else { //player chosen name for session found
         console.log('on-connection.js --> else(1) triggered');
+        //console.log(activeSessionsArr[matchedIndex].activeSockets[0]);
         if (activeSessionsArr[matchedIndex].isFinished) { //if chosen session is finished
             console.log('on-connection.js --> if(2-1) triggered');
             activeSessionsArr[matchedIndex].sessionName = null; //nullify session name
             onConnection(ws, req); //re-do logic
         } else { //if not finished
             console.log('on-connection.js --> else(2-2) triggered');
-            let replaceableSocketIndex = activeSessionsArr[matchedIndex].activeSockets.findIndex((el) => { return (el === null ? true : false) });
+            let replaceableSocketIndex = activeSessionsArr[matchedIndex].activeSockets.indexOf(null);
             if (replaceableSocketIndex === -1) {
                 console.log("assigning to waiting");
                 activeSessionsArr[matchedIndex].waitingSockets.push(ws); //assign socket to waiting socket list
@@ -60,6 +61,7 @@ module.exports = function onConnection(ws, req) {
         ws.sID = matchedIndex; //assign session ID for socket
     }
     ws.garlicName = playerChoiceArr[1];
+    ws.isAlive = true
 };
 
 //TODO: send match data and MAYBE check if player name

@@ -1,15 +1,15 @@
 const onConnection = require('./websocket-server/on-connection.js');
 const onMessage = require('./websocket-server/on-message.js');
+const onClose = require('./websocket-server/on-close.js');
 
 function sockServSetup(wss) {
     wss.on('connection', (ws, req) => {
         onConnection(ws, req);
         ws.on('message', (data, isBinary) => onMessage(data, isBinary, ws));
-        ws.on('close', () => console.log("ws closed"));
+        ws.on('close', () => onClose(ws));
     });
     wss.on('listening', () => { console.log('socket-server has been bound'); });
     wss.on('error', (error) => { console.log('---->>>> SOCKET-SERVER ERROR: '); console.log(error); });
-    wss.on('close', () => { console.log('socket-server has been closed'); });
 };
 
 //TODO: broadcaster checker
