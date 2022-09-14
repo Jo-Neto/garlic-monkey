@@ -5,7 +5,7 @@ function sockServSetup(wss) {
     wss.on('connection', (ws, req) => {
         onConnection(ws, req);
         ws.on('message', (data, isBinary) => onMessage(data, isBinary, ws));
-        ws.on('close', () => console.log("ws closed"))
+        ws.on('close', () => console.log("ws closed"));
     });
     wss.on('listening', () => { console.log('socket-server has been bound'); });
     wss.on('error', (error) => { console.log('---->>>> SOCKET-SERVER ERROR: '); console.log(error); });
@@ -14,8 +14,6 @@ function sockServSetup(wss) {
 
 //TODO: broadcaster checker
 module.exports = sockServSetup;
-
-
 
 
 
