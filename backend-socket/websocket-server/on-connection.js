@@ -59,9 +59,11 @@ module.exports = function onConnection(ws, req) {
             }
         }
         ws.sID = matchedIndex; //assign session ID for socket
+        //activeSessionsArr[ws.sID].
     }
     ws.garlicName = playerChoiceArr[1];
-    ws.isAlive = true
+    ws.wannaPlay = false;
+    ws.isAlive = true;
 };
 
 //TODO: send match data and MAYBE check if player name
