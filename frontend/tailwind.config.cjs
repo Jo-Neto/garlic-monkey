@@ -8,6 +8,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      dropShadow:{
+        customShadow: "0 5px 1px rgba(63, 24, 2, 1)"
+      },
       fontFamily: {
         brand: ['Inter'],
       },

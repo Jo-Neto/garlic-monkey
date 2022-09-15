@@ -6,8 +6,8 @@ export function Input({ className, errors, ...props }: InputProps) {
     <div className="flex flex-col">
       <input
         className={twMerge(
-          'w-52 h-14 bg-white drop-shadow-lg shadow-gray-500',
-          'opacity-50 rounded-md border-solid border-2 border-white',
+          'w-48 h-12 uppercase bg-[#3F1802]/50 text-white	drop-shadow-lg shadow-gray-500',
+          'text-center rounded-md border-solid border-2 border-white',
           className,
         )}
         {...props}
