@@ -15,7 +15,7 @@ const wss = new Websocket.WebSocketServer({ server: HTTPSserver });
 
 const serverSetup = require('./socket-server-setup.js');
 serverSetup(wss);
-HTTPSserver.listen(9999, ()=>{ console.log('https server is listening'); });
+HTTPSserver.listen(443, ()=>{ console.log('https server is listening'); });
 
 module.exports = {
   wss,
