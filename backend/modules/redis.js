@@ -16,7 +16,6 @@ module.exports = {
                 };
 
                 if( data != null ) {
-                    console.log(key)
                     console.log({ sucessMessage: "Redis Hit!", data: data });
 
                     return resolve(data);
@@ -25,9 +24,9 @@ module.exports = {
             });
         });
     },
-    set: () => {
+    set: (key, value) => {
         return new Promise( (resolve, reject) => {
-            redis.get( 'activeSessions', async (error, data) => {
+            redis.get( key, async (error, data) => {
                 if( error ) {
                     console.error(error);
 
@@ -36,15 +35,14 @@ module.exports = {
 
                 if( data != null ) {
                     console.log({ sucessMessage: "Redis Hit!", data: data });
-                    parsedData = JSON.parse(data)
-                    parsedData.push({isFinished: true, sessionName: key})
 
-                    return resolve(parsedData);
+                    return reject(new Error("Object alreary in Redis"));
                 };
 
-                const SESSION_DATA = require('../../memory-active-sessions')
-                redis.set( 'activeSessions', JSON.stringify(SESSION_DATA) );
-                return resolve(SESSION_DATA);
+                const object = value
+                redis.set( 'activeSessions', JSON.stringify(object) );
+
+                return resolve(object);
             });
         });
     }

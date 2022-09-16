@@ -18,26 +18,9 @@ app.use(cors({
     credentials: true,
 }));
 
-app.get('/create-game', (req, res) => {
-    const keysArray = []
-    let stream = redis.scanStream({
-        match: "session:*",
-        count: 10
-    });
-    stream.on("data", async (keys = []) => {
-        let key;
-        for (key of keys) {
-            key = JSON.parse(await redisModule.get(key))
-            if (!keysArray.includes(key)) {
-                keysArray.push(key);
-                console.log(keysArray)
-            }
-        }
-        res.json(keysArray)
-    });
-    stream.on("end",  () => {
-        console.log("Finished finding keys")
-    });
+app.get('/send-object', (req, res) => {
+    const { object } = req
+    redisModule.set(object.name, object)
 });
 
 const httpsServer = https.createServer({
