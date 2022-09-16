@@ -22,17 +22,16 @@ export function Home() {
             <span className='defaultSpan'
               >ESCREVA O CODIGO DA SALA OU CRIE A SUA</span>
             <div className="flex flex-row">
-              <Input className='ml-[2.15rem]' />
+              <Input className='ml-[2.2rem]' />
               <Button 
                 className='ml-[1rem] duration-100 hover:cursor-pointer hover:scale-105' 
-                icon={{ src: '/assets/icons/go.png', size: 22 }} />
+                icon={{ src: '/assets/icons/go.png', size: 26 }} />
             </div>
             <div className='flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'>
               <Button 
                 className='mr-[1rem]' 
-                icon={{ src: '/assets/icons/go.png', size: 22 }} />
-              <span
-                >CRIAR SALA</span>
+                icon={{ src: '/assets/icons/go.png', size: 22 }}/>
+              CRIAR SALA
             </div>
           </div>
           <div className="flex flex-col items-center"></div>
