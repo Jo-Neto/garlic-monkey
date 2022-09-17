@@ -1,5 +1,5 @@
 const SessionObject = require('../objects/session-object.js');
-const activeSessionsArr = require('../../memory-active-sessions');
+const activeSessionsArr = require('../memory-modules/memory-active-sessions');
 
 module.exports = function onConnection(ws, req) {
     let playerChoiceArr = [];
@@ -59,11 +59,10 @@ module.exports = function onConnection(ws, req) {
             }
         }
         ws.sID = matchedIndex; //assign session ID for socket
-        //activeSessionsArr[ws.sID].
     }
     ws.garlicName = playerChoiceArr[1];
-    ws.wannaPlay = false;
     ws.isAlive = true;
 };
 
 //TODO: send match data and MAYBE check if player name
+//TODO: assign to waiting players that connect middle-game

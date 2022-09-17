@@ -35,3 +35,5 @@ module.exports = function onMessage(data, isBinary, ws) {
             break;
     }
 };
+
+//TODO: socket status checker before send

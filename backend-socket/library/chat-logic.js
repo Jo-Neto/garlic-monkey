@@ -19,8 +19,8 @@ module.exports = function chatLogic(Session, data, playerWs) {
                 }
             });
         } else 
-            console.log("ERROR --> chat-logic.js --> else condition(2)");
+            console.log("ERROR --> chat-logic.js --> msgContent not a string");
     }
     else
-        console.log("ERROR --> chat-logic.js --> else condition(1)");
+        console.log("ERROR --> chat-logic.js --> msgContent property not found on received message");
 }
