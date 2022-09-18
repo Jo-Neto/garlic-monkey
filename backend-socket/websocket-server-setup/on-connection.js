@@ -1,5 +1,5 @@
 const SessionObject = require('../objects/session-object.js');
-const activeSessionsArr = require('../../memory-active-sessions');
+const activeSessionsArr = require('../memory-modules/active-sessions.js');
 
 module.exports = function onConnection(ws, req) {
     let playerChoiceArr = [];
@@ -24,14 +24,14 @@ module.exports = function onConnection(ws, req) {
         return false;
     }
     let matchedIndex = activeSessionsArr.findIndex((el) => { return el.sessionName === playerChoiceArr[0] ? true : false }); //find index of the first match found from player's name choice
-    console.log("on-connection.js --> matchedIndex ="+ matchedIndex);
+    console.log("on-connection.js --> matchedIndex =" + matchedIndex);
     if (matchedIndex === -1) { //didn't found session with the player's choice name
         console.log('on-connection.js --> if(1) triggered');
         let availableIndex = activeSessionsArr.findIndex((el) => { return el.isFinished === true ? true : false }); //check if finished match available on array for replacement
-        console.log('available index = '+ availableIndex);
+        console.log('available index = ' + availableIndex);
         if (availableIndex === -1) { //if no match available for replacement
             console.log('on-connection.js --> if(1-2) triggered');
-            console.log('activeSessionsArr.length = '+ activeSessionsArr.length);
+            console.log('activeSessionsArr.length = ' + activeSessionsArr.length);
             ws.sID = activeSessionsArr.length;
             activeSessionsArr.push(new SessionObject(ws, playerChoiceArr[0])); //create new match on end of array
         } else { //if there is a match available for replacement
@@ -39,6 +39,7 @@ module.exports = function onConnection(ws, req) {
             ws.sID = availableIndex;
             activeSessionsArr.splice(availableIndex, 1, new SessionObject(ws, playerChoiceArr[0]));  //create new match and replace the finished one
         }
+        ws.aID = 0;
     } else { //player chosen name for session found
         console.log('on-connection.js --> else(1) triggered');
         //console.log(activeSessionsArr[matchedIndex].activeSockets[0]);
@@ -52,18 +53,19 @@ module.exports = function onConnection(ws, req) {
             if (replaceableSocketIndex === -1) {
                 console.log("assigning to waiting");
                 activeSessionsArr[matchedIndex].waitingSockets.push(ws); //assign socket to waiting socket list
+                ws.aID = null;
             }
             else {
                 console.log("assigning to active as index: " + replaceableSocketIndex);
                 activeSessionsArr[matchedIndex].activeSockets[replaceableSocketIndex] = ws;  //assign socket to first free socket of the match
+                ws.aID = replaceableSocketIndex;
             }
         }
         ws.sID = matchedIndex; //assign session ID for socket
-        //activeSessionsArr[ws.sID].
     }
     ws.garlicName = playerChoiceArr[1];
-    ws.wannaPlay = false;
     ws.isAlive = true;
 };
 
 //TODO: send match data and MAYBE check if player name
+//TODO: assign to waiting players that connect middle-game
