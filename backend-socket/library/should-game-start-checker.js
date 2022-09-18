@@ -2,7 +2,7 @@ module.exports = function shouldStartGame(Session) {
     if (Session.isMiddleGame)
         return;
     let playerCount = 0;
-    Session.activeSockets.forEach( ws => {
+    Session.activeSockets.forEach(ws => {
         if (ws !== null)
             playerCount++;
     });

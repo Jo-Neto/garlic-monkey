@@ -1,4 +1,4 @@
-const activeSessionsArr = require('../../memory-active-sessions.js');
+const activeSessionsArr = require('../memory-modules/active-sessions.js');
 const shouldStartGame = require('../library/should-game-start-checker.js');
 
 module.exports = function onClose(ws) {

@@ -1,6 +1,6 @@
-const onConnection = require('./websocket-server/on-connection.js');
-const onMessage = require('./websocket-server/on-message.js');
-const onClose = require('./websocket-server/on-close.js');
+const onConnection = require('./websocket-server-setup/on-connection.js');
+const onMessage = require('./websocket-server-setup/on-message.js');
+const onClose = require('./websocket-server-setup/on-close.js');
 
 function sockServSetup(wss) {
     wss.on('connection', (ws, req) => {
@@ -16,14 +16,31 @@ function sockServSetup(wss) {
 module.exports = sockServSetup;
 
 
-
-//https://localhost/
-//const socket11 = new WebSocket("wss://localhost:9999",['room1','p11']);
-//socket11.send(JSON.stringify({'msgType': 'chatNew', 'msgContent': 'hahahahahaahaha'}));
-
+//=====================================================================================================================
+//=====================================================================================================================
+//=====================================================================================================================
 /*
+
+//https://localhost:9999/
+//const socket11 = new WebSocket("wss://localhost:9999",['room1','p11']);
+
 socket11.onmessage = (event) => {
-    console.log('received message from '+ this);
     console.log(event.data);
 }
+
+socket11.send(JSON.stringify({
+        'msgType': 'chatNew',
+        'msgContent': 'hahahahahaahaha'
+    }));
+
+socket11.send(JSON.stringify({
+        'msgType': 'participationStatus',
+        'msgContent': true
+    }));
+
+
 */
+//=====================================================================================================================
+//=====================================================================================================================
+//=====================================================================================================================
+

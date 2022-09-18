@@ -9,12 +9,12 @@ module.exports = function mainLogic(Session, data, playerWs, isWsActive) {
                     chatLogic(Session, data, playerWs);
                     break;
                 case 'newData':
-                    if (!isWsActive) { //inctive sockets can only chat
+                    if (playerWs.aID === null || !Session.isMiddleGame) { //inctive sockets can only chat, non started games can not receive inputs
                         playerWs.send(JSON.stringify({
-                            msgType: 'devReport', 
-                            msgContent: { 
-                                report: 'DENIED: player on waiting line tried sending "newData" msgType' 
-                            } 
+                            msgType: 'devReport',
+                            msgContent: {
+                                report: 'DENIED: player on waiting line tried sending "newData" msgType'
+                            }
                         }));
                         return;
                     } else {
@@ -23,7 +23,7 @@ module.exports = function mainLogic(Session, data, playerWs, isWsActive) {
                     console.log("main-logic.js --> 'newData' received");
                 case 'participationStatus': //changes player status if possible
                     console.log("main-logic.js --> 'participationStatus' received");
-                    partLogic(Session, data, playerWs, isWsActive);
+                    partLogic(Session, data, playerWs);
                     console.log("main-logic.js --> 'participationStatus' processed");
                 default:
                     console.log("ERROR --> main-logic.js --> msgType of received data is invalid");

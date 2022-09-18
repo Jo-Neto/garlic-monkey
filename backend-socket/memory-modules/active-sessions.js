@@ -1,3 +1,3 @@
-const activeSessionsArr = [{isFinished: true, sessionName: null}];
+const activeSessionsArr = [{ isFinished: true, sessionName: null }];
 
 module.exports = activeSessionsArr;
