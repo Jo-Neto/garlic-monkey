@@ -24,9 +24,9 @@ module.exports = {
             });
         });
     },
-    set: (key, value) => {
+    set: (value) => {
         return new Promise( (resolve, reject) => {
-            redis.get( key, async (error, data) => {
+            redis.get( value.name, async (error, data) => {
                 if( error ) {
                     console.error(error);
 
@@ -34,13 +34,15 @@ module.exports = {
                 };
 
                 if( data != null ) {
-                    console.log({ sucessMessage: "Redis Hit!", data: data });
-
-                    return reject(new Error("Object alreary in Redis"));
+                    console.log({ sucessMessage: "Redis Hit! Object Updated", data: data });
+                    const object = value
+                    redis.set( object.name, JSON.stringify(object) );
+                    
+                    return resolve(object);
                 };
 
                 const object = value
-                redis.set( 'activeSessions', JSON.stringify(object) );
+                redis.set( object.name, JSON.stringify(object) );
 
                 return resolve(object);
             });
