@@ -1,9 +1,7 @@
-const redis = require('../modules/redis');
 const SessionObject = require('../objects/session-object.js');
-//const activeSessionsArr = require('../../memory-active-sessions');
-module.exports = async function onConnection(ws, req) {
-    let activeSessionsArr = await redis.get()
+const activeSessionsArr = require('../../memory-active-sessions');
 
+module.exports = async function onConnection(ws, req) {
     let playerChoiceArr = [];
     try {
         playerChoiceArr = req.headers['sec-websocket-protocol'].split(', ');
@@ -65,9 +63,6 @@ module.exports = async function onConnection(ws, req) {
         ws.sID = matchedIndex; //assign session ID for socket
     }
     ws.garlicName = playerChoiceArr[1];
-    console.log(ws.garlicName)
-
-    redis.set(activeSessionsArr)
 };
 
 //TODO: send match data and MAYBE check if player name

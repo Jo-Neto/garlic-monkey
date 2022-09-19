@@ -1,10 +1,7 @@
-const redis = require('../modules/redis');
 const wsBelongsChecker = require('../library/ws-belongs-checker.js');
 const mainLogic = require('../library/main-logic.js');
-//const activeSessionsArr = require('../../memory-active-sessions');
-module.exports = async function onMessage(data, isBinary, ws) {
-    let activeSessionsArr = await redis.get()
-    
+const activeSessionsArr = require('../../memory-active-sessions');
+module.exports = async function onMessage(data, isBinary, ws) {    
     console.log("received message from ws id = "+ws.sID);
 
     let parsedData = {};
@@ -38,5 +35,4 @@ module.exports = async function onMessage(data, isBinary, ws) {
             console.log('ERROR -->> on-message.js -->> default triggered on switch condition');
             break;
     }
-    redis.set(JSON.stringify(activeSessionsArr))
 };
