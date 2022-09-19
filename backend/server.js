@@ -20,7 +20,7 @@ app.use(cors({
 
 app.get('/send-object', (req, res) => {
     const { object } = req
-    redisModule.set(object.name, object)
+    redisModule.set(object.sessionName, object)
 });
 
 const httpsServer = https.createServer({

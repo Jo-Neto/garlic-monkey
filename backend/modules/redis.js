@@ -24,9 +24,9 @@ module.exports = {
             });
         });
     },
-    set: (value) => {
+    set: (key, value) => {
         return new Promise( (resolve, reject) => {
-            redis.get( value.name, async (error, data) => {
+            redis.get( key, async (error, data) => {
                 if( error ) {
                     console.error(error);
 
@@ -36,13 +36,13 @@ module.exports = {
                 if( data != null ) {
                     console.log({ sucessMessage: "Redis Hit! Object Updated", data: data });
                     const object = value
-                    redis.set( object.name, JSON.stringify(object) );
+                    redis.set( key, JSON.stringify(object) );
                     
                     return resolve(object);
                 };
 
                 const object = value
-                redis.set( object.name, JSON.stringify(object) );
+                redis.set( key, JSON.stringify(object) );
 
                 return resolve(object);
             });
