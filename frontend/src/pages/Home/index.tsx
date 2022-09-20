@@ -2,12 +2,13 @@ import { useState } from 'react';
 import { Button } from '../../components/Form/Button';
 import { Input } from '../../components/Form/Input';
 import { GamePage } from '../../layout/GamePage';
-import { WaitRoom } from '../Players/index';
+import { Players } from '../Players/index';
 
 export function Home() {
   const [nick, setNick] = useState('');
   const [room, setRoom] = useState('');
   const [screen, setScreen] = useState(0);
+
   if (screen === 0) {
     return (
       <GamePage>
@@ -33,9 +34,9 @@ export function Home() {
               <div className='flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'>
                 <Button
                   className='mr-[1rem]'
-                  onClick={() => { setScreen(0);/*socket = new WebSocket("wss://localhost:9999",[room, nick]);*/ }}
+                  onClick={() => { setScreen(1);/*socket = new WebSocket("wss://localhost:9999",[room, nick]);*/ }}
                   icon={{ src: '/assets/icons/go.png', size: 22 }} />
-                ENTRAR
+                ENTRAR  
               </div>
             </div>
             <div className="flex flex-col items-center"></div>
@@ -51,6 +52,6 @@ export function Home() {
       </GamePage>
     );
   } else if (screen === 1) {
-    return (<WaitRoom></WaitRoom>)
+    return (<Players></Players>)
   }
 }
