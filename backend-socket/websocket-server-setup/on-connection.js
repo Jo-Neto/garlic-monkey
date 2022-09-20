@@ -52,7 +52,6 @@ module.exports = function onConnection(ws, req) {
             //console.log('on-connection.js --> else(2-2) triggered');
             let replaceableSocketIndex = activeSessionsArr[matchedIndex].activeSockets.indexOf(null);
             if (replaceableSocketIndex === -1 || activeSessionsArr[matchedIndex].currentTurn !== -1) {
-                console.log("assigning to waiting");
                 let replaceableWaitingSocketIndex = activeSessionsArr[matchedIndex].waitingSockets.indexOf(null);
                 if (replaceableWaitingSocketIndex === -1)
                     activeSessionsArr[matchedIndex].waitingSockets.push(ws); //assign socket to waiting socket list
@@ -66,6 +65,22 @@ module.exports = function onConnection(ws, req) {
                 ws.aID = replaceableSocketIndex;
             }
             shouldStartGame(activeSessionsArr[matchedIndex]);
+            activeSessionsArr[matchedIndex].activeSockets.forEach( webs => { //send new msg to all players in session
+                if (webs !== null && webs.readyState === 1) {
+                    webs.send(JSON.stringify({
+                        msgType: 'playerUpdate',
+                        msgContent: { nick: playerChoiceArr[1] }
+                    }));
+                }
+            });
+            activeSessionsArr[matchedIndex].waitingSockets.forEach(webs => { //send new msg to all players in session
+                if (webs !== null && webs.readyState === 1) {
+                    webs.send(JSON.stringify({
+                        msgType: 'playerUpdate',
+                        msgContent: { nick: playerChoiceArr[1] }
+                    }));
+                }
+            });
         }
         ws.sID = matchedIndex; //assign session ID for socket
     }

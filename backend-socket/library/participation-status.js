@@ -77,6 +77,4 @@ module.exports = function partStatChanger(Session, data, playerWs) {
     }
     else
         console.log("ERROR --> participation-status.js --> msgContent property not found on received object");
-    console.log('active array --->>>>' + Session.activeSockets);
-    console.log('waiting array --->>>>' + Session.waitingSockets);
 }

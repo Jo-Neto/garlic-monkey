@@ -36,7 +36,6 @@ module.exports = function mainLogic(Session, data, playerWs) {
                 case 'participationStatus': //changes player status if possible
                     partLogic(Session, data, playerWs);
                 default:
-                    console.log("ERROR --> main-logic.js --> msgType of received data is invalid");
                     break;
             }
         } else
