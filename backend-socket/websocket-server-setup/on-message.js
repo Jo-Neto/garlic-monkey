@@ -1,5 +1,4 @@
 const activeSessionsArr = require('../memory-modules/active-sessions.js');
-
 const mainLogic = require('../library/main-logic.js');
 
 module.exports = function onMessage(data, isBinary, ws) {
@@ -13,9 +12,7 @@ module.exports = function onMessage(data, isBinary, ws) {
     }
     if (!(parsedData !== null && typeof parsedData === 'object' && !Array.isArray(parsedData)))
         return false;
-    if (ws.sID >= activeSessionsArr.length) //safety, don't try to access indexes that don't exist //<<<<<<<<<<<<< TODO: MAYBE REMOVE THIS
+    if (ws.sID >= activeSessionsArr.length) //safety, don't try to access indexes that don't exist
         return null;
     mainLogic(activeSessionsArr[ws.sID], parsedData, ws);
 };
-
-//TODO: socket status checker before send

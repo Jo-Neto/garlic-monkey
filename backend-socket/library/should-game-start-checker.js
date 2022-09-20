@@ -1,6 +1,31 @@
 module.exports = function shouldStartGame(Session) {
-    if (Session.isMiddleGame)
+    console.log("should start running");
+    console.log(Session.currentTurn);
+    if (Session.currentTurn !== -1 )
         return;
+    if (Session.timerId !== null) {
+        clearTimeout(Session.timerId);
+        Session.timerId = null;
+        Session.timerActive = false;
+        Session.timerActive = true;
+        Session.activateTimer(15000); // 20 segs  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        Session.activeSockets.forEach(ws => { //send new msg to all players in session
+            if (ws !== null && ws.readyState === 1) {
+                ws.send(JSON.stringify({
+                    msgType: 'gameUpdate',
+                    msgContent: { msgContent: 'timerStop' }
+                }));
+            }
+        });
+        Session.waitingSockets.forEach(ws => { //send new msg to all players in session
+            if (ws !== null && ws.readyState === 1) {
+                ws.send(JSON.stringify({
+                    msgType: 'gameUpdate',
+                    msgContent: { msgContent: 'timerStop' }
+                }));
+            }
+        });
+    }
     let playerCount = 0;
     Session.activeSockets.forEach(ws => {
         if (ws !== null)
@@ -8,12 +33,22 @@ module.exports = function shouldStartGame(Session) {
     });
     if (playerCount >= 4) {
         Session.timerActive = true;
-        Session.timerId = Session.activateTimer(10000); // 20 segs  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    } else {
-        Session.timerActive = false;
-        if (Session.timerId !== null) {
-            clearTimeout(Session.timerId);
-            Session.timerId = null;
-        }
+        Session.activateTimer(15000); // 20 segs  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        Session.activeSockets.forEach(ws => { //send new msg to all players in session
+            if (ws !== null && ws.readyState === 1) {
+                ws.send(JSON.stringify({
+                    msgType: 'gameUpdate',
+                    msgContent: { msgContent: 'timerStart' }
+                }));
+            }
+        });
+        Session.waitingSockets.forEach(ws => { //send new msg to all players in session
+            if (ws !== null && ws.readyState === 1) {
+                ws.send(JSON.stringify({
+                    msgType: 'gameUpdate',
+                    msgContent: { msgContent: 'timerStart' }
+                }));
+            }
+        });
     }
 }

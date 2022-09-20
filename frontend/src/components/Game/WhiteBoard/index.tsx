@@ -8,22 +8,18 @@ import { Radius } from '../Radius';
 import { WhiteBoardProps, CanvasSizes } from './types';
 
 const COLORS = [
+  { name: 'red', hex: '#FF0000' },
+  { name: 'blue', hex: '#0000FF' },
+  { name: 'yellow', hex: '#FFFF00' },
+  { name: 'green', hex: '#008000' },
+  { name: 'orange', hex: '#FF7A00' },
+  { name: 'cyan', hex: '#00FFF0' },
+  { name: 'purple', hex: '#800080' },
+  { name: 'pink', hex: '#FF00E5' },
+  { name: 'brown', hex: '#800000' },
   { name: 'white', hex: '#FFFFFF' },
-  { name: 'silver', hex: '#C0C0C0' },
   { name: 'gray', hex: '#808080' },
   { name: 'black', hex: '#000000' },
-  { name: 'red', hex: '#FF0000' },
-  { name: 'brown', hex: '#800000' },
-  { name: 'yellow', hex: '#FFFF00' },
-  { name: 'olive', hex: '#808000' },
-  { name: 'lime', hex: '#00FF00' },
-  { name: 'green', hex: '#008000' },
-  { name: 'aqua', hex: '#00FFFF' },
-  { name: 'teal', hex: '#008080' },
-  { name: 'blue', hex: '#0000FF' },
-  { name: 'navy', hex: '#000080' },
-  { name: 'fuchsia', hex: '#FF00FF' },
-  { name: 'purple', hex: '#800080' },
 ];
 
 const SIZES = [1, 5, 10, 15, 20, 25];
@@ -92,7 +88,7 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
           callback={setSelectedColor}
           selectedColor={selectedColor}
         />
-        <div className="shadow-md shadow-gray-500 border-8 border-select-brown rounded-md">
+        <div className="shadow-md border-8 border-[#3F1802] rounded-md">
           <CanvasDraw
             ref={WhiteBoardRef}
             brushColor={addTransparency(selectedColor.hex)}
@@ -110,6 +106,7 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
           radius={SIZES}
           callback={setSelectedRadius}
           selectedRadius={selectedRadius}
+          selectedColor={selectedColor}
         />
       </div>
       <div className="flex flex-row ">
