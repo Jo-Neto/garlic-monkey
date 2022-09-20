@@ -106,6 +106,7 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
           radius={SIZES}
           callback={setSelectedRadius}
           selectedRadius={selectedRadius}
+          selectedColor={selectedColor}
         />
       </div>
       <div className="flex flex-row ">
@@ -115,7 +116,7 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
             { name: 'Desfazer', callback: () => undo() },
           ]}
         />
-        {/*<input
+        <input
           className="cursor-pointer"
           type="range"
           min={0}
@@ -123,7 +124,7 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
           step={1}
           value={gradient}
           onChange={(e) => setGradient(Number(e.target.value))}
-        />*/}
+        />
       </div>
     </div>
   );
