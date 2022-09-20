@@ -5,12 +5,9 @@ import { GamePage } from '../../layout/GamePage';
 import { Players } from '../Players/index';
 import { PlayerIcon } from '../../components/PlayerIcon';
 
-
-const players: { nick: string, photo: string }[] = [
-  { nick: "Teste", photo: "" }
-]
-
 export function Home() {
+
+  const players: { nick: string, photo: string }[] = []
 
   const [nick, setNick] = useState('');
   const [room, setRoom] = useState('');
@@ -20,7 +17,16 @@ export function Home() {
 
   const onMessage = useCallback((message: any) => {
     const data = JSON.parse(message?.data);
+    if (!Object.hasOwn(data, 'msgType')) {
+      return;
+    }
     console.log(data);
+    if (data.msgType === 'playerUpdate') {
+      players.push({
+        nick: data.msgContent.nick, photo: ""
+      })
+      console.log(players);
+    }
   }, []);
 
   useEffect(() => {
@@ -94,9 +100,9 @@ export function Home() {
               }}
               className='mr-[0.5rem]'
               icon={{ src: '/assets/icons/goFlip.png', size: 22 }} />
-            <span 
-            className="defaultSpan"
-            onClick={()=>{setScreen(0)}}
+            <span
+              className="defaultSpan"
+              onClick={() => { setScreen(0) }}
             >VOLTAR</span>
           </div>
           <img
@@ -132,16 +138,27 @@ export function Home() {
           </div>
         </div>
         <div className="flex flex-row">
-          <div className='flex flex-row justify-center items-center bg-white w-[7rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105 mr-10'>
+          <div className='flex flex-row justify-center items-center bg-white w-[7rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105 mr-10'
+            onClick={() => {
+              socket.send(JSON.stringify({
+                'msgType': 'participationStatus',
+                'msgContent': true
+              }));
+            }}
+          >
             <span className="defaultSpan"
-            >PRONTO</span>
+            >JOGAR!</span>
           </div>
-          <div className='flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'>
+          <div className='flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'
+            onClick={() => {
+              socket.send(JSON.stringify({
+                'msgType': 'participationStatus',
+                'msgContent': false
+              }));
+            }}
+          >
             <span className="defaultSpan"
-            >INICIAR JOGO</span>
-            <Button
-              className='ml-[0.5rem]'
-              icon={{ src: '/assets/icons/go.png', size: 22 }} />
+            >SÓ CHAT!</span>
           </div>
         </div>
       </GamePage>)
