@@ -23,4 +23,4 @@ module.exports = function chatLogic(Session, data, playerWs) {
     }
     else
         console.log("ERROR --> chat-logic.js --> msgContent property not found on received message");
-} 
+}
