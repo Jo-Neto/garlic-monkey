@@ -1,7 +1,8 @@
 const chatLogic = require('./chat-logic.js');
 const partLogic = require('./participation-status.js');
+const gameLogic = require('./game-logic.js');
 
-module.exports = function mainLogic(Session, data, playerWs, isWsActive) {
+module.exports = function mainLogic(Session, data, playerWs) {
     if (Object.hasOwn(data, 'msgType')) { //check if object has required minimun property
         if (typeof data.msgType === 'string') { //check if property is a string
             switch (data.msgType) {
@@ -9,22 +10,31 @@ module.exports = function mainLogic(Session, data, playerWs, isWsActive) {
                     chatLogic(Session, data, playerWs);
                     break;
                 case 'newData':
-                    if (playerWs.aID === null || !Session.isMiddleGame) { //inctive sockets can only chat, non started games can not receive inputs
-                        playerWs.send(JSON.stringify({
-                            msgType: 'devReport',
-                            msgContent: {
-                                report: 'DENIED: player on waiting line tried sending "newData" msgType'
-                            }
-                        }));
+                    if (playerWs.aID === null) { //inctive sockets can only chat, non started games can not receive inputs
+                        if (playerWs.readyState === 1) {
+                            playerWs.send(JSON.stringify({
+                                msgType: 'devReport',
+                                msgContent: {
+                                    report: 'DENIED: player on waiting line tried sending "newData" msgType'
+                                }
+                            }));
+                        }
+                        return;
+                    } else if (Session.currentTurn === -1) {
+                        if (playerWs.readyState === 1) {
+                            playerWs.send(JSON.stringify({
+                                msgType: 'devReport',
+                                msgContent: {
+                                    report: 'DENIED: player tried sending "newData" before match beggining'
+                                }
+                            }));
+                        }
                         return;
                     } else {
-                        //game logic here
+                        gameLogic(Session, data, playerWs);
                     }
-                    console.log("main-logic.js --> 'newData' received");
                 case 'participationStatus': //changes player status if possible
-                    console.log("main-logic.js --> 'participationStatus' received");
                     partLogic(Session, data, playerWs);
-                    console.log("main-logic.js --> 'participationStatus' processed");
                 default:
                     console.log("ERROR --> main-logic.js --> msgType of received data is invalid");
                     break;
@@ -34,5 +44,3 @@ module.exports = function mainLogic(Session, data, playerWs, isWsActive) {
     } else
         console.log("ERROR --> main-logic.js --> object has no msgType property");
 }
-
-//TODO: TIMER, REPLAYER, CHANGE WAITING/PLAYING, DISCONNECTOR

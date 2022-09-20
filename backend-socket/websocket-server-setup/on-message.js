@@ -1,5 +1,4 @@
 const activeSessionsArr = require('../memory-modules/active-sessions.js');
-
 const mainLogic = require('../library/main-logic.js');
 
 module.exports = function onMessage(data, isBinary, ws) {
@@ -17,5 +16,3 @@ module.exports = function onMessage(data, isBinary, ws) {
         return null;
     mainLogic(activeSessionsArr[ws.sID], parsedData, ws);
 };
-
-//TODO: socket status checker before send

@@ -7,7 +7,7 @@ module.exports = function partStatChanger(Session, data, playerWs) {
                 //if player is alreaady on active sockets do nothing, else move to active if there's an empty place
                 if (playerWs.aID === null) { // player not on active
                     let availableIndex = Session.activeSockets.indexOf(null);
-                    if (availableIndex === -1) { //there`s no place for the player
+                    if (availableIndex === -1 && playerWs.readyState === 1) { //there`s no place for the player
                         playerWs.send(JSON.stringify({
                             msgType: 'participationFeedback',
                             msgContent: {
@@ -19,23 +19,27 @@ module.exports = function partStatChanger(Session, data, playerWs) {
                         Session.activeSockets[availableIndex] = playerWs;
                         Session.waitingSockets[Session.waitingSockets.indexOf(playerWs)] = null;
                         playerWs.aID = availableIndex;
-                        playerWs.send(JSON.stringify({
-                            msgType: 'participationFeedback',
-                            msgContent: {
-                                succeeded: true,
-                                feedback: 'player succesfully placed on game'
-                            }
-                        }));
+                        if (playerWs.readyState === 1) {
+                            playerWs.send(JSON.stringify({
+                                msgType: 'participationFeedback',
+                                msgContent: {
+                                    succeeded: true,
+                                    feedback: 'player succesfully placed on game'
+                                }
+                            }));
+                        }
                         shouldStartGame(Session);
                     }
                 } else {
-                    playerWs.send(JSON.stringify({
-                        msgType: 'participationFeedback',
-                        msgContent: {
-                            succeeded: false,
-                            feedback: 'player already placed on game'
-                        }
-                    }));
+                    if (playerWs.readyState === 1) {
+                        playerWs.send(JSON.stringify({
+                            msgType: 'participationFeedback',
+                            msgContent: {
+                                succeeded: false,
+                                feedback: 'player already placed on game'
+                            }
+                        }));
+                    }
                 }
             } else { //player doesn't want to play
                 if (playerWs.aID !== null) {
@@ -47,21 +51,25 @@ module.exports = function partStatChanger(Session, data, playerWs) {
                     Session.activeSockets[playerWs.aID] = null;
                     playerWs.aID = null;
                     shouldStartGame(Session);
-                    playerWs.send(JSON.stringify({
-                        msgType: 'participationFeedback',
-                        msgContent: {
-                            succeeded: true,
-                            feedback: 'player succesfully placed out of game'
-                        }
-                    }));
+                    if (playerWs.readyState === 1) {
+                        playerWs.send(JSON.stringify({
+                            msgType: 'participationFeedback',
+                            msgContent: {
+                                succeeded: true,
+                                feedback: 'player succesfully placed out of game'
+                            }
+                        }));
+                    }
                 } else {
-                    playerWs.send(JSON.stringify({
-                        msgType: 'participationFeedback',
-                        msgContent: {
-                            succeeded: false,
-                            feedback: 'player is already out of the game'
-                        }
-                    }));
+                    if (playerWs.readyState === 1) {
+                        playerWs.send(JSON.stringify({
+                            msgType: 'participationFeedback',
+                            msgContent: {
+                                succeeded: false,
+                                feedback: 'player is already out of the game'
+                            }
+                        }));
+                    }
                 }
             }
         } else
