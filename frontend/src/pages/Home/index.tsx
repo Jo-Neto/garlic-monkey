@@ -37,7 +37,7 @@ export function Home() {
         socket.removeEventListener("message", onMessage);
       };
     }
-  }, [socket, onMessage]);
+  }, [socket, onMessage, players]);
 
 
   if (screen === 0) {
@@ -90,21 +90,6 @@ export function Home() {
     return (
       <GamePage className='flex  justify-between'>
         <div className='flex flex-row justify-between align-middle items-center  w-[90%]'>
-          <div className='flex flex-row justify-center items-center bg-white w-[7rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'>
-            <Button
-              onClick={() => {
-                socket.send(JSON.stringify({
-                  'msgType': 'chatNew',
-                  'msgContent': 'hahahahahaahaha'
-                }));
-              }}
-              className='mr-[0.5rem]'
-              icon={{ src: '/assets/icons/goFlip.png', size: 22 }} />
-            <span
-              className="defaultSpan"
-              onClick={() => { setScreen(0) }}
-            >VOLTAR</span>
-          </div>
           <img
             className="top-5"
             src="/assets/images/logo.png"
