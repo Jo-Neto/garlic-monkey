@@ -16,6 +16,21 @@ module.exports = function onClose(ws) {
     if (activeSessionsArr[ws.sID].activeSockets.every( el => { el === null }) && activeSessionsArr[ws.sID].waitingSockets.every( el => { el === null })) //if session empty save on redis
         activeSessionsArr[ws.sID].saveOnDB(true);
     else { //player disconnected but there are still players
-        //TODO: wanr who disconnected
+        activeSessionsArr[ws.sID].activeSockets.forEach(webs => { //send new msg to all players in session
+            if (webs !== null && webs.readyState === 1) {
+                webs.send(JSON.stringify({
+                    msgType: 'playerUpdate',
+                    msgContent: { nick: ws.garlicName, updateType: 'out', isOnGame: ws.aID }
+                }));
+            }
+        });
+        activeSessionsArr[ws.sID].waitingSockets.forEach(webs => { //send new msg to all players in session
+            if (webs !== null && webs.readyState === 1) {
+                webs.send(JSON.stringify({
+                    msgType: 'playerUpdate',
+                    msgContent: { nick: ws.garlicName, updateType: 'out', isOnGame: ws.aID }
+                }));
+            }
+        });
     }
 };
