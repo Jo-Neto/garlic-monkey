@@ -22,6 +22,7 @@ const COLORS = [
   { name: 'black', hex: '#000000' },
 ];
 
+
 const SIZES = [1, 5, 10, 15, 20, 25];
 
 export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
