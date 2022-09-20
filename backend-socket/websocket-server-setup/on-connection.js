@@ -70,7 +70,7 @@ module.exports = function onConnection(ws, req) {
                 if (webs !== null && webs.readyState === 1) {
                     webs.send(JSON.stringify({
                         msgType: 'playerUpdate',
-                        msgContent: { nick: playerChoiceArr[1] }
+                        msgContent: { nick: playerChoiceArr[1], updateType: 'in', isOnGame: ws.aID }
                     }));
                 }
             });
@@ -78,7 +78,7 @@ module.exports = function onConnection(ws, req) {
                 if (webs !== null && webs.readyState === 1) {
                     webs.send(JSON.stringify({
                         msgType: 'playerUpdate',
-                        msgContent: { nick: playerChoiceArr[1] }
+                        msgContent: { nick: playerChoiceArr[1], updateType: 'in', isOnGame: ws.aID }
                     }));
                 }
             });
