@@ -91,7 +91,6 @@ module.exports = class SessionObject {
             this.currentTurn++;
             this.activeSockets.forEach(ws => { if (ws !== null) { ws.hasPlayedThisTurn = false; } });
             this.activateTimer(5000);
-            console.log("finishing timer logic session id = " + this.activeSockets[0].sID);
         }, time);
     }
     saveOnDB(erase = false) {

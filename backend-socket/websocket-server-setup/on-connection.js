@@ -3,6 +3,7 @@ const activeSessionsArr = require('../memory-modules/active-sessions.js');
 const shouldStartGame = require('../library/should-game-start-checker.js');
 
 module.exports = function onConnection(ws, req) {
+    console.log("new connection");
     let playerChoiceArr = [];
     try {
         playerChoiceArr = req.headers['sec-websocket-protocol'].split(', ');
