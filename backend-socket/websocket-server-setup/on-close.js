@@ -13,7 +13,9 @@ module.exports = function onClose(ws) {
             activeSessionsArr[ws.sID].waitingSockets[removeIndexInactive] = null;
     }
     ws.terminate();
+    if (activeSessionsArr[ws.sID].activeSockets.every( el => { el === null }) && activeSessionsArr[ws.sID].waitingSockets.every( el => { el === null })) //if session empty save on redis
+        activeSessionsArr[ws.sID].saveOnDB(true);
+    else { //player disconnected but there are still players
+        //TODO: wanr who disconnected
+    }
 };
-
-//TODO cancel timer for game start
-//TODO quiter status for sockets that quit middle game
