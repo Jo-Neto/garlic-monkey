@@ -48,7 +48,7 @@ export function Home() {
                     }
                   }}
                   icon={{ src: '/assets/icons/go.png', size: 22 }} />
-                ENTRAR
+                ENTRAR  
               </div>
             </div>
             <div className="flex flex-col items-center"></div>
