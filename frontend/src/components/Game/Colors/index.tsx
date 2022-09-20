@@ -11,14 +11,13 @@ export function Colors({
     <div
       className={twMerge(
         'flex flex-col items-center h-fit px-2 py-3',
-        'border-8 border-select-brown rounded-l-xl',
+        'border-y-[0.3rem] border-l-[0.3rem]  border-select-brown/[0.5] rounded-l-xl',
         'bg-select-brown bg-opacity-25',
-      )}
-    >
-      <div>{title}</div>
+      )}>
+      <span className='defaultSpan mb-[1rem] mt-[1rem]'>{title}</span>
       <div
         className={twMerge(
-          'grid grid-flow-row grid-cols-3 w-fit h-fit',
+          'grid grid-flow-row grid-cols-3 w-fit h-fit mb-[1rem]',
           'xlg:grid-cols-1 xlg:h-full xlg:overflow-y-scroll',
         )}
       >
@@ -26,9 +25,9 @@ export function Colors({
           <div
             key={name}
             className={twMerge(
-              'w-5 h-5 m-1 rounded-full cursor-pointer border-black',
+              'w-6 h-6 m-[0.4rem] rounded-full cursor-pointer border-black border-[0.08rem] drop-shadow-colorsShadow',
               selectedColor.hex === hex
-                ? 'border-2 border-spacing-2 shadow-md shadow-gray-500'
+                ? 'scale-125 duration-100'
                 : '',
             )}
             style={{
@@ -40,8 +39,8 @@ export function Colors({
       </div>
       <div
         className={twMerge(
-          'w-32 h-14 rounded-b-xl shadow-md shadow-gray-500',
-          'border-2 border-solid border-black',
+          'w-[6.5rem] h-14 rounded-b-xl drop-shadow-colorsShadow mb-[0.5rem]',
+          'border-[0.1rem] border-solid border-black',
         )}
         style={{ backgroundColor: selectedColor.hex }}
       ></div>
