@@ -22,4 +22,9 @@ module.exports = class SessionObject {
             }
         }, time);
     }
+    saveOnDb(){
+        this.isFinished = true;
+        console.log(this);
+
+    }
 };

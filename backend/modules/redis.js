@@ -1,8 +1,8 @@
-    const Redis = require('ioredis'),
-    redis = Redis.createClient({
-        port: 6379,
-        host: "127.0.0.1"
-    });
+const Redis = require('ioredis'),
+redis = Redis.createClient({
+    port: 6379,
+    host: "127.0.0.1"
+});
 
 module.exports = {
     get: (key) => {
@@ -36,13 +36,30 @@ module.exports = {
                 if( data != null ) {
                     console.log({ sucessMessage: "Redis Hit! Object Updated", data: data });
                     const object = value
-                    redis.set( key, JSON.stringify(object) );
+                    redis.setex( key, 10, JSON.stringify(object), (err, result) => {
+                        if( err ){
+                            console.log(err);
+    
+                            return reject(err);
+                        }
+                        
+                        console.log(result + ": Stored on Redis")
+                    });
                     
                     return resolve(object);
                 };
 
                 const object = value
-                redis.set( key, JSON.stringify(object) );
+                
+                redis.setex( key, 10, JSON.stringify(object), (err, result) => {
+                    if( err ){
+                        console.log(err);
+
+                        return reject(err);
+                    }
+
+                    console.log(result + ": Stored on Redis")
+                });
 
                 return resolve(object);
             });
