@@ -10,12 +10,11 @@ import { Player } from '../../components/Player';
 export function Home() {
   const [players, setPlayers] = useState<{nick: string, photo: string}[]>([]);
 
-  const chatMessages = [
-    {user: "Gustavo", msg: "Lorem sahuhsuahsuhaushauhsusahushuah ssasgyagsyagsgaysgysagsy sausguagsyags adsdy"}
-  ]
+  const [chatMessages, setChatMessages] = useState<{user: string, msg: string}[]>([]);
 
   const [nick, setNick] = useState('');
   const [room, setRoom] = useState('');
+  const [message, setMessage] = useState('');
   const [screen, setScreen] = useState(0);
   const [socket, setSocket] = useState<WebSocket>();
 
@@ -24,6 +23,7 @@ export function Home() {
     
     console.log("🚀 ~ file: index.tsx ~ line 10 ~ Home ~ players", players)
     const data = JSON.parse(message?.data);
+    console.log("🚀 ~ file: index.tsx ~ line 27 ~ onMessage ~ data", data)
     if (!Object.hasOwn(data, 'msgType')) {
       return;
     }
@@ -49,6 +49,8 @@ export function Home() {
       })
       
       setPlayers(activePlayers);
+    } else if ( data.msgType === 'chatNew' ) {
+      setChatMessages(prevMessage => [...prevMessage, {user: nick, msg: message}])
     }
   }, []);
 
@@ -153,6 +155,15 @@ export function Home() {
                 })
               }
             </div>
+            <Input className='ml-[2.2rem]' value={message} onChange={(e) => setMessage(e.target.value)} />
+            <Button 
+              onClick={ () => {
+                socket.send(JSON.stringify({
+                    'msgType': 'chatNew',
+                    'msgContent': 'hahahahahaahaha'
+                }));
+              }}
+              icon={{ src: '/assets/icons/go.png', size: 22 }} />
           </div>
         </div>
         <div className="flex flex-row">
