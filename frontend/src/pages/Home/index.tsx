@@ -17,6 +17,7 @@ export function Home() {
   const [chatMessages, setChatMessages] = useState<{ user: string, msg: string }[]>([]);
   const [screen, setScreen] = useState(0);
   const [socket, setSocket] = useState<WebSocket>();
+  const [chat, setChat] = useState<Node>();
 
   const [timer, setTimer] = useState<any>(30);
   let trueTime = 30;
@@ -169,23 +170,31 @@ export function Home() {
               </div>
             </div>
           </div>
-          <div className="border-8 border-select-brown rounded-md w-[30rem] bg-black/25">
-            <div className='chatBox'>
+          <div className="border-8 border-select-brown rounded-md w-[30rem] bg-black/25 flex flex-col">
+            <div className='h-full chatBox overflow-scroll overflow-x-hidden'>
               {
-                chatMessages.map(el => {
+                chatMessages.map( el => {
+                  if(el.user === nick) return <Chat className='bg black' user={el.user} msg={el.msg} />
                   return <Chat user={el.user} msg={el.msg} />
                 })
               }
             </div>
-            <Input className='ml-[2.2rem]' value={message} onChange={(e) => setMessage(e.target.value)} />
-            <Button
-              onClick={() => {
-                socket.send(JSON.stringify({
-                  'msgType': 'chatNew',
-                  'msgContent': message
-                }));
-              }}
-              icon={{ src: '/assets/icons/go.png', size: 22 }} />
+            <div className=' inputs flex flex-row justify-center w-[30rem]'>
+              <Input 
+                className='w-[26rem] h-[2rem] normal-case' 
+                value={message} 
+                onChange={(e) => setMessage(e.target.value)} />
+              <Button 
+                className='ml-1' 
+                icon={{ src: '/assets/icons/go.png', size: 22 }} 
+                onClick={ () => {
+                  socket.send(JSON.stringify({
+                      'msgType': 'chatNew',
+                      'msgContent': message
+                  }));
+                  setMessage("")
+                }}  />
+            </div>
           </div>
         </div>
         <div className="flex flex-row">
