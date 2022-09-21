@@ -50,7 +50,7 @@ export function Home() {
       
       setPlayers(activePlayers);
     } else if ( data.msgType === 'chatNew' ) {
-      setChatMessages(prevMessage => [...prevMessage, {user: nick, msg: message}])
+      setChatMessages(prevMessage => [...prevMessage, {user: data.msgContent.nick, msg: data.msgContent.msgContent}])
     }
   }, []);
 
