@@ -69,13 +69,13 @@ export function Home() {
     
     else if (data.msgType === 'gameUpdate') {
       if (data.msgContent.msgContent === 'timerStart') {
+        trueTime = 30;
         timerId = setInterval(timerFn, 1000);
       } else if (data.msgContent.msgContent === 'timerStop') {
         console.log(timerId);
         clearInterval(timerId)
         setTimer(30);
       }
-
     }
   }, []);
 
