@@ -5,6 +5,7 @@ import { GamePage } from '../../layout/GamePage';
 import { Players } from '../Players/index';
 import { Chat } from '../../components/Chat';
 import { PlayerIcon } from '../../components/PlayerIcon';
+import { Player } from '../../components/Player';
 
 export function Home() {
   const [players, setPlayers] = useState<{nick: string, photo: string}[]>([]);
