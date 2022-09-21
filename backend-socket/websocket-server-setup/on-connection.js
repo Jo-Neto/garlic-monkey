@@ -30,8 +30,10 @@ module.exports = function onConnection(ws, req) {
     //console.log("on-connection.js --> matchedIndex =" + matchedIndex);
     let allActivePlayersName = [];
     let allWaitingPlayersName = [];
+    let newRoom = false;
 
     if (matchedIndex === -1) { //didn't found session with the player's choice name
+        newRoom = true;
         //console.log('on-connection.js --> if(1) triggered');
         let availableIndex = activeSessionsArr.findIndex((el) => { return el.isFinished === true ? true : false }); //check if finished match available on array for replacement
         //console.log('available index = ' + availableIndex);
@@ -71,28 +73,34 @@ module.exports = function onConnection(ws, req) {
                 ws.aID = replaceableSocketIndex;
             }
             shouldStartGame(activeSessionsArr[matchedIndex]);
-            activeSessionsArr[matchedIndex].activeSockets.forEach(webs => { //send new msg to all players in session
-                if (webs !== null && webs.readyState === 1) {
-                    webs.send(JSON.stringify({
-                        msgType: 'playerUpdate',
-                        msgContent: { nick: playerChoiceArr[1], updateType: 'in', isOnGame: ws.aID }
-                    }));
-                }
-            });
-            activeSessionsArr[matchedIndex].waitingSockets.forEach(webs => { //send new msg to all players in session
-                if (webs !== null && webs.readyState === 1) {
-                    webs.send(JSON.stringify({
-                        msgType: 'playerUpdate',
-                        msgContent: { nick: playerChoiceArr[1], updateType: 'in', isOnGame: ws.aID }
-                    }));
-                }
-            });
         }
         allActivePlayersName = activeSessionsArr[matchedIndex].activeSockets.map(webs => { if (webs !== null) return webs.garlicName; });
         allWaitingPlayersName = activeSessionsArr[matchedIndex].waitingSockets.map(webs => { if (webs !== null) return webs.garlicName; });
+        if (ws.readyState === 1) {
+            ws.send(JSON.stringify({
+                msgType: 'playerRow',
+                msgContent: { activeNick: allActivePlayersName, waitingNick: allWaitingPlayersName }
+            }));
+        }
+        activeSessionsArr[matchedIndex].activeSockets.forEach(webs => { //send new msg to all players in session
+            if (webs !== null && webs.readyState === 1) {
+                webs.send(JSON.stringify({
+                    msgType: 'playerUpdate',
+                    msgContent: { nick: playerChoiceArr[1], updateType: 'in', isOnGame: ws.aID }
+                }));
+            }
+        });
+        activeSessionsArr[matchedIndex].waitingSockets.forEach(webs => { //send new msg to all players in session
+            if (webs !== null && webs.readyState === 1) {
+                webs.send(JSON.stringify({
+                    msgType: 'playerUpdate',
+                    msgContent: { nick: playerChoiceArr[1], updateType: 'in', isOnGame: ws.aID }
+                }));
+            }
+        });
         ws.sID = matchedIndex; //assign session ID for socket
     }
-    if (ws.readyState === 1) {
+    if (!newRoom && ws.readyState === 1) {
         ws.send(JSON.stringify({
             msgType: 'playerRow',
             msgContent: { activeNick: allActivePlayersName, waitingNick: allWaitingPlayersName }
