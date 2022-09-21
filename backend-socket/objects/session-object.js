@@ -93,6 +93,11 @@ module.exports = class SessionObject {
             this.activateTimer(5000);
         }, time);
     }
+    saveOnDb(){
+        this.isFinished = true;
+        console.log(this);
+
+    }
     saveOnDB(erase = false) {
         console.log("save on db called");
         if (erase) {

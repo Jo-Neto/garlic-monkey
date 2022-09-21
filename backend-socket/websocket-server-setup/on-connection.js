@@ -25,6 +25,7 @@ module.exports = function onConnection(ws, req) {
         //console.log('on-connection.js --> subprotocols type error');
         return false;
     }
+
     let matchedIndex = activeSessionsArr.findIndex((el) => { return el.sessionName === playerChoiceArr[0] ? true : false }); //find index of the first match found from player's name choice
     //console.log("on-connection.js --> matchedIndex =" + matchedIndex);
     if (matchedIndex === -1) { //didn't found session with the player's choice name

@@ -7,8 +7,7 @@ import { Chat } from '../../components/Chat';
 import { PlayerIcon } from '../../components/PlayerIcon';
 
 export function Home() {
-
-  const players: { nick: string, photo: string }[] = []
+  const [players, setPlayers] = useState<{ nick: string, photo: string }[]>([])
 
   const chatMessages = [
     {user: "Gustavo", msg: "Lorem sahuhsuahsuhaushauhsusahushuah ssasgyagsyagsgaysgysagsy sausguagsyags adsdy"}
@@ -26,11 +25,17 @@ export function Home() {
       return;
     }
     console.log(data);
-    if (data.msgType === 'playerUpdate') {
-      players.push({
-        nick: data.msgContent.nick, photo: ""
-      })
-      console.log(players);
+    if ( data.msgType === 'playerUpdate') {
+      if(  data.msgContent.updateType === 'in'  ){
+        setPlayers(players => [...players, {nick: data.msgContent.nick, photo: ""}])
+        console.log(players);
+      }
+      if( data.msgContent.updateType === 'out' ){
+        setPlayers(players.filter( el => { if(el.nick !== data.msgContent.nick)  return el }))
+        console.log(players);
+      }
+    } else if ( data.msgType === 'playerRow' ) {
+      setPlayers(players => [...data.msgContent.activeNick])
     }
   }, []);
 
@@ -123,12 +128,8 @@ export function Home() {
               <span className="defaultSpan uppercase mt-[0.5rem]"
               >JOGADORES 1</span>
               <div className='flex flex-col gap-2 mt-[1rem]'>
-                { 
-                  players.map( element => {
-                    return <PlayerIcon nick={element.nick} photo={element.photo} />
-                  })
-                }
-              </div>  
+                <Player players={players}></Player>
+              </div>
             </div>
           </div>
           <div className="border-8 border-select-brown rounded-md w-[30rem] bg-black/25">
