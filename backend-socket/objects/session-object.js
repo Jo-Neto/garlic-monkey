@@ -48,6 +48,8 @@ module.exports = class SessionObject {
 
             } else { //subsequent rounds
 
+                console.log("subsequent rounds");
+
                 this.activeSockets.forEach(ws => { //send new msg to all players in session
                     if (ws !== null && ws.readyState === 1) {
                         ws.send(JSON.stringify({
