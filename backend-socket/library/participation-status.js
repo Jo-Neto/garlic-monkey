@@ -29,6 +29,22 @@ module.exports = function partStatChanger(Session, data, playerWs) {
                             }));
                         }
                         shouldStartGame(Session);
+                        Session.activeSockets.forEach(webs => { //send new msg to all players in session
+                            if (webs !== null && webs.readyState === 1) {
+                                webs.send(JSON.stringify({
+                                    msgType: 'playerUpdate',
+                                    msgContent: { nick: playerWs.garlicName, updateType: 'in', isOnGame: playerWs.aID}
+                                }));
+                            }
+                        });
+                        Session.waitingSockets.forEach(webs => { //send new msg to all players in session
+                            if (webs !== null && webs.readyState === 1) {
+                                webs.send(JSON.stringify({
+                                    msgType: 'playerUpdate',
+                                    msgContent: { nick: playerWs.garlicName, updateType: 'in', isOnGame: playerWs.aID}
+                                }));
+                            }
+                        });
                     }
                 } else {
                     if (playerWs.readyState === 1) {
@@ -60,6 +76,22 @@ module.exports = function partStatChanger(Session, data, playerWs) {
                             }
                         }));
                     }
+                    Session.activeSockets.forEach(webs => { //send new msg to all players in session
+                        if (webs !== null && webs.readyState === 1) {
+                            webs.send(JSON.stringify({
+                                msgType: 'playerUpdate',
+                                msgContent: { nick: playerWs.garlicName, updateType: 'out', isOnGame: playerWs.aID}
+                            }));
+                        }
+                    });
+                    Session.waitingSockets.forEach(webs => { //send new msg to all players in session
+                        if (webs !== null && webs.readyState === 1) {
+                            webs.send(JSON.stringify({
+                                msgType: 'playerUpdate',
+                                msgContent: { nick: playerWs.garlicName, updateType: 'out', isOnGame: playerWs.aID}
+                            }));
+                        }
+                    });
                 } else {
                     if (playerWs.readyState === 1) {
                         playerWs.send(JSON.stringify({

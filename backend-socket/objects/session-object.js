@@ -88,34 +88,36 @@ module.exports = class SessionObject {
                     return;
                 }
 
-                Session.activeSockets.forEach((webs)=>{
-                    if (Session.currentTurn > 0) {
-                        if (webs.aID + Session.currentTurn < Session.activeSockets.length) {
-                            /*            console.log('if')
-                                          console.log(typeof webs.aID);
-                                          console.log(typeof Session.currentTurn);
-                                          console.log(webs.aID + Session.currentTurn);
-                                          console.log('index 2 ='+ Session.currentTurn); */
-                            webs.send[Number(webs.aID + Session.currentTurn)][Number(Session.currentTurn - 1)];
-                        } else {
-                            /*          console.log('else')
-                                        console.log(typeof webs.aID);
-                                        console.log(typeof Session.currentTurn);
-                                        console.log(typeof Session.activeSockets.length);
-                                        console.log(webs.aID + Session.currentTurn - Session.activeSockets.length);
-                                        console.log(typeof (webs.aID + Session.currentTurn - Session.activeSockets.length));
-                                        console.log('index 2 ='+ Session.currentTurn); */
-                            webs.send[Number(webs.aID + Session.currentTurn - Session.activeSockets.length)][Number(Session.currentTurn - 1)];
+                this.activeSockets.forEach((webs) => {
+                    if (webs !== null && webs.readyState === 1) {
+                        if (this.currentTurn > 0) {
+                            if (webs.aID + this.currentTurn < this.activeSockets.length) {
+                                /*            console.log('if')
+                                              console.log(typeof webs.aID);
+                                              console.log(typeof Session.currentTurn);
+                                              console.log(webs.aID + Session.currentTurn);
+                                              console.log('index 2 ='+ Session.currentTurn); */
+                                webs.send(JSON.stringify(this.game[Number(webs.aID + this.currentTurn)][Number(this.currentTurn - 1)]));
+                            } else {
+                                /*          console.log('else')
+                                            console.log(typeof webs.aID);
+                                            console.log(typeof Session.currentTurn);
+                                            console.log(typeof Session.activeSockets.length);
+                                            console.log(webs.aID + Session.currentTurn - Session.activeSockets.length);
+                                            console.log(typeof (webs.aID + Session.currentTurn - Session.activeSockets.length));
+                                            console.log('index 2 ='+ Session.currentTurn); */
+                                webs.send(JSON.stringify(this.game[Number(webs.aID + this.currentTurn - this.activeSockets.length)][Number(this.currentTurn - 1)]));
+                            }
                         }
                     }
                 });
             }
             this.currentTurn++;
             this.activeSockets.forEach(ws => { if (ws !== null) { ws.hasPlayedThisTurn = false; } });
-            this.activateTimer(30000);
+            this.activateTimer(60000);
         }, time);
     }
-    saveOnDb(){
+    saveOnDb() {
         this.isFinished = true;
         console.log(this);
 

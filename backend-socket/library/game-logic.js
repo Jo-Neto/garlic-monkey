@@ -1,6 +1,7 @@
 module.exports = function mainLogic(Session, data, playerWs) {
     if (Object.hasOwn(data, 'msgType')) { //check if object has required minimun property
         if (typeof data.msgContent === 'string' && !playerWs.hasPlayedThisTurn) { //check if property  */
+            console.log(Session.game)
             if (playerWs.aID + Session.currentTurn < Session.activeSockets.length) {
                 /*            console.log('if')
                               console.log(typeof playerWs.aID);
