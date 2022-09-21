@@ -22,7 +22,7 @@ export function Home() {
   const [timer, setTimer] = useState<any>(30);
   let trueTime = 30;
   let timerId = 0;
-  function timerFn(){
+  function timerFn() {
     console.log("timerFn called");
     setTimer(trueTime);
     if (trueTime === 0) {
@@ -43,6 +43,9 @@ export function Home() {
     if (!Object.hasOwn(data, 'msgType')) {
       return;
     }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     if (data.msgType === 'playerUpdate') {
       if (data.msgContent.updateType === 'in') {
         setPlayers(prevPlayers => [...prevPlayers, { nick: data.msgContent.nick, photo: "" }]);
@@ -64,10 +67,16 @@ export function Home() {
         return { nick: el, photo: "" }
       })
       setPlayers(activePlayers);
-    } else if (data.msgType === 'chatUpdate') {
-      setChatMessages(prevMessage => [...prevMessage, { user: data.msgContent.nick, msg: data.msgContent.msgContent }])
-    } 
+    }
     
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////   
+    
+    else if (data.msgType === 'chatUpdate') {
+      setChatMessages(prevMessage => [...prevMessage, { user: data.msgContent.nick, msg: data.msgContent.msgContent }])
+    }
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     else if (data.msgType === 'gameUpdate') {
       if (data.msgContent.msgContent === 'timerStart') {
         trueTime = 30;
@@ -78,6 +87,27 @@ export function Home() {
         setTimer(30);
       }
     }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    else if(data.msgType === 'gameUpdate') {
+      if(data.msgContent.update === 'gameStart') {
+        setScreen(2);
+      } else if(data.msgContent.update === 'roundChange') {
+        console.log("new round -->"+data.msgContent.newRound);
+      } else if(data.msgContent.update === 'gameEnd') {
+        console.log("game ended, final data below");
+        console.log(data.msgContent.finalData);
+      }
+
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  else if (data.msgType === 'devReport') {
+    console.log("WARNING, RECEIVED DEV REPORT FROM BACK-END, DATA BELOW: ");
+    console.log(data.msgContent);
+  }
   }, []);
 
   useEffect(() => {
@@ -173,38 +203,53 @@ export function Home() {
           <div className="border-8 border-select-brown rounded-md w-[30rem] bg-black/25 flex flex-col">
             <div className='h-full chatBox overflow-scroll overflow-x-hidden'>
               {
-                chatMessages.map( el => {
-                  if(el.user === nick) return <Chat className='bg black' user={el.user} msg={el.msg} />
+                chatMessages.map(el => {
+                  if (el.user === nick) return <Chat className='bg black' user={el.user} msg={el.msg} />
                   return <Chat user={el.user} msg={el.msg} />
                 })
               }
             </div>
             <div className=' inputs flex flex-row justify-center w-[30rem]'>
-              <Input 
-                className='w-[26rem] h-[2rem] normal-case' 
-                value={message} 
+              <Input
+                className='w-[26rem] h-[2rem] normal-case'
+                value={message}
                 onChange={(e) => setMessage(e.target.value)} />
-              <Button 
-                className='ml-1' 
-                icon={{ src: '/assets/icons/go.png', size: 22 }} 
-                onClick={ () => {
+              <Button
+                className='ml-1'
+                icon={{ src: '/assets/icons/go.png', size: 22 }}
+                onClick={() => {
                   socket.send(JSON.stringify({
-                      'msgType': 'chatNew',
-                      'msgContent': message
+                    'msgType': 'chatNew',
+                    'msgContent': message
                   }));
                   setMessage("")
-                }}  />
+                }} />
             </div>
           </div>
         </div>
         <div className="flex flex-row">
           <div className='flex flex-row justify-center items-center bg-white w-[7rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105 mr-10'>
-            <span className="defaultSpan"
-            >PRONTO</span>
+            <span
+              className="defaultSpan"
+              onClick={() => {
+                socket.send(JSON.stringify({
+                  'msgType': 'participationStatus',
+                  'msgContent': true
+                }));
+                setMessage("")
+              }}
+            >QUERO JOGAR!</span>
           </div>
           <div className='flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'>
             <span className="defaultSpan"
-            >INICIAR JOGO</span>
+            onClick={() => {
+              socket.send(JSON.stringify({
+                'msgType': 'participationStatus',
+                'msgContent': false
+              }));
+              setMessage("")
+            }}
+            >SÓ CHAT!</span>
             <Button
               className='ml-[0.5rem]'
               icon={{ src: '/assets/icons/go.png', size: 22 }} />
