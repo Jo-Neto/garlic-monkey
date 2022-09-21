@@ -6,11 +6,6 @@ import { Players } from '../Players/index';
 import { Player } from '../../components/Player';
 
 export function Home() {
-  interface Provider {
-    nick: string;
-    photo: string;
-  }
-
   const [players, setPlayers] = useState<{nick: string, photo: string}[]>([]);
 
   const [nick, setNick] = useState('');
@@ -21,12 +16,11 @@ export function Home() {
 
   const onMessage = useCallback((message: any) => {
     
-    console.log(players);
+    console.log("🚀 ~ file: index.tsx ~ line 10 ~ Home ~ players", players)
     const data = JSON.parse(message?.data);
     if (!Object.hasOwn(data, 'msgType')) {
       return;
     }
-    console.log(data);
     if ( data.msgType === 'playerUpdate') {
       if(  data.msgContent.updateType === 'in'  ){
         setPlayers(prevPlayers => [...prevPlayers, {nick: data.msgContent.nick, photo: ""}]);
@@ -38,13 +32,17 @@ export function Home() {
       }
     } else if ( data.msgType === 'playerRow' ) {
       console.log(data.msgContent);
-      const activePlayers = data.msgContent.activeNick.filter( el => { 
+
+      let activePlayers = data.msgContent.activeNick.filter( el => { 
         console.log(el)
         if (el !== null) return el
       });
-      console.log("🚀 ~ file: index.tsx ~ line 35 ~ onMessage ~ activePlayers", activePlayers);
+
+      activePlayers = activePlayers.map(el => {
+        return {nick: el, photo: ""}
+      })
       
-      setPlayers(prevPlayers => [...prevPlayers, activePlayers]);
+      setPlayers(activePlayers);
     }
   }, []);
 
