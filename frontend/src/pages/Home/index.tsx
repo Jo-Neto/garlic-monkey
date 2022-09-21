@@ -17,11 +17,11 @@ export function Home() {
   const [message, setMessage] = useState('');
   const [screen, setScreen] = useState(0);
   const [socket, setSocket] = useState<WebSocket>();
+  const [messageSet, setChat] = useState<any>([]);
 
 
   const onMessage = useCallback((message: any) => {
     
-    console.log("🚀 ~ file: index.tsx ~ line 10 ~ Home ~ players", players)
     const data = JSON.parse(message?.data);
     console.log("🚀 ~ file: index.tsx ~ line 27 ~ onMessage ~ data", data)
     if (!Object.hasOwn(data, 'msgType')) {
@@ -30,17 +30,17 @@ export function Home() {
     if ( data.msgType === 'playerUpdate') {
       if(  data.msgContent.updateType === 'in'  ){
         setPlayers(prevPlayers => [...prevPlayers, {nick: data.msgContent.nick, photo: ""}]);
-        console.log(players);
+        //console.log(players);
       }
       if( data.msgContent.updateType === 'out' ){
         setPlayers(prevPlayers => prevPlayers.filter( el => { if(el.nick !== data.msgContent.nick) return el }));
-        console.log(players);
+        //console.log(players);
       }
     } else if ( data.msgType === 'playerRow' ) {
-      console.log(data.msgContent);
+      //console.log(data.msgContent);
 
       let activePlayers = data.msgContent.activeNick.filter( el => { 
-        console.log(el)
+        //console.log(el)
         if (el !== null) return el
       });
 
@@ -49,7 +49,7 @@ export function Home() {
       })
       
       setPlayers(activePlayers);
-    } else if ( data.msgType === 'chatNew' ) {
+    } else if ( data.msgType === 'chatUpdate' ) {
       setChatMessages(prevMessage => [...prevMessage, {user: data.msgContent.nick, msg: data.msgContent.msgContent}])
     }
   }, []);
@@ -117,7 +117,12 @@ export function Home() {
         <div className='flex flex-row justify-between align-middle items-center  w-[90%]'>
           <div className='flex flex-row justify-center items-center bg-white w-[7rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'>
             <Button 
-              onClick={()=>{console.log(socket.send('kkkkkkkkkkkkkkkkkkkkkkkkkk'))}}
+              onClick={()=>{
+                socket.send(JSON.stringify({
+                  'msgType': 'chatNew',
+                  'msgContent': 'hahahahahaahaha'
+                }));
+              }}
               className='mr-[0.5rem]' 
               icon={{ src: '/assets/icons/goFlip.png', size: 22 }}/>
             <span className="defaultSpan"
@@ -160,7 +165,7 @@ export function Home() {
               onClick={ () => {
                 socket.send(JSON.stringify({
                     'msgType': 'chatNew',
-                    'msgContent': 'hahahahahaahaha'
+                    'msgContent': message
                 }));
               }}
               icon={{ src: '/assets/icons/go.png', size: 22 }} />
