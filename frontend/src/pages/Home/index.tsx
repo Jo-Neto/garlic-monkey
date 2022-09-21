@@ -10,21 +10,19 @@ import { Player } from '../../components/Player';
 export function Home() {
   const [players, setPlayers] = useState<{nick: string, photo: string}[]>([]);
 
-  const chatMessages = [
-    {user: "Gustavo", msg: "Lorem sahuhsuahsuhaushauhsusahushuah ssasgyagsyagsgaysgysagsy sausguagsyags adsdy"}
-  ]
 
   const [nick, setNick] = useState('');
   const [room, setRoom] = useState('');
+  const [message, setMessage] = useState('');
+  const [chatMessages, setChatMessages] = useState<{user: string, msg: string}[]>([]);
   const [screen, setScreen] = useState(0);
   const [socket, setSocket] = useState<WebSocket>();
-  const [messageSet, setChat] = useState<any>([]);
 
 
   const onMessage = useCallback((message: any) => {
     
     const data = JSON.parse(message?.data);
-    console.log(data);
+    console.log("🚀 ~ file: index.tsx ~ line 27 ~ onMessage ~ data", data)
     if (!Object.hasOwn(data, 'msgType')) {
       return;
     }
@@ -51,9 +49,7 @@ export function Home() {
       
       setPlayers(activePlayers);
     } else if ( data.msgType === 'chatUpdate' ) {
-      chatMessages.push({user: data.msgContent.nick, msg: data.msgContent.msgContent});
-      setChat(chatMessages);
-      console.log(chatMessages);
+      setChatMessages(prevMessage => [...prevMessage, {user: data.msgContent.nick, msg: data.msgContent.msgContent}])
     }
   }, []);
 
@@ -158,11 +154,20 @@ export function Home() {
           <div className="border-8 border-select-brown rounded-md w-[30rem] bg-black/25">
             <div className='chatBox'>
               { 
-                messageSet.map( el => {
+                chatMessages.map( el => {
                   return <Chat user={el.user} msg={el.msg} />
                 })
               }
             </div>
+            <Input className='ml-[2.2rem]' value={message} onChange={(e) => setMessage(e.target.value)} />
+            <Button 
+              onClick={ () => {
+                socket.send(JSON.stringify({
+                    'msgType': 'chatNew',
+                    'msgContent': message
+                }));
+              }}
+              icon={{ src: '/assets/icons/go.png', size: 22 }} />
           </div>
         </div>
         <div className="flex flex-row">
