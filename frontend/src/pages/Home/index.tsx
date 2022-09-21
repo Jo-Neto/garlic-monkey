@@ -10,14 +10,13 @@ import { Player } from '../../components/Player';
 export function Home() {
   const [players, setPlayers] = useState<{nick: string, photo: string}[]>([]);
 
-  const [chatMessages, setChatMessages] = useState<{user: string, msg: string}[]>([]);
 
   const [nick, setNick] = useState('');
   const [room, setRoom] = useState('');
   const [message, setMessage] = useState('');
+  const [chatMessages, setChatMessages] = useState<{user: string, msg: string}[]>([]);
   const [screen, setScreen] = useState(0);
   const [socket, setSocket] = useState<WebSocket>();
-  const [messageSet, setChat] = useState<any>([]);
 
 
   const onMessage = useCallback((message: any) => {
