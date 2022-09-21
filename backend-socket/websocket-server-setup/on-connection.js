@@ -100,7 +100,7 @@ module.exports = function onConnection(ws, req) {
         });
         ws.sID = matchedIndex; //assign session ID for socket
     }
-    if (!newRoom && ws.readyState === 1) {
+    if (newRoom && ws.readyState === 1) {
         ws.send(JSON.stringify({
             msgType: 'playerRow',
             msgContent: { activeNick: allActivePlayersName, waitingNick: allWaitingPlayersName }
