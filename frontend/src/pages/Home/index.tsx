@@ -6,7 +6,12 @@ import { Players } from '../Players/index';
 import { Player } from '../../components/Player';
 
 export function Home() {
-  const [players, setPlayers] = useState<{ nick: string, photo: string }[]>([])
+  interface Provider {
+    nick: string;
+    photo: string;
+  }
+
+  const [players, setPlayers] = useState<{nick: string, photo: string}[]>([]);
 
   const [nick, setNick] = useState('');
   const [room, setRoom] = useState('');
@@ -15,6 +20,8 @@ export function Home() {
 
 
   const onMessage = useCallback((message: any) => {
+    
+    console.log(players);
     const data = JSON.parse(message?.data);
     if (!Object.hasOwn(data, 'msgType')) {
       return;
@@ -22,15 +29,22 @@ export function Home() {
     console.log(data);
     if ( data.msgType === 'playerUpdate') {
       if(  data.msgContent.updateType === 'in'  ){
-        setPlayers(players => [...players, {nick: data.msgContent.nick, photo: ""}])
+        setPlayers(prevPlayers => [...prevPlayers, {nick: data.msgContent.nick, photo: ""}]);
         console.log(players);
       }
       if( data.msgContent.updateType === 'out' ){
-        setPlayers(players.filter( el => { if(el.nick !== data.msgContent.nick)  return el }))
+        setPlayers(prevPlayers => prevPlayers.filter( el => { if(el.nick !== data.msgContent.nick) return el }));
         console.log(players);
       }
     } else if ( data.msgType === 'playerRow' ) {
-      setPlayers(players => [...data.msgContent.activeNick])
+      console.log(data.msgContent);
+      const activePlayers = data.msgContent.activeNick.filter( el => { 
+        console.log(el)
+        if (el !== null) return el
+      });
+      console.log("🚀 ~ file: index.tsx ~ line 35 ~ onMessage ~ activePlayers", activePlayers);
+      
+      setPlayers(prevPlayers => [...prevPlayers, activePlayers]);
     }
   }, []);
 
