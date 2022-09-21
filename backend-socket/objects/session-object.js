@@ -90,7 +90,7 @@ module.exports = class SessionObject {
             }
             this.currentTurn++;
             this.activeSockets.forEach(ws => { if (ws !== null) { ws.hasPlayedThisTurn = false; } });
-            this.activateTimer(5000);
+            this.activateTimer(30000);
         }, time);
     }
     saveOnDb(){

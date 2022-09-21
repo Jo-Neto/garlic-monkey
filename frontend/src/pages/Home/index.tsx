@@ -8,48 +8,74 @@ import { PlayerIcon } from '../../components/PlayerIcon';
 import { Player } from '../../components/Player';
 
 export function Home() {
-  const [players, setPlayers] = useState<{nick: string, photo: string}[]>([]);
+  const [players, setPlayers] = useState<{ nick: string, photo: string }[]>([]);
 
 
   const [nick, setNick] = useState('');
   const [room, setRoom] = useState('');
   const [message, setMessage] = useState('');
-  const [chatMessages, setChatMessages] = useState<{user: string, msg: string}[]>([]);
+  const [chatMessages, setChatMessages] = useState<{ user: string, msg: string }[]>([]);
   const [screen, setScreen] = useState(0);
   const [socket, setSocket] = useState<WebSocket>();
 
+  const [timer, setTimer] = useState<any>(30);
+  let trueTime = 30;
+  let timerId = 0;
+  function timerFn(){
+    console.log("timerFn called");
+    setTimer(trueTime);
+    if (trueTime === 0) {
+      console.log(timerId);
+      clearInterval(timerId)
+      setTimer(0);
+    } else {
+      setTimer(trueTime);
+      trueTime--;
+    }
+  }
 
   const onMessage = useCallback((message: any) => {
-    
+
     const data = JSON.parse(message?.data);
-    console.log("🚀 ~ file: index.tsx ~ line 27 ~ onMessage ~ data", data)
+    console.log(data);
+
     if (!Object.hasOwn(data, 'msgType')) {
       return;
     }
-    if ( data.msgType === 'playerUpdate') {
-      if(  data.msgContent.updateType === 'in'  ){
-        setPlayers(prevPlayers => [...prevPlayers, {nick: data.msgContent.nick, photo: ""}]);
+    if (data.msgType === 'playerUpdate') {
+      if (data.msgContent.updateType === 'in') {
+        setPlayers(prevPlayers => [...prevPlayers, { nick: data.msgContent.nick, photo: "" }]);
         //console.log(players);
       }
-      if( data.msgContent.updateType === 'out' ){
-        setPlayers(prevPlayers => prevPlayers.filter( el => { if(el.nick !== data.msgContent.nick) return el }));
+      if (data.msgContent.updateType === 'out') {
+        setPlayers(prevPlayers => prevPlayers.filter(el => { if (el.nick !== data.msgContent.nick) return el }));
         //console.log(players);
       }
-    } else if ( data.msgType === 'playerRow' ) {
+    } else if (data.msgType === 'playerRow') {
       //console.log(data.msgContent);
 
-      let activePlayers = data.msgContent.activeNick.filter( el => { 
+      let activePlayers = data.msgContent.activeNick.filter(function (el: any) {
         //console.log(el)
         if (el !== null) return el
       });
 
-      activePlayers = activePlayers.map(el => {
-        return {nick: el, photo: ""}
+      activePlayers = activePlayers.map(function (el: any) {
+        return { nick: el, photo: "" }
       })
-      
       setPlayers(activePlayers);
-    } else if ( data.msgType === 'chatUpdate' ) {
-      setChatMessages(prevMessage => [...prevMessage, {user: data.msgContent.nick, msg: data.msgContent.msgContent}])
+    } else if (data.msgType === 'chatUpdate') {
+      setChatMessages(prevMessage => [...prevMessage, { user: data.msgContent.nick, msg: data.msgContent.msgContent }])
+    } 
+    
+    else if (data.msgType === 'gameUpdate') {
+      if (data.msgContent.msgContent === 'timerStart') {
+        timerId = setInterval(timerFn, 1000);
+      } else if (data.msgContent.msgContent === 'timerStop') {
+        console.log(timerId);
+        clearInterval(timerId)
+        setTimer(30);
+      }
+
     }
   }, []);
 
@@ -114,19 +140,6 @@ export function Home() {
     return (
       <GamePage className='flex  justify-between'>
         <div className='flex flex-row justify-between align-middle items-center  w-[90%]'>
-          <div className='flex flex-row justify-center items-center bg-white w-[7rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'>
-            <Button 
-              onClick={()=>{
-                socket.send(JSON.stringify({
-                  'msgType': 'chatNew',
-                  'msgContent': 'hahahahahaahaha'
-                }));
-              }}
-              className='mr-[0.5rem]' 
-              icon={{ src: '/assets/icons/goFlip.png', size: 22 }}/>
-            <span className="defaultSpan"
-            >VOLTAR</span> 
-          </div>
           <img
             className="top-5"
             src="/assets/images/logo.png"
@@ -138,11 +151,16 @@ export function Home() {
             <span className="defaultSpan uppercase"
             >Codigo de sala</span>
             <span className="defaultSpan uppercase"
-            >6565</span>
+            >{room}</span>
+          </div>
+          <div
+            className="text-[80px] bold"
+          >
+            {timer}
           </div>
         </div>
         <div className="flex flex-row h-[20rem] w-[45rem] justify-between">
-          <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-black/50 rounded-l-[1rem]">   
+          <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-black/50 rounded-l-[1rem]">
             <div className="flex flex-col items-center">
               <span className="defaultSpan uppercase mt-[0.5rem]"
               >JOGADORES 1</span>
@@ -153,18 +171,18 @@ export function Home() {
           </div>
           <div className="border-8 border-select-brown rounded-md w-[30rem] bg-black/25">
             <div className='chatBox'>
-              { 
-                chatMessages.map( el => {
+              {
+                chatMessages.map(el => {
                   return <Chat user={el.user} msg={el.msg} />
                 })
               }
             </div>
             <Input className='ml-[2.2rem]' value={message} onChange={(e) => setMessage(e.target.value)} />
-            <Button 
-              onClick={ () => {
+            <Button
+              onClick={() => {
                 socket.send(JSON.stringify({
-                    'msgType': 'chatNew',
-                    'msgContent': message
+                  'msgType': 'chatNew',
+                  'msgContent': message
                 }));
               }}
               icon={{ src: '/assets/icons/go.png', size: 22 }} />
@@ -173,14 +191,14 @@ export function Home() {
         <div className="flex flex-row">
           <div className='flex flex-row justify-center items-center bg-white w-[7rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105 mr-10'>
             <span className="defaultSpan"
-            >PRONTO</span> 
+            >PRONTO</span>
           </div>
           <div className='flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'>
             <span className="defaultSpan"
-            >INICIAR JOGO</span> 
-            <Button 
-              className='ml-[0.5rem]' 
-              icon={{ src: '/assets/icons/go.png', size: 22 }}/>
+            >INICIAR JOGO</span>
+            <Button
+              className='ml-[0.5rem]'
+              icon={{ src: '/assets/icons/go.png', size: 22 }} />
           </div>
         </div>
       </GamePage>
