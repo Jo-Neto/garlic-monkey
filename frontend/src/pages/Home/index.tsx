@@ -3,10 +3,15 @@ import { Button } from '../../components/Form/Button';
 import { Input } from '../../components/Form/Input';
 import { GamePage } from '../../layout/GamePage';
 import { Players } from '../Players/index';
-import { Player } from '../../components/Player';
+import { Chat } from '../../components/Chat';
+import { PlayerIcon } from '../../components/PlayerIcon';
 
 export function Home() {
   const [players, setPlayers] = useState<{ nick: string, photo: string }[]>([])
+
+  const chatMessages = [
+    {user: "Gustavo", msg: "Lorem sahuhsuahsuhaushauhsusahushuah ssasgyagsyagsgaysgysagsy sausguagsyags adsdy"}
+  ]
 
   const [nick, setNick] = useState('');
   const [room, setRoom] = useState('');
@@ -95,6 +100,14 @@ export function Home() {
     return (
       <GamePage className='flex  justify-between'>
         <div className='flex flex-row justify-between align-middle items-center  w-[90%]'>
+          <div className='flex flex-row justify-center items-center bg-white w-[7rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'>
+            <Button 
+              onClick={()=>{console.log(socket.send('kkkkkkkkkkkkkkkkkkkkkkkkkk'))}}
+              className='mr-[0.5rem]' 
+              icon={{ src: '/assets/icons/goFlip.png', size: 22 }}/>
+            <span className="defaultSpan"
+            >VOLTAR</span> 
+          </div>
           <img
             className="top-5"
             src="/assets/images/logo.png"
@@ -110,7 +123,7 @@ export function Home() {
           </div>
         </div>
         <div className="flex flex-row h-[20rem] w-[45rem] justify-between">
-          <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-black/50 rounded-l-[1rem]">
+          <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-black/50 rounded-l-[1rem]">   
             <div className="flex flex-col items-center">
               <span className="defaultSpan uppercase mt-[0.5rem]"
               >JOGADORES 1</span>
@@ -119,34 +132,30 @@ export function Home() {
               </div>
             </div>
           </div>
-          <div className="border-8 border-select-brown rounded-md w-[30rem]">
-            chat
+          <div className="border-8 border-select-brown rounded-md w-[30rem] bg-black/25">
+            <div className='chatBox'>
+              { 
+                chatMessages.map( el => {
+                  return <Chat user={el.user} msg={el.msg} />
+                })
+              }
+            </div>
           </div>
         </div>
         <div className="flex flex-row">
-          <div className='flex flex-row justify-center items-center bg-white w-[7rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105 mr-10'
-            onClick={() => {
-              socket.send(JSON.stringify({
-                'msgType': 'participationStatus',
-                'msgContent': true
-              }));
-            }}
-          >
+          <div className='flex flex-row justify-center items-center bg-white w-[7rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105 mr-10'>
             <span className="defaultSpan"
-            >JOGAR!</span>
+            >PRONTO</span> 
           </div>
-          <div className='flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'
-            onClick={() => {
-              socket.send(JSON.stringify({
-                'msgType': 'participationStatus',
-                'msgContent': false
-              }));
-            }}
-          >
+          <div className='flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'>
             <span className="defaultSpan"
-            >SÓ CHAT!</span>
+            >INICIAR JOGO</span> 
+            <Button 
+              className='ml-[0.5rem]' 
+              icon={{ src: '/assets/icons/go.png', size: 22 }}/>
           </div>
         </div>
-      </GamePage>)
+      </GamePage>
+    )
   }
 }

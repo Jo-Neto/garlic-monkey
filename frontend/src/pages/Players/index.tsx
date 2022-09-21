@@ -1,9 +1,14 @@
 import { Button } from '../../components/Form/Button';
 import { PlayerIcon } from '../../components/PlayerIcon';
+import { Chat } from '../../components/Chat';
 import { GamePage } from '../../layout/GamePage';
 
 const players:  { nick: string, photo: string }[] = [
   {nick: "Teste",photo: ""}
+]
+
+const chatMessages = [
+  {user: "Gustavo", msg: "Lorem sahuhsuahsuhaushauhsusahushuah ssasgyagsyagsgaysgysagsy sausguagsyags adsdy"}
 ]
 
 export function Players(socket: WebSocket) {
@@ -46,8 +51,14 @@ export function Players(socket: WebSocket) {
             </div>  
           </div>
         </div>
-        <div className="border-8 border-select-brown rounded-md w-[30rem]">
-          chat
+        <div className="border-8 border-select-brown rounded-md w-[30rem] bg-black/25">
+          <div className='chatBox'>
+            { 
+              chatMessages.map( el => {
+                return <Chat user={el.user} msg={el.msg} />
+              })
+            }
+          </div>
         </div>
       </div>
       <div className="flex flex-row">
