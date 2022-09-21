@@ -79,6 +79,26 @@ module.exports = class SessionObject {
                                 msgContent: { update: 'gameEnd', finalData: this.game }
                             }));
                         }
+                        if (Session.currentTurn > 0) {
+                            if (playerWs.aID + Session.currentTurn < Session.activeSockets.length) {
+                                /*            console.log('if')
+                                              console.log(typeof playerWs.aID);
+                                              console.log(typeof Session.currentTurn);
+                                              console.log(playerWs.aID + Session.currentTurn);
+                                              console.log('index 2 ='+ Session.currentTurn); */
+                                Session.game[Number(playerWs.aID + Session.currentTurn)][Number(Session.currentTurn)] = data.msgContent;
+                            }
+                            else {
+                                /*          console.log('else')
+                                            console.log(typeof playerWs.aID);
+                                            console.log(typeof Session.currentTurn);
+                                            console.log(typeof Session.activeSockets.length);
+                                            console.log(playerWs.aID + Session.currentTurn - Session.activeSockets.length);
+                                            console.log(typeof (playerWs.aID + Session.currentTurn - Session.activeSockets.length));
+                                            console.log('index 2 ='+ Session.currentTurn); */
+                                Session.game[Number(playerWs.aID + Session.currentTurn - Session.activeSockets.length)][Number(Session.currentTurn)] = data.msgContent;
+                            }
+                        }
                     });
 
                     this.saveOnDB(false);
@@ -87,6 +107,29 @@ module.exports = class SessionObject {
                     this.chat = [];
                     return;
                 }
+
+                Session.activeSockets.forEach((webs)=>{
+                    if (Session.currentTurn > 0) {
+                        if (webs.aID + Session.currentTurn < Session.activeSockets.length) {
+                            /*            console.log('if')
+                                          console.log(typeof webs.aID);
+                                          console.log(typeof Session.currentTurn);
+                                          console.log(webs.aID + Session.currentTurn);
+                                          console.log('index 2 ='+ Session.currentTurn); */
+                            webs.send[Number(webs.aID + Session.currentTurn)][Number(Session.currentTurn - 1)];
+                        }
+                        else {
+                            /*          console.log('else')
+                                        console.log(typeof webs.aID);
+                                        console.log(typeof Session.currentTurn);
+                                        console.log(typeof Session.activeSockets.length);
+                                        console.log(webs.aID + Session.currentTurn - Session.activeSockets.length);
+                                        console.log(typeof (webs.aID + Session.currentTurn - Session.activeSockets.length));
+                                        console.log('index 2 ='+ Session.currentTurn); */
+                            webs.send[Number(webs.aID + Session.currentTurn - Session.activeSockets.length)][Number(Session.currentTurn - 1)];
+                        }
+                    }
+                });
             }
             this.currentTurn++;
             this.activeSockets.forEach(ws => { if (ws !== null) { ws.hasPlayedThisTurn = false; } });
