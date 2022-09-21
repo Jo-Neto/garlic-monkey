@@ -8,7 +8,7 @@ module.exports = function mainLogic(Session, data, playerWs) {
                               console.log(playerWs.aID + Session.currentTurn);
                               console.log('index 2 ='+ Session.currentTurn); */
                 let obj = {};
-                if (Session.currentTurn % 2 === 0)
+                if (Session.currentTurn % 2 !== 0)
                     obj = {
                         type: 'image',
                         data: data.msgContent
@@ -29,7 +29,7 @@ module.exports = function mainLogic(Session, data, playerWs) {
                             console.log(typeof (playerWs.aID + Session.currentTurn - Session.activeSockets.length));
                             console.log('index 2 ='+ Session.currentTurn); */
                 let obj = {};
-                if (Session.currentTurn % 2 === 0)
+                if (Session.currentTurn % 2 !== 0)
                     obj = {
                         type: 'image',
                         data: data.msgContent
