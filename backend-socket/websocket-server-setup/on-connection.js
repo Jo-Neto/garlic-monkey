@@ -67,6 +67,21 @@ module.exports = function onConnection(ws, req) {
                 ws.aID = replaceableSocketIndex;
             }
             shouldStartGame(activeSessionsArr[matchedIndex]);
+            let allActivePlayersName = activeSessionsArr[matchedIndex].activeSockets.map( webs => { 
+                if(webs !== null) 
+                    return webs.garlicName; 
+            });
+
+            let allWaitingPlayersName = activeSessionsArr[matchedIndex].waitingSockets.map( webs => { 
+                console.log("waiting array"+activeSessionsArr[matchedIndex].waitingSockets);
+                if(webs !== null) 
+                    return webs.garlicName; 
+            });
+            if (ws.readyState === 1)
+                ws.send(JSON.stringify({
+                    msgType: 'playerRow',
+                    msgContent: { activeNick: allActivePlayersName, waitingNick: allWaitingPlayersName }
+                }));
             activeSessionsArr[matchedIndex].activeSockets.forEach(webs => { //send new msg to all players in session
                 if (webs !== null && webs.readyState === 1) {
                     webs.send(JSON.stringify({
@@ -83,21 +98,6 @@ module.exports = function onConnection(ws, req) {
                     }));
                 }
             });
-            let allActivePlayersName = activeSessionsArr[matchedIndex].activeSockets.map( webs => { 
-                if(webs !== null) 
-                    return webs.garlicName; 
-            });
-
-            let allWaitingPlayersName = activeSessionsArr[matchedIndex].waitingSockets.map( webs => { 
-                console.log("waiting array"+activeSessionsArr[matchedIndex].waitingSockets);
-                if(webs !== null) 
-                    return webs.garlicName; 
-            });
-            if (ws.readyState === 1)
-                ws.send(JSON.stringify({
-                    msgType: 'playerRow',
-                    msgContent: { activeNick: allActivePlayersName, waitingNick: allWaitingPlayersName }
-                }));
         }
         ws.sID = matchedIndex; //assign session ID for socket
     }
