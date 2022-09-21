@@ -17,6 +17,7 @@ export function Home() {
   const [chatMessages, setChatMessages] = useState<{ user: string, msg: string }[]>([]);
   const [screen, setScreen] = useState(0);
   const [socket, setSocket] = useState<WebSocket>();
+  const [chat, setChat] = useState<Node>();
 
   const [timer, setTimer] = useState<any>(30);
   let trueTime = 30;
@@ -69,13 +70,13 @@ export function Home() {
     
     else if (data.msgType === 'gameUpdate') {
       if (data.msgContent.msgContent === 'timerStart') {
+        trueTime = 30;
         timerId = setInterval(timerFn, 1000);
       } else if (data.msgContent.msgContent === 'timerStop') {
         console.log(timerId);
         clearInterval(timerId)
         setTimer(30);
       }
-
     }
   }, []);
 
@@ -171,7 +172,7 @@ export function Home() {
           </div>
           <div className="border-8 border-select-brown rounded-md w-[30rem] bg-black/25 flex flex-col">
             <div className='h-full chatBox overflow-scroll overflow-x-hidden'>
-              { 
+              {
                 chatMessages.map( el => {
                   if(el.user === nick) return <Chat className='bg black' user={el.user} msg={el.msg} />
                   return <Chat user={el.user} msg={el.msg} />
