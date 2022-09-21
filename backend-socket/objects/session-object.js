@@ -52,7 +52,7 @@ module.exports = class SessionObject {
                     if (ws !== null && ws.readyState === 1) {
                         ws.send(JSON.stringify({
                             msgType: 'gameUpdate',
-                            msgContent: { update: 'round' + this.currentTurn }
+                            msgContent: { update: 'roundChange', newRound: this.currentTurn }
                         }));
                     }
                 });
@@ -61,7 +61,7 @@ module.exports = class SessionObject {
                     if (ws !== null && ws.readyState === 1) {
                         ws.send(JSON.stringify({
                             msgType: 'gameUpdate',
-                            msgContent: { update: 'round' + this.currentTurn }
+                            msgContent: { update: 'roundChange', newRound: this.currentTurn }
                         }));
                     }
                 });
@@ -117,8 +117,7 @@ module.exports = class SessionObject {
                                           console.log(webs.aID + Session.currentTurn);
                                           console.log('index 2 ='+ Session.currentTurn); */
                             webs.send[Number(webs.aID + Session.currentTurn)][Number(Session.currentTurn - 1)];
-                        }
-                        else {
+                        } else {
                             /*          console.log('else')
                                         console.log(typeof webs.aID);
                                         console.log(typeof Session.currentTurn);
