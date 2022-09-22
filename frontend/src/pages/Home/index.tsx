@@ -9,8 +9,6 @@ import { Player } from '../../components/Player';
 
 export function Home() {
   const [players, setPlayers] = useState<{ nick: string, photo: string }[]>([]);
-
-
   const [nick, setNick] = useState('');
   const [room, setRoom] = useState('');
   const [message, setMessage] = useState('');
@@ -107,11 +105,11 @@ export function Home() {
             <div className="flex flex-col items-center w-[30rem] h-fit gap-5 rounded-[0.625rem]">
               <span className='defaultSpan'
               >ESCOLHA UM NICKNAME</span>
-              <Input value={nick} onChange={(e) => setNick(e.target.value)} />
+              <Input className='normal-case' value={nick} onChange={(e) => setNick(e.target.value)} />
               <span className='defaultSpan'
               >ESCREVA O CODIGO DA SALA OU CRIE A SUA</span>
               <div className="flex flex-row">
-                <Input className='ml-[2.2rem]' value={room} onChange={(e) => setRoom(e.target.value)} />
+                <Input value={room} onChange={(e) => setRoom(e.target.value)} />
               </div>
               <div className='flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'>
                 <Button
@@ -127,7 +125,7 @@ export function Home() {
             </div>
             <div className="flex flex-col items-center"></div>
           </div>
-          <div className='text-center flex flex-col items-center w-[15rem] border-solid border-2 border-black/[0.75] rounded-[0.25rem] p-[1.5rem]'>
+          <div className='text-center flex flex-col  bg-gradient-to-r from-white/[12%] to-white/25 items-center w-[15rem] border-solid border-2 border-white/[0.50] rounded-1 p-[1.5rem]'>
             <p className="defaultSpan mb-[1rem] uppercase"
             >Como Jogar</p>
             <span className='text-[0.75rem]'
@@ -139,7 +137,7 @@ export function Home() {
     );
   } else if (screen === 1) {
     return (
-      <GamePage className='flex  justify-between'>
+      <GamePage className='flex justify-between'>
         <div className='flex flex-row justify-between align-middle items-center  w-[90%]'>
           <img
             className="top-5"
@@ -161,27 +159,27 @@ export function Home() {
           </div>
         </div>
         <div className="flex flex-row h-[20rem] w-[45rem] justify-between">
-          <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-black/50 rounded-l-[1rem]">
+          <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-gradient-to-b from-black/25 to-black/50 rounded-l-[1rem]">
             <div className="flex flex-col items-center">
-              <span className="defaultSpan uppercase mt-[0.5rem]"
+              <span className="defaultSpan uppercase mt-[1rem]"
               >JOGADORES 1</span>
               <div className='flex flex-col gap-2 mt-[1rem]'>
                 <Player players={players}></Player>
               </div>
             </div>
           </div>
-          <div className="border-8 border-select-brown rounded-md w-[30rem] bg-black/25 flex flex-col">
+          <div className="border-solid border-2 p-2 border-white/[0.75] rounded-r-md w-[30rem] bg-gradient-to-r from-black/[12%] to-black/25 flex flex-col">
             <div className='h-full chatBox overflow-scroll overflow-x-hidden'>
               {
                 chatMessages.map( el => {
-                  if(el.user === nick) return <Chat className='bg black' user={el.user} msg={el.msg} />
-                  return <Chat user={el.user} msg={el.msg} />
+                  if(el.user === nick) return <Chat chatUser={true} user={el.user} msg={el.msg} />
+                  return <Chat chatUser={false} user={el.user} msg={el.msg} />
                 })
               }
             </div>
-            <div className=' inputs flex flex-row justify-center w-[30rem]'>
+            <div className=' inputs flex flex-row ml-2 w-[30rem]'>
               <Input 
-                className='w-[26rem] h-[2rem] normal-case' 
+                className='w-[27rem] h-[2rem] normal-case' 
                 value={message} 
                 onChange={(e) => setMessage(e.target.value)} />
               <Button 

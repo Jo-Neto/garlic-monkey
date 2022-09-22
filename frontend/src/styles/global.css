@@ -120,3 +120,25 @@ input[type=range]:focus::-ms-fill-lower {
 input[type=range]:focus::-ms-fill-upper {
   background: #7C4505;
 }
+
+::-webkit-scrollbar {
+  width: 13px;
+  height: 13px;
+}
+::-webkit-scrollbar-button {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-thumb {
+  background: #ffffff;
+  border: 0px none #ffffff;
+  border-radius: 10px;
+}
+::-webkit-scrollbar-track {
+  background: hsla(0, 0%, 100%, 0.25);
+  border: 0px none #ffffff;
+  border-radius: 45px;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}

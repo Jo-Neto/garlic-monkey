@@ -17,7 +17,7 @@ export function GamePage({ children, className }: GamePageProps) {
       <div
         className={twMerge(
           'flex flex-col items-center justify-center w-[80%] h-[90%] p-[1rem]',
-          'shadow-md shadow-gray-600 rounded-[3.125rem] border-solid border-2 border-white/[0.3] backdrop-blur-sm bg-white/[0.03]',
+          'shadow-md shadow-gray-600 rounded-[3.125rem] border-solid border-2 border-white/[0.3] backdrop-blur-sm  bg-gradient-to-b from-white/[12%] to-white/25',
           className,
         )}
       >
