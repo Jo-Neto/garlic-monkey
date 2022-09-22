@@ -1,5 +1,5 @@
 const shuffler = require('./library/fisher-yates-algo.js');
-const fetch = require('node-fetch');
+const fetch = import('node-fetch');
 
 module.exports = class SessionObject {
     constructor(creatorWs, sessionName) {
