@@ -19,6 +19,8 @@ module.exports = class SessionObject {
             this.timerActive = false;
             if (this.currentTurn === -1) {  //first round
 
+                console.log("first round logic");
+                
                 this.activeSockets = this.activeSockets.filter(ws => { return ws !== null });
                 this.activeSockets = shuffler(this.activeSockets);
                 this.activeSockets.forEach((ws, index) => { if (ws !== null) { ws.aID = index; } });
@@ -49,7 +51,7 @@ module.exports = class SessionObject {
 
             } else { //subsequent rounds
 
-                console.log("subsequent rounds");
+                console.log("subsequent rounds, round num: "+this.currentTurn);
 
                 this.activeSockets.forEach(ws => { //send new msg to all players in session
                     if (ws !== null && ws.readyState === 1) {
@@ -68,6 +70,32 @@ module.exports = class SessionObject {
                         }));
                     }
                 });
+                if (this.activeSockets.length !== this.currentTurn + 1) {
+                    console.log("sending round info");
+                    this.activeSockets.forEach((webs) => {
+                        if (webs !== null && webs.readyState === 1) {
+                            if (this.currentTurn >= 0) {
+                                if (webs.aID + this.currentTurn < this.activeSockets.length) {
+                                    webs.send(JSON.stringify({
+                                        msgType: 'gameUpdate',
+                                        msgContent: {
+                                            update: 'roundInfo',
+                                            data: this.game[Number(webs.aID + this.currentTurn)][Number(this.currentTurn)]
+                                        }
+                                    }));
+                                } else {
+                                    webs.send(JSON.stringify({
+                                        msgType: 'gameUpdate',
+                                        msgContent: {
+                                            update: 'roundInfo',
+                                            data: this.game[Number(webs.aID + this.currentTurn - this.activeSockets.length)][Number(this.currentTurn)]
+                                        }
+                                    }));
+                                }
+                            }
+                        }
+                    });
+                }
 
                 if (this.activeSockets.length === this.currentTurn + 1) { //match ended
 
@@ -92,41 +120,16 @@ module.exports = class SessionObject {
                     this.chat = [];
                 }
 
-                if (this.activeSockets.length !== this.currentTurn + 1) {
-                    console.log("sending round info");
-                    this.activeSockets.forEach((webs) => {
-                        if (webs !== null && webs.readyState === 1) {
-                            if (this.currentTurn > 0) {
-                                if (webs.aID + this.currentTurn < this.activeSockets.length) {
-                                    webs.send(JSON.stringify({
-                                        msgType: 'gameUpdate',
-                                        msgContent: {
-                                            update: 'roundInfo',
-                                            data: this.game[Number(webs.aID + this.currentTurn)][Number(this.currentTurn - 1)]
-                                        }
-                                    }));
-                                } else {
-                                    webs.send(JSON.stringify({
-                                        msgType: 'gameUpdate',
-                                        msgContent: {
-                                            update: 'roundInfo',
-                                            data: this.game[Number(webs.aID + this.currentTurn - this.activeSockets.length)][Number(this.currentTurn - 1)]
-                                        }
-                                    }));
-                                }
-                            }
-                        }
-                    });
-                }
             }
+
             console.log("ending subsequent round");
             this.currentTurn++;
             this.activeSockets.forEach(ws => { if (ws !== null) { ws.hasPlayedThisTurn = false; } });
-            console.log("ending subsequent round");
             if (!(this.activeSockets.length === this.currentTurn + 1)) { //if match has not finished
-                console.log("activating new timer")
+                console.log("activating new timer");
                 this.activateTimer(30000);
             }
+
         }, time);
     }
     saveOnDB(erase = false) {
