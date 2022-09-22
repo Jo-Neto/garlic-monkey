@@ -259,15 +259,15 @@ export function Home() {
         <div className="flex flex-colum items-center">
           <div className="flex flex-row">
             <div className="flex flex-col items-center w-[30rem] h-fit gap-5 rounded-[0.625rem]">
-              <span className="defaultSpan">ESCOLHA UM NICKNAME</span>
+              <span className="defaultSpan"
+                >ESCOLHA UM NICKNAME</span>
               <Input
                 className="normal-case"
                 value={nick}
                 onChange={(e) => setNick(e.target.value)}
               />
-              <span className="defaultSpan">
-                ESCREVA O CODIGO DA SALA OU CRIE A SUA
-              </span>
+              <span className="defaultSpan"
+                >ESCREVA O CODIGO DA SALA OU CRIE A SUA</span>
               <div className="flex flex-row">
                 <Input value={room} onChange={(e) => setRoom(e.target.value)} />
               </div>
@@ -281,19 +281,17 @@ export function Home() {
                   }}
                   icon={{ src: '/assets/icons/go.png', size: 22 }}
                 />
-                ENTRAR
+              <span
+                >ENTRAR</span> 
               </div>
             </div>
             <div className="flex flex-col items-center"></div>
           </div>
           <div className="text-center flex flex-col  bg-gradient-to-r from-white/[12%] to-white/25 items-center w-[15rem] border-solid border-2 border-white/[0.50] rounded-1 p-[1.5rem]">
-            <p className="defaultSpan mb-[1rem] uppercase">Como Jogar</p>
-            <span className="text-[0.75rem]">
-              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Mollitia
-              esse tempore dolorum quis voluptas. Eligendi repellendus
-              voluptatibus facilis doloremque maxime. Dolores quae vero dolor
-              quo nesciunt optio excepturi nemo doloremque?
-            </span>
+            <p className="defaultSpan mb-[1rem] uppercase"
+              >Como Jogar</p>
+            <span className="text-[0.75rem]"
+              >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Mollitia esse tempore dolorum quis voluptas. Eligendi repellendus voluptatibus facilis doloremque maxime. Dolores quae vero dolor quo nesciunt optio excepturi nemo doloremque?</span>
           </div>
         </div>
       </GamePage>
@@ -316,17 +314,19 @@ export function Home() {
             alt="Garlic Monkey logo"
           />
           <div className="flex flex-col text-center">
-            <span className="defaultSpan uppercase">Codigo de sala</span>
-            <span className="defaultSpan uppercase">{room}</span>
+            <span className="defaultSpan uppercase"
+              >Codigo de sala</span>
+            <span className="defaultSpan uppercase"
+              >{room}</span>
           </div>
-          <div className="text-[80px] bold">{timer}</div>
+          <div className="text-[80px] bold"
+            >{timer}</div>
         </div>
         <div className="flex flex-row h-[20rem] w-[45rem] justify-between">
           <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-gradient-to-b from-black/25 to-black/50 rounded-l-[1rem]">
             <div className="flex flex-col items-center">
-              <span className="defaultSpan uppercase mt-[1rem]">
-                JOGADORES 1
-              </span>
+              <span className="defaultSpan uppercase mt-[1rem]"
+                >JOGADORES 1</span>
               <div className="flex flex-col gap-2 mt-[1rem]">
                 <Player players={players}></Player>
               </div>
@@ -334,11 +334,13 @@ export function Home() {
           </div>
           <div className="border-solid border-2 p-2 border-white/[0.75] rounded-r-md w-[30rem] bg-gradient-to-r from-black/[12%] to-black/25 flex flex-col">
             <div className="h-full chatBox overflow-scroll overflow-x-hidden">
-              {chatMessages.map((el) => {
-                if (el.user === nick)
-                  return <Chat chatUser={true} user={el.user} msg={el.msg} />;
-                return <Chat chatUser={false} user={el.user} msg={el.msg} />;
-              })}
+              {
+                chatMessages.map((el) => {
+                  if (el.user === nick)
+                    return <Chat chatUser={true} user={el.user} msg={el.msg} />;
+                  return <Chat chatUser={false} user={el.user} msg={el.msg} />;
+                })
+              }
             </div>
             <div className=" inputs flex flex-row ml-2 w-[30rem]">
               <Input
@@ -375,9 +377,7 @@ export function Home() {
                 );
                 setMessage('');
               }}
-            >
-              QUERO JOGAR!
-            </span>
+              >QUERO JOGAR!</span>
           </div>
           <div className="flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105">
             <span
@@ -391,9 +391,7 @@ export function Home() {
                 );
                 setMessage('');
               }}
-            >
-              SÓ CHAT!
-            </span>
+              >SÓ CHAT!</span>
             <Button
               className="ml-[0.5rem]"
               icon={{ src: '/assets/icons/go.png', size: 22 }}
@@ -419,7 +417,8 @@ export function Home() {
             alt="Garlic Monkey logo"
           />
         </div>
-        <span className="defaultSpan mb-5 text-3xl">ESCREVA UMA FRASE</span>
+        <span className="defaultSpan mb-5 text-3xl"
+          >ESCREVA UMA FRASE</span>
         <div className="flex flex-row">
           <Input
             className="w-[30rem] mr-2"
@@ -439,7 +438,8 @@ export function Home() {
               setInputData('');
             }}
           >
-            <span className="defaultSpan">PRONTO</span>
+            <span className="defaultSpan"
+              >PRONTO</span>
             <Button
               className="ml-[1rem]"
               icon={{ src: '/assets/icons/go.png', size: 22 }}
@@ -456,7 +456,8 @@ export function Home() {
   else if (screen === 3) {
     return (
       <GamePage>
-        <p>Desenhe essa frase bizonha:</p>
+        <p
+          >Desenhe essa frase bizonha:</p>
         <span>{randomPhrase}</span>
         {/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */}
         <div
@@ -535,7 +536,8 @@ export function Home() {
             alt="Garlic Monkey logo"
           />
         </div>
-        <span className="defaultSpan mb-5 text-3xl">ESCREVA UMA FRASE</span>
+        <span className="defaultSpan mb-5 text-3xl"
+          >ESCREVA UMA FRASE</span>
         <div className="flex flex-row">
           <Input
             className="w-[30rem] mr-2"
@@ -554,7 +556,8 @@ export function Home() {
               );
             }}
           >
-            <span className="defaultSpan">PRONTO</span>
+            <span className="defaultSpan"
+              >PRONTO</span>
             <Button
               className="ml-[1rem]"
               icon={{ src: '/assets/icons/go.png', size: 22 }}
