@@ -124,7 +124,7 @@ module.exports = class SessionObject {
             console.log("ending subsequent round");
             if (!(this.activeSockets.length === this.currentTurn + 1)) { //if match has not finished
                 console.log("activating new timer")
-                this.activateTimer(60000);
+                this.activateTimer(30000);
             }
         }, time);
     }
