@@ -73,7 +73,7 @@ module.exports = class SessionObject {
                     console.log("sending round info");
                     this.activeSockets.forEach((webs) => {
                         if (webs !== null && webs.readyState === 1) {
-                            if (this.currentTurn => 0) {
+                            if (this.currentTurn >= 0) {
                                 if (webs.aID + this.currentTurn < this.activeSockets.length) {
                                     webs.send(JSON.stringify({
                                         msgType: 'gameUpdate',
