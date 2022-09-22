@@ -69,6 +69,32 @@ module.exports = class SessionObject {
                         }));
                     }
                 });
+                if (this.activeSockets.length !== this.currentTurn + 1) {
+                    console.log("sending round info");
+                    this.activeSockets.forEach((webs) => {
+                        if (webs !== null && webs.readyState === 1) {
+                            if (this.currentTurn => 0) {
+                                if (webs.aID + this.currentTurn < this.activeSockets.length) {
+                                    webs.send(JSON.stringify({
+                                        msgType: 'gameUpdate',
+                                        msgContent: {
+                                            update: 'roundInfo',
+                                            data: this.game[Number(webs.aID + this.currentTurn)][Number(this.currentTurn)]
+                                        }
+                                    }));
+                                } else {
+                                    webs.send(JSON.stringify({
+                                        msgType: 'gameUpdate',
+                                        msgContent: {
+                                            update: 'roundInfo',
+                                            data: this.game[Number(webs.aID + this.currentTurn - this.activeSockets.length)][Number(this.currentTurn)]
+                                        }
+                                    }));
+                                }
+                            }
+                        }
+                    });
+                }
 
                 if (this.activeSockets.length === this.currentTurn + 1) { //match ended
 
@@ -93,32 +119,6 @@ module.exports = class SessionObject {
                     this.chat = [];
                 }
 
-                if (this.activeSockets.length !== this.currentTurn + 1) {
-                    console.log("sending round info");
-                    this.activeSockets.forEach((webs) => {
-                        if (webs !== null && webs.readyState === 1) {
-                            if (this.currentTurn > 0) {
-                                if (webs.aID + this.currentTurn < this.activeSockets.length) {
-                                    webs.send(JSON.stringify({
-                                        msgType: 'gameUpdate',
-                                        msgContent: {
-                                            update: 'roundInfo',
-                                            data: this.game[Number(webs.aID + this.currentTurn)][Number(this.currentTurn)]
-                                        }
-                                    }));
-                                } else {
-                                    webs.send(JSON.stringify({
-                                        msgType: 'gameUpdate',
-                                        msgContent: {
-                                            update: 'roundInfo',
-                                            data: this.game[Number(webs.aID + this.currentTurn - this.activeSockets.length)][Number(this.currentTurn)]
-                                        }
-                                    }));
-                                }
-                            }
-                        }
-                    });
-                }
             }
 
             console.log("ending subsequent round");
