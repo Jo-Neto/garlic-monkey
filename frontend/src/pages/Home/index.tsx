@@ -19,8 +19,8 @@ export function Home() {
   const [socket, setSocket] = useState<WebSocket>();
   const [chat, setChat] = useState<Node>(); //<<<<< is anyone using this? if not delete plz to void confusion
 
-  const [timer, setTimer] = useState<any>(30);
-  let trueTime = 30;
+  const [timer, setTimer] = useState<any>(15);
+  let trueTime = 15;
   let timerId = 0;
   function timerFn() {
     setTimer(trueTime);
@@ -33,7 +33,8 @@ export function Home() {
     }
   }
 
-  let isScreenDescription = true;
+
+  let isScreenDescription = false;
   function screenSetter(whichScreen: number) {
     isScreenDescription = !isScreenDescription;
     setScreen(whichScreen);
@@ -102,7 +103,7 @@ export function Home() {
         timerId = setInterval(timerFn, 1000);
       } else if (data.msgContent.msgContent === 'timerStop') {
         clearInterval(timerId)
-        setTimer(30);
+        setTimer(15);
       }
     }
 
@@ -116,16 +117,15 @@ export function Home() {
     else if (data.msgType === 'gameUpdate') {
       
       if (data.msgContent.update === 'gameStart') { //condition true when game starting
-        console.log("gamestart");
         setScreen(2);
       } 
       
       else if (data.msgContent.update === 'roundChange') { //condition true when new round begins
         console.log("new round = " + data.msgContent.newRound + " |||||||| description screen? " + isScreenDescription); //condition true when new round begins
         if (!isScreenDescription)
-          screenSetter(2);
-        else if (isScreenDescription)
           screenSetter(3);
+        else if (isScreenDescription)
+          screenSetter(4);
       } 
       
       else if (data.msgContent.update === 'roundInfo') { 
@@ -326,7 +326,7 @@ export function Home() {
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //+------------------------------------------------------------------+
-  //|                    GAME PAGE - DESCRIPTION                       | 
+  //|                 GAME PAGE - DESCRIPTION ONLY                     | 
   //+------------------------------------------------------------------+ 
 
   else if (screen === 2) {
@@ -392,4 +392,18 @@ export function Home() {
       </GamePage>
     )
   }
+
+
+ ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //+------------------------------------------------------------------+
+  //|                GAME PAGE - DESCRIPTION WITH IMAGE                | 
+  //+------------------------------------------------------------------+ 
+
+  else if (screen === 4) {
+    return (
+      <GamePage>
+      </GamePage>
+    )
+  }
+
 }

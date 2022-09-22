@@ -8,7 +8,7 @@ module.exports = function shouldStartGame(Session) {
         Session.timerId = null;
         Session.timerActive = false;
         Session.timerActive = true;
-        Session.activateTimer(30000); // 30 segs  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        Session.activateTimer(15000); // 30 segs  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         Session.activeSockets.forEach(ws => { //send new msg to all players in session
             if (ws !== null && ws.readyState === 1) {
                 ws.send(JSON.stringify({
@@ -33,7 +33,7 @@ module.exports = function shouldStartGame(Session) {
     });
     if (playerCount >= 4) {
         Session.timerActive = true;
-        Session.activateTimer(30000); // 20 segs  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+        Session.activateTimer(15000); // 20 segs  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         Session.activeSockets.forEach(ws => { //send new msg to all players in session
             if (ws !== null && ws.readyState === 1) {
                 ws.send(JSON.stringify({
