@@ -8,11 +8,13 @@ module.exports = function mainLogic(Session, data, playerWs) {
                 if (Session.currentTurn % 2 !== 0)
                     obj = {
                         type: 'image',
+                        owner: playerWs.garlicName,
                         data: data.msgContent
                     };
                 else
                     obj = {
                         type: 'desc',
+                        owner: playerWs.garlicName,
                         data: data.msgContent
                     };
                 console.log("accessing index [" + Number(playerWs.aID + Session.currentTurn) + "][" + Number(Session.currentTurn) + "]");
@@ -23,11 +25,13 @@ module.exports = function mainLogic(Session, data, playerWs) {
                 if (Session.currentTurn % 2 !== 0)
                     obj = {
                         type: 'image',
+                        owner: playerWs.garlicName,
                         data: data.msgContent
                     };
                 else
                     obj = {
                         type: 'desc',
+                        owner: playerWs.garlicName,
                         data: data.msgContent
                     };
                 console.log("accessing index [" + Number(playerWs.aID + Session.currentTurn - Session.activeSockets.length) + "][" + Number(Session.currentTurn) + "]");
