@@ -71,7 +71,7 @@ module.exports = class SessionObject {
                 if (this.activeSockets.length === this.currentTurn + 1) { //match ended
 
                     console.log("match ending");
-                    
+
                     this.waitingSockets = this.waitingSockets.concat(this.activeSockets);
                     this.activeSockets = [null, null, null, null, null, null];
 
@@ -89,41 +89,48 @@ module.exports = class SessionObject {
                     this.currentTurn = -1;
                     this.game = [[], []];
                     this.chat = [];
-                    return;
                 }
 
-                this.activeSockets.forEach((webs) => {
-                    if (webs !== null && webs.readyState === 1) {
-                        if (this.currentTurn > 0) {
-                            if (webs.aID + this.currentTurn < this.activeSockets.length) {
-                                webs.send(JSON.stringify({
-                                    msgType: 'gameUpdate',
-                                    msgContent: { 
-                                        update: 'roundInfo', 
-                                        data: this.game[Number(webs.aID + this.currentTurn)][Number(this.currentTurn - 1)] 
-                                    }
-                                }));
-                            } else {
-                                webs.send(JSON.stringify({
-                                    msgType: 'gameUpdate',
-                                    msgContent: { 
-                                        update: 'roundInfo', 
-                                        data: this.game[Number(webs.aID + this.currentTurn - this.activeSockets.length)][Number(this.currentTurn - 1)]  
-                                    }
-                                }));
+                if (this.activeSockets.length === this.currentTurn + 1) {
+                    console.log("sending round info");
+                    this.activeSockets.forEach((webs) => {
+                        if (webs !== null && webs.readyState === 1) {
+                            if (this.currentTurn > 0) {
+                                if (webs.aID + this.currentTurn < this.activeSockets.length) {
+                                    webs.send(JSON.stringify({
+                                        msgType: 'gameUpdate',
+                                        msgContent: {
+                                            update: 'roundInfo',
+                                            data: this.game[Number(webs.aID + this.currentTurn)][Number(this.currentTurn - 1)]
+                                        }
+                                    }));
+                                } else {
+                                    webs.send(JSON.stringify({
+                                        msgType: 'gameUpdate',
+                                        msgContent: {
+                                            update: 'roundInfo',
+                                            data: this.game[Number(webs.aID + this.currentTurn - this.activeSockets.length)][Number(this.currentTurn - 1)]
+                                        }
+                                    }));
+                                }
                             }
                         }
-                    }
-                });
+                    });
+                }
             }
+            console.log("ending subsequent round");
             this.currentTurn++;
             this.activeSockets.forEach(ws => { if (ws !== null) { ws.hasPlayedThisTurn = false; } });
-            this.activateTimer(60000);
+            console.log("ending subsequent round");
+            if (!(this.activeSockets.length === this.currentTurn + 1)) { //if match has not finished
+                console.log("activating new timer")
+                this.activateTimer(60000);
+            }
         }, time);
     }
     saveOnDB(erase = false) {
         if (this.timerActive)
-            clearTimeout( this.timerId);
+            clearTimeout(this.timerId);
         console.log("save on db called");
         if (erase) {
             this.sessionName = null;
