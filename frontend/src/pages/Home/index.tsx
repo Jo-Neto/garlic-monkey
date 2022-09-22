@@ -11,8 +11,9 @@ import { WhiteBoard } from '../../components/Game/WhiteBoard';
 export function Home() {
   
   const [players, setPlayers] = useState<{ nick: string, photo: string }[]>([]); 
+  const [inputData, setInputData] = useState("");
   const [nick, setNick] = useState('');
-  const [room, setRoom] = useState('');
+  const [room, setRoom] = useState('1');
   const [message, setMessage] = useState('');
   const [chatMessages, setChatMessages] = useState<{ user: string, msg: string }[]>([]);
   const [screen, setScreen] = useState<Number>(0);
@@ -342,13 +343,16 @@ export function Home() {
         </div>
         <span className="defaultSpan mb-5 text-3xl">ESCREVA UMA FRASE</span>
         <div className='flex flex-row'>
-          <Input className='w-[30rem] mr-3'></Input>
+              <Input 
+                className='w-[30rem] mr-2' 
+                value={inputData} 
+                onChange={(e) => setInputData(e.target.value)} />
           <div className='flex flex-row justify-center items-center bg-white w-[8rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'
             onClick={() => {
               console.log("click received");
               socket.send(JSON.stringify({
                 'msgType': 'newData',
-                'msgContent': 'slkçdjhsalkjdhalkfjhalskdjhflkasdjhflkajhsdflkjhasdlkfhalksdhjflkajhsdlfkhjaslkdjhflkajhsdlkjhflkajh'
+                'msgContent': inputData
               }));
             }}
           >
@@ -372,15 +376,11 @@ export function Home() {
   else if (screen === 3) {
     return (
       <GamePage>
-        <WhiteBoard proportion={16 / 9} />
+        <WhiteBoard socket={socket} nick={nick} proportion={16 / 9} />
         <div className='flex flex-row'>
           <div className='flex flex-row justify-center items-center bg-white w-[8rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'
             onClick={() => {
-              console.log("click received");
-              socket.send(JSON.stringify({
-                'msgType': 'newData',
-                'msgContent': 'slkçdjhsalkjdhalkfjhalskdjhflkasdjhflkajhsdflkjhasdlkfhalksdhjflkajhsdlfkhjaslkdjhflkajhsdlkjhflkajh'
-              }));
+              return console.log("click received")
             }}
           >
             <span className='defaultSpan'>PRONTO</span>
