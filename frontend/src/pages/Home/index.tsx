@@ -48,6 +48,8 @@ export function Home() {
       return;
     }
 
+    
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
     //|                           LINE LOGIC                             | 
@@ -76,6 +78,8 @@ export function Home() {
       setPlayers(activePlayers);
     }
 
+
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
     //|                            CHAT LOGIC                            | 
@@ -84,6 +88,8 @@ export function Home() {
     else if (data.msgType === 'chatUpdate') {
       setChatMessages(prevMessage => [...prevMessage, { user: data.msgContent.nick, msg: data.msgContent.msgContent }])
     }
+
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
@@ -100,6 +106,8 @@ export function Home() {
       }
     }
 
+
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
     //|                            GAME LOGIC                            | 
@@ -112,8 +120,8 @@ export function Home() {
         setScreen(2);
       } 
       
-      else if (data.msgContent.update === 'roundChange') {
-        console.log("new round = " + data.msgContent.newRound + " |||||||| screen = " + screen); //condition true when new round begins
+      else if (data.msgContent.update === 'roundChange') { //condition true when new round begins
+        console.log("new round = " + data.msgContent.newRound + " |||||||| description screen? " + isScreenDescription); //condition true when new round begins
         if (!isScreenDescription)
           screenSetter(2);
         else if (isScreenDescription)
@@ -121,7 +129,7 @@ export function Home() {
       } 
       
       else if (data.msgContent.update === 'roundInfo') { 
-        console.log("roundInfo below: " + " |||||||| screen = " + screen);  //condition true when received data from previous player
+        console.log("roundInfo below: ");  //condition true when received data from previous player
         console.log(data.msgContent); 
       }
       
@@ -131,6 +139,8 @@ export function Home() {
       }
 
     }
+
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
@@ -212,6 +222,8 @@ export function Home() {
       </GamePage>
     );
   }
+
+
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //+------------------------------------------------------------------+
@@ -309,6 +321,7 @@ export function Home() {
       </GamePage>
     )
   }
+
 
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
