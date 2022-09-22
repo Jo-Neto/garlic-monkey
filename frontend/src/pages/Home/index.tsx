@@ -19,8 +19,8 @@ export function Home() {
   const [socket, setSocket] = useState<WebSocket>();
   const [chat, setChat] = useState<Node>(); //<<<<< is anyone using this? if not delete plz to void confusion
 
-  const [timer, setTimer] = useState<any>(30);
-  let trueTime = 30;
+  const [timer, setTimer] = useState<any>(15);
+  let trueTime = 15;
   let timerId = 0;
   function timerFn() {
     setTimer(trueTime);
@@ -103,7 +103,7 @@ export function Home() {
         timerId = setInterval(timerFn, 1000);
       } else if (data.msgContent.msgContent === 'timerStop') {
         clearInterval(timerId)
-        setTimer(30);
+        setTimer(15);
       }
     }
 
