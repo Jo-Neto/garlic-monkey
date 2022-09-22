@@ -24,7 +24,7 @@ const COLORS = [
 
 const SIZES = [1, 5, 10, 15, 20, 25];
 
-export function WhiteBoard({ proportion, socket, nick }: WhiteBoardProps): JSX.Element {
+export function WhiteBoard({ proportion, nick }: WhiteBoardProps): JSX.Element {
   const [canvasSize, setCanvasSize] = useState<CanvasSizes>({
     width: 500,
     height: 500,
@@ -71,17 +71,6 @@ export function WhiteBoard({ proportion, socket, nick }: WhiteBoardProps): JSX.E
   function loadData( saveData: string ){
     const loadDraw = WhiteBoardRef.current?.loadSaveData(JSON.stringify(saveData), true);
   }
-
-  async function sendToBack(){
-    const link = await parseToURL();
-
-    socket.send(JSON.stringify(
-      {
-        'msgType': 'newData',
-        'msgContent': link
-      }));
-  }
-
 
   function addTransparency(value: string): string {
     const decimalValue = Math.round((gradient * 255) / 100);
@@ -132,7 +121,6 @@ export function WhiteBoard({ proportion, socket, nick }: WhiteBoardProps): JSX.E
           functions={[
             { name: 'Reset', callback: () => resetCanvas() },
             { name: 'Desfazer', callback: () => undo() },
-            { name: 'Send', callback: () => sendToBack() },
             //{ name: 'Salvar', callback: () => print() },
           ]}
         />
