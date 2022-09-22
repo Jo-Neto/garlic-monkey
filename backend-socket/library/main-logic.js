@@ -33,9 +33,12 @@ module.exports = function mainLogic(Session, data, playerWs) {
                     } else {
                         gameLogic(Session, data, playerWs);
                     }
+                    break;
                 case 'participationStatus': //changes player status if possible
                     partLogic(Session, data, playerWs);
+                    break;
                 default:
+                    console.log("ERROR --> main-logic.js --> default triggered")
                     break;
             }
         } else

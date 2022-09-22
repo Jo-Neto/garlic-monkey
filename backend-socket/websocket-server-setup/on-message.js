@@ -2,7 +2,7 @@ const activeSessionsArr = require('../memory-modules/active-sessions.js');
 const mainLogic = require('../library/main-logic.js');
 
 module.exports = function onMessage(data, isBinary, ws) {
-    console.log("received message from ws id = " + ws.sID);
+    console.log("received message from ws aID = " + ws.aID);
     let parsedData = {};
     try {
         parsedData = JSON.parse(data);

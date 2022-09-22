@@ -6,31 +6,37 @@ import { Players } from '../Players/index';
 import { Chat } from '../../components/Chat';
 import { PlayerIcon } from '../../components/PlayerIcon';
 import { Player } from '../../components/Player';
+import { WhiteBoard } from '../../components/Game/WhiteBoard';
 
 export function Home() {
-  const [players, setPlayers] = useState<{ nick: string, photo: string }[]>([]);
+  
+  const [players, setPlayers] = useState<{ nick: string, photo: string }[]>([]); 
   const [nick, setNick] = useState('');
   const [room, setRoom] = useState('');
   const [message, setMessage] = useState('');
   const [chatMessages, setChatMessages] = useState<{ user: string, msg: string }[]>([]);
-  const [screen, setScreen] = useState(0);
+  const [screen, setScreen] = useState<Number>(0);
   const [socket, setSocket] = useState<WebSocket>();
-  const [chat, setChat] = useState<Node>();
+  const [chat, setChat] = useState<Node>(); //<<<<< is anyone using this? if not delete plz to void confusion
 
   const [timer, setTimer] = useState<any>(30);
   let trueTime = 30;
   let timerId = 0;
-  function timerFn(){
-    console.log("timerFn called");
+  function timerFn() {
     setTimer(trueTime);
     if (trueTime === 0) {
-      console.log(timerId);
       clearInterval(timerId)
       setTimer(0);
     } else {
       setTimer(trueTime);
       trueTime--;
     }
+  }
+
+  let isScreenDescription = true;
+  function screenSetter(whichScreen: number) {
+    isScreenDescription = !isScreenDescription;
+    setScreen(whichScreen);
   }
 
   const onMessage = useCallback((message: any) => {
@@ -41,6 +47,12 @@ export function Home() {
     if (!Object.hasOwn(data, 'msgType')) {
       return;
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //+------------------------------------------------------------------+
+    //|                           LINE LOGIC                             | 
+    //+------------------------------------------------------------------+ 
+
     if (data.msgType === 'playerUpdate') {
       if (data.msgContent.updateType === 'in') {
         setPlayers(prevPlayers => [...prevPlayers, { nick: data.msgContent.nick, photo: "" }]);
@@ -62,20 +74,78 @@ export function Home() {
         return { nick: el, photo: "" }
       })
       setPlayers(activePlayers);
-    } else if (data.msgType === 'chatUpdate') {
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //+------------------------------------------------------------------+
+    //|                            CHAT LOGIC                            | 
+    //+------------------------------------------------------------------+   
+
+    else if (data.msgType === 'chatUpdate') {
       setChatMessages(prevMessage => [...prevMessage, { user: data.msgContent.nick, msg: data.msgContent.msgContent }])
-    } 
-    
-    else if (data.msgType === 'gameUpdate') {
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //+------------------------------------------------------------------+
+    //|                           TIMER LOGIC                            | 
+    //+------------------------------------------------------------------+ 
+
+    else if (data.msgType === 'timerUpdate') {
       if (data.msgContent.msgContent === 'timerStart') {
         trueTime = 30;
         timerId = setInterval(timerFn, 1000);
       } else if (data.msgContent.msgContent === 'timerStop') {
-        console.log(timerId);
         clearInterval(timerId)
         setTimer(30);
       }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //+------------------------------------------------------------------+
+    //|                            GAME LOGIC                            | 
+    //+------------------------------------------------------------------+ 
+
+    else if (data.msgType === 'gameUpdate') {
+      
+      if (data.msgContent.update === 'gameStart') { //condition true when game starting
+        console.log("gamestart");
+        setScreen(2);
+      } 
+      
+      else if (data.msgContent.update === 'roundChange') {
+        console.log("new round = " + data.msgContent.newRound + " |||||||| screen = " + screen); //condition true when new round begins
+        if (!isScreenDescription)
+          screenSetter(2);
+        else if (isScreenDescription)
+          screenSetter(3);
+      } 
+      
+      else if (data.msgContent.update === 'roundInfo') { 
+        console.log("roundInfo below: " + " |||||||| screen = " + screen);  //condition true when received data from previous player
+        console.log(data.msgContent); 
+      }
+      
+      else if (data.msgContent.update === 'gameEnd') {  //condition true when game ends
+        console.log("game ended, final data below");
+        console.log(data.msgContent.finalData); //this object has everything from the whole game of all players
+      }
+
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //+------------------------------------------------------------------+
+    //|                       BACK-END REPORTS                           | 
+    //+------------------------------------------------------------------+ 
+
+    else if (data.msgType === 'devReport') {
+      console.log("===========================================================================================");
+      console.log("WARNING, RECEIVED DEV REPORT FROM BACK-END, DATA BELOW: ");
+      console.log(data.msgContent.report);
+      console.log("===========================================================================================");
+    }
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
   }, []);
 
   useEffect(() => {
@@ -88,6 +158,12 @@ export function Home() {
     }
   }, [socket, onMessage, players]);
 
+
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //+------------------------------------------------------------------+
+  //|                           HOME PAGE                              | 
+  //+------------------------------------------------------------------+ 
 
   if (screen === 0) {
     return (
@@ -135,7 +211,14 @@ export function Home() {
         </div>
       </GamePage>
     );
-  } else if (screen === 1) {
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //+------------------------------------------------------------------+
+  //|                           LINE PAGE                              | 
+  //+------------------------------------------------------------------+ 
+
+  else if (screen === 1) {
     return (
       <GamePage className='flex justify-between'>
         <div className='flex flex-row justify-between align-middle items-center  w-[90%]'>
@@ -182,29 +265,114 @@ export function Home() {
                 className='w-[27rem] h-[2rem] normal-case' 
                 value={message} 
                 onChange={(e) => setMessage(e.target.value)} />
-              <Button 
-                className='ml-1' 
-                icon={{ src: '/assets/icons/go.png', size: 22 }} 
-                onClick={ () => {
+              <Button
+                className='ml-1'
+                icon={{ src: '/assets/icons/go.png', size: 22 }}
+                onClick={() => {
                   socket.send(JSON.stringify({
-                      'msgType': 'chatNew',
-                      'msgContent': message
+                    'msgType': 'chatNew',
+                    'msgContent': message
                   }));
                   setMessage("")
-                }}  />
+                }} />
             </div>
           </div>
         </div>
         <div className="flex flex-row">
           <div className='flex flex-row justify-center items-center bg-white w-[7rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105 mr-10'>
-            <span className="defaultSpan"
-            >PRONTO</span>
+            <span
+              className="defaultSpan"
+              onClick={() => {
+                socket.send(JSON.stringify({
+                  'msgType': 'participationStatus',
+                  'msgContent': true
+                }));
+                setMessage("")
+              }}
+            >QUERO JOGAR!</span>
           </div>
           <div className='flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'>
             <span className="defaultSpan"
-            >INICIAR JOGO</span>
+              onClick={() => {
+                socket.send(JSON.stringify({
+                  'msgType': 'participationStatus',
+                  'msgContent': false
+                }));
+                setMessage("")
+              }}
+            >SÓ CHAT!</span>
             <Button
               className='ml-[0.5rem]'
+              icon={{ src: '/assets/icons/go.png', size: 22 }} />
+          </div>
+        </div>
+      </GamePage>
+    )
+  }
+
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //+------------------------------------------------------------------+
+  //|                    GAME PAGE - DESCRIPTION                       | 
+  //+------------------------------------------------------------------+ 
+
+  else if (screen === 2) {
+    return (
+      <GamePage>
+        <div className="animate-wiggle mb-[1rem]">
+          <img
+            src="/assets/images/bigLogo.png"
+            width={390}
+            height={300}
+            alt="Garlic Monkey logo"
+          />
+        </div>
+        <span className="defaultSpan mb-5 text-3xl">ESCREVA UMA FRASE</span>
+        <div className='flex flex-row'>
+          <Input className='w-[30rem] mr-3'></Input>
+          <div className='flex flex-row justify-center items-center bg-white w-[8rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'
+            onClick={() => {
+              console.log("click received");
+              socket.send(JSON.stringify({
+                'msgType': 'newData',
+                'msgContent': 'slkçdjhsalkjdhalkfjhalskdjhflkasdjhflkajhsdflkjhasdlkfhalksdhjflkajhsdlfkhjaslkdjhflkajhsdlkjhflkajh'
+              }));
+            }}
+          >
+            <span className='defaultSpan'>PRONTO</span>
+            <Button
+              className='ml-[1rem]'
+              icon={{ src: '/assets/icons/go.png', size: 22 }} />
+          </div>
+        </div>
+      </GamePage>
+    )
+  }
+
+
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //+------------------------------------------------------------------+
+  //|                     GAME PAGE - DRAWING                          | 
+  //+------------------------------------------------------------------+ 
+
+  else if (screen === 3) {
+    return (
+      <GamePage>
+        <WhiteBoard proportion={16 / 9} />
+        <div className='flex flex-row'>
+          <div className='flex flex-row justify-center items-center bg-white w-[8rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'
+            onClick={() => {
+              console.log("click received");
+              socket.send(JSON.stringify({
+                'msgType': 'newData',
+                'msgContent': 'slkçdjhsalkjdhalkfjhalskdjhflkasdjhflkajhsdflkjhasdlkfhalksdhjflkajhsdlfkhjaslkdjhflkajhsdlkjhflkajh'
+              }));
+            }}
+          >
+            <span className='defaultSpan'>PRONTO</span>
+            <Button
+              className='ml-[1rem]'
               icon={{ src: '/assets/icons/go.png', size: 22 }} />
           </div>
         </div>

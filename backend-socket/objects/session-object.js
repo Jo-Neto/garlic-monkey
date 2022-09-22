@@ -48,11 +48,13 @@ module.exports = class SessionObject {
 
             } else { //subsequent rounds
 
+                console.log("subsequent rounds");
+
                 this.activeSockets.forEach(ws => { //send new msg to all players in session
                     if (ws !== null && ws.readyState === 1) {
                         ws.send(JSON.stringify({
                             msgType: 'gameUpdate',
-                            msgContent: { update: 'round' + this.currentTurn }
+                            msgContent: { update: 'roundChange', newRound: this.currentTurn }
                         }));
                     }
                 });
@@ -61,13 +63,15 @@ module.exports = class SessionObject {
                     if (ws !== null && ws.readyState === 1) {
                         ws.send(JSON.stringify({
                             msgType: 'gameUpdate',
-                            msgContent: { update: 'round' + this.currentTurn }
+                            msgContent: { update: 'roundChange', newRound: this.currentTurn }
                         }));
                     }
                 });
 
                 if (this.activeSockets.length === this.currentTurn + 1) { //match ended
 
+                    console.log("match ending");
+                    
                     this.waitingSockets = this.waitingSockets.concat(this.activeSockets);
                     this.activeSockets = [null, null, null, null, null, null];
 
@@ -87,18 +91,39 @@ module.exports = class SessionObject {
                     this.chat = [];
                     return;
                 }
+
+                this.activeSockets.forEach((webs) => {
+                    if (webs !== null && webs.readyState === 1) {
+                        if (this.currentTurn > 0) {
+                            if (webs.aID + this.currentTurn < this.activeSockets.length) {
+                                webs.send(JSON.stringify({
+                                    msgType: 'gameUpdate',
+                                    msgContent: { 
+                                        update: 'roundInfo', 
+                                        data: this.game[Number(webs.aID + this.currentTurn)][Number(this.currentTurn - 1)] 
+                                    }
+                                }));
+                            } else {
+                                webs.send(JSON.stringify({
+                                    msgType: 'gameUpdate',
+                                    msgContent: { 
+                                        update: 'roundInfo', 
+                                        data: this.game[Number(webs.aID + this.currentTurn - this.activeSockets.length)][Number(this.currentTurn - 1)]  
+                                    }
+                                }));
+                            }
+                        }
+                    }
+                });
             }
             this.currentTurn++;
             this.activeSockets.forEach(ws => { if (ws !== null) { ws.hasPlayedThisTurn = false; } });
-            this.activateTimer(30000);
+            this.activateTimer(60000);
         }, time);
     }
-    saveOnDb(){
-        this.isFinished = true;
-        console.log(this);
-
-    }
     saveOnDB(erase = false) {
+        if (this.timerActive)
+            clearTimeout( this.timerId);
         console.log("save on db called");
         if (erase) {
             this.sessionName = null;
