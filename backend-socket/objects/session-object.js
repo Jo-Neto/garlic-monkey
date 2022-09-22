@@ -103,7 +103,7 @@ module.exports = class SessionObject {
                                         msgType: 'gameUpdate',
                                         msgContent: {
                                             update: 'roundInfo',
-                                            data: this.game[Number(webs.aID + this.currentTurn)][Number(this.currentTurn - 1)]
+                                            data: this.game[Number(webs.aID + this.currentTurn)][Number(this.currentTurn)]
                                         }
                                     }));
                                 } else {
@@ -111,7 +111,7 @@ module.exports = class SessionObject {
                                         msgType: 'gameUpdate',
                                         msgContent: {
                                             update: 'roundInfo',
-                                            data: this.game[Number(webs.aID + this.currentTurn - this.activeSockets.length)][Number(this.currentTurn - 1)]
+                                            data: this.game[Number(webs.aID + this.currentTurn - this.activeSockets.length)][Number(this.currentTurn)]
                                         }
                                     }));
                                 }
