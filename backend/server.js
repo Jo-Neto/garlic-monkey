@@ -16,10 +16,10 @@ app.use(cors({
 }));
 
 app.post('/send-object', jsonParser, (req, res) => {
-    const object = req.body.sessionObject;
+    const { object } = req.body;
     redisModule.set(object.sessionName, object);
     
-    res.json({sucessMessage: "Finish Storing"});
+    res.json({sucessMessage: "Finish Storing", data: data});
 });
 
 app.listen(8080, ()=>{ console.log('https backend server is listening'); });

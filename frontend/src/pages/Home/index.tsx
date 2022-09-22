@@ -269,7 +269,7 @@ export function Home() {
                 className='ml-1'
                 icon={{ src: '/assets/icons/go.png', size: 22 }}
                 onClick={() => {
-                  socket.send(JSON.stringify({
+                  socket?.send(JSON.stringify({
                     'msgType': 'chatNew',
                     'msgContent': message
                   }));
@@ -283,7 +283,7 @@ export function Home() {
             <span
               className="defaultSpan"
               onClick={() => {
-                socket.send(JSON.stringify({
+                socket?.send(JSON.stringify({
                   'msgType': 'participationStatus',
                   'msgContent': true
                 }));
@@ -294,7 +294,7 @@ export function Home() {
           <div className='flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'>
             <span className="defaultSpan"
               onClick={() => {
-                socket.send(JSON.stringify({
+                socket?.send(JSON.stringify({
                   'msgType': 'participationStatus',
                   'msgContent': false
                 }));
@@ -333,7 +333,7 @@ export function Home() {
           <div className='flex flex-row justify-center items-center bg-white w-[8rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'
             onClick={() => {
               console.log("click received");
-              socket.send(JSON.stringify({
+              socket?.send(JSON.stringify({
                 'msgType': 'newData',
                 'msgContent': 'slkçdjhsalkjdhalkfjhalskdjhflkasdjhflkajhsdflkjhasdlkfhalksdhjflkajhsdlfkhjaslkdjhflkajhsdlkjhflkajh'
               }));
@@ -364,7 +364,7 @@ export function Home() {
           <div className='flex flex-row justify-center items-center bg-white w-[8rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'
             onClick={() => {
               console.log("click received");
-              socket.send(JSON.stringify({
+              socket?.send(JSON.stringify({
                 'msgType': 'newData',
                 'msgContent': 'slkçdjhsalkjdhalkfjhalskdjhflkasdjhflkajhsdflkjhasdlkfhalksdhjflkajhsdlfkhjaslkdjhflkajhsdlkjhflkajh'
               }));

@@ -1,4 +1,5 @@
 const shuffler = require('./library/fisher-yates-algo.js');
+const fetch = require('node-fetch');
 
 module.exports = class SessionObject {
     constructor(creatorWs, sessionName) {
@@ -126,8 +127,19 @@ module.exports = class SessionObject {
             clearTimeout( this.timerId);
         console.log("save on db called");
         if (erase) {
-            this.sessionName = null;
             this.isFinished = true;
+            const object = this
+            this.sessionName = null;            
+
+            fetch('http://localhost/send-object', 
+            {
+                method: 'POST',
+                headers: {
+                    body: {object}
+                }
+            })
+            .then(response => console.log(response.json()))
+
         }
     }
 };
