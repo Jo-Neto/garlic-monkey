@@ -18,6 +18,8 @@ module.exports = class SessionObject {
             this.timerActive = false;
             if (this.currentTurn === -1) {  //first round
 
+                console.log("first round logic");
+                
                 this.activeSockets = this.activeSockets.filter(ws => { return ws !== null });
                 this.activeSockets = shuffler(this.activeSockets);
                 this.activeSockets.forEach((ws, index) => { if (ws !== null) { ws.aID = index; } });
@@ -48,7 +50,7 @@ module.exports = class SessionObject {
 
             } else { //subsequent rounds
 
-                console.log("subsequent rounds");
+                console.log("subsequent rounds, round num: "+this.currentTurn);
 
                 this.activeSockets.forEach(ws => { //send new msg to all players in session
                     if (ws !== null && ws.readyState === 1) {
@@ -118,14 +120,15 @@ module.exports = class SessionObject {
                     });
                 }
             }
+
             console.log("ending subsequent round");
             this.currentTurn++;
             this.activeSockets.forEach(ws => { if (ws !== null) { ws.hasPlayedThisTurn = false; } });
-            console.log("ending subsequent round");
             if (!(this.activeSockets.length === this.currentTurn + 1)) { //if match has not finished
-                console.log("activating new timer")
+                console.log("activating new timer");
                 this.activateTimer(30000);
             }
+
         }, time);
     }
     saveOnDB(erase = false) {
