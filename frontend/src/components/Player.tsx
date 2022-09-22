@@ -11,9 +11,9 @@ export function Player( {players}: PlayerProps ) {
     return (
         <div className='flex flex-col gap-2'>
             {
-                players.map((element, index) => {
-                return <PlayerIcon nick={element.nick} photo={element.photo} player_id={index} />
-                })
+              players.map((element, index) => {
+                return <PlayerIcon nick={element.nick} photo={element.photo} player_id={index} key={index} />
+              })
             }
         </div>
     );
