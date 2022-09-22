@@ -11,16 +11,17 @@ import { WhiteBoard } from '../../components/Game/WhiteBoard';
 export function Home() {
   
   const [players, setPlayers] = useState<{ nick: string, photo: string }[]>([]); 
+  const [inputData, setInputData] = useState("");
   const [nick, setNick] = useState('');
-  const [room, setRoom] = useState('');
+  const [room, setRoom] = useState('1');
   const [message, setMessage] = useState('');
   const [chatMessages, setChatMessages] = useState<{ user: string, msg: string }[]>([]);
   const [screen, setScreen] = useState<Number>(0);
   const [socket, setSocket] = useState<WebSocket>();
   const [chat, setChat] = useState<Node>(); //<<<<< is anyone using this? if not delete plz to void confusion
 
-  const [timer, setTimer] = useState<any>(30);
-  let trueTime = 30;
+  const [timer, setTimer] = useState<any>(15);
+  let trueTime = 15;
   let timerId = 0;
   function timerFn() {
     setTimer(trueTime);
@@ -33,7 +34,8 @@ export function Home() {
     }
   }
 
-  let isScreenDescription = true;
+
+  let isScreenDescription = false;
   function screenSetter(whichScreen: number) {
     isScreenDescription = !isScreenDescription;
     setScreen(whichScreen);
@@ -47,6 +49,8 @@ export function Home() {
     if (!Object.hasOwn(data, 'msgType')) {
       return;
     }
+
+    
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
@@ -76,6 +80,8 @@ export function Home() {
       setPlayers(activePlayers);
     }
 
+
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
     //|                            CHAT LOGIC                            | 
@@ -84,6 +90,8 @@ export function Home() {
     else if (data.msgType === 'chatUpdate') {
       setChatMessages(prevMessage => [...prevMessage, { user: data.msgContent.nick, msg: data.msgContent.msgContent }])
     }
+
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
@@ -96,9 +104,11 @@ export function Home() {
         timerId = setInterval(timerFn, 1000);
       } else if (data.msgContent.msgContent === 'timerStop') {
         clearInterval(timerId)
-        setTimer(30);
+        setTimer(15);
       }
     }
+
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
@@ -108,20 +118,19 @@ export function Home() {
     else if (data.msgType === 'gameUpdate') {
       
       if (data.msgContent.update === 'gameStart') { //condition true when game starting
-        console.log("gamestart");
         setScreen(2);
       } 
       
-      else if (data.msgContent.update === 'roundChange') {
-        console.log("new round = " + data.msgContent.newRound + " |||||||| screen = " + screen); //condition true when new round begins
+      else if (data.msgContent.update === 'roundChange') { //condition true when new round begins
+        console.log("new round = " + data.msgContent.newRound + " |||||||| description screen? " + isScreenDescription); //condition true when new round begins
         if (!isScreenDescription)
-          screenSetter(2);
-        else if (isScreenDescription)
           screenSetter(3);
+        else if (isScreenDescription)
+          screenSetter(4);
       } 
       
       else if (data.msgContent.update === 'roundInfo') { 
-        console.log("roundInfo below: " + " |||||||| screen = " + screen);  //condition true when received data from previous player
+        console.log("roundInfo below: ");  //condition true when received data from previous player
         console.log(data.msgContent); 
       }
       
@@ -131,6 +140,8 @@ export function Home() {
       }
 
     }
+
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
@@ -212,6 +223,8 @@ export function Home() {
       </GamePage>
     );
   }
+
+
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //+------------------------------------------------------------------+
@@ -311,9 +324,10 @@ export function Home() {
   }
 
 
+
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //+------------------------------------------------------------------+
-  //|                    GAME PAGE - DESCRIPTION                       | 
+  //|                 GAME PAGE - DESCRIPTION ONLY                     | 
   //+------------------------------------------------------------------+ 
 
   else if (screen === 2) {
@@ -329,13 +343,16 @@ export function Home() {
         </div>
         <span className="defaultSpan mb-5 text-3xl">ESCREVA UMA FRASE</span>
         <div className='flex flex-row'>
-          <Input className='w-[30rem] mr-3'></Input>
+              <Input 
+                className='w-[30rem] mr-2' 
+                value={inputData} 
+                onChange={(e) => setInputData(e.target.value)} />
           <div className='flex flex-row justify-center items-center bg-white w-[8rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'
             onClick={() => {
               console.log("click received");
               socket?.send(JSON.stringify({
                 'msgType': 'newData',
-                'msgContent': 'slkçdjhsalkjdhalkfjhalskdjhflkasdjhflkajhsdflkjhasdlkfhalksdhjflkajhsdlfkhjaslkdjhflkajhsdlkjhflkajh'
+                'msgContent': inputData
               }));
             }}
           >
@@ -359,15 +376,11 @@ export function Home() {
   else if (screen === 3) {
     return (
       <GamePage>
-        <WhiteBoard proportion={16 / 9} />
+        <WhiteBoard socket={socket} nick={nick} proportion={16 / 9} />
         <div className='flex flex-row'>
           <div className='flex flex-row justify-center items-center bg-white w-[8rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'
             onClick={() => {
-              console.log("click received");
-              socket?.send(JSON.stringify({
-                'msgType': 'newData',
-                'msgContent': 'slkçdjhsalkjdhalkfjhalskdjhflkasdjhflkajhsdflkjhasdlkfhalksdhjflkajhsdlfkhjaslkdjhflkajhsdlkjhflkajh'
-              }));
+              return console.log("click received")
             }}
           >
             <span className='defaultSpan'>PRONTO</span>
@@ -379,4 +392,18 @@ export function Home() {
       </GamePage>
     )
   }
+
+
+ ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //+------------------------------------------------------------------+
+  //|                GAME PAGE - DESCRIPTION WITH IMAGE                | 
+  //+------------------------------------------------------------------+ 
+
+  else if (screen === 4) {
+    return (
+      <GamePage>
+      </GamePage>
+    )
+  }
+
 }
