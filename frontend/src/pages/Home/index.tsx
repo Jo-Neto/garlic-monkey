@@ -9,16 +9,15 @@ import { Player } from '../../components/Player';
 import { WhiteBoard } from '../../components/Game/WhiteBoard';
 
 export function Home() {
+  
   const [players, setPlayers] = useState<{ nick: string, photo: string }[]>([]);
-
-
-  const [nick, setNick] = useState('');
-  const [room, setRoom] = useState('');
-  const [message, setMessage] = useState('');
+  const [nick, setNick] = useState<string>('');
+  const [room, setRoom] = useState<string>('');
+  const [message, setMessage] = useState<string>('');
   const [chatMessages, setChatMessages] = useState<{ user: string, msg: string }[]>([]);
-  const [screen, setScreen] = useState(0);
+  const [screen, setScreen] = useState<Number>(0);
   const [socket, setSocket] = useState<WebSocket>();
-  const [chat, setChat] = useState<Node>();
+  const [chat, setChat] = useState<Node>(); //<<<<< is anyone using this? if not delete plz to void confusion
 
   const [timer, setTimer] = useState<any>(30);
   let trueTime = 30;
@@ -32,6 +31,12 @@ export function Home() {
       setTimer(trueTime);
       trueTime--;
     }
+  }
+
+  let isScreenDescription = true;
+  function screenSetter(whichScreen: number) {
+    isScreenDescription = !isScreenDescription;
+    setScreen(whichScreen);
   }
 
   const onMessage = useCallback((message: any) => {
@@ -101,19 +106,30 @@ export function Home() {
     //+------------------------------------------------------------------+ 
 
     else if (data.msgType === 'gameUpdate') {
-      if (data.msgContent.update === 'gameStart') {
+      
+      if (data.msgContent.update === 'gameStart') { //condition true when game starting
         console.log("gamestart");
         setScreen(2);
-      } else if (data.msgContent.update === 'roundChange') {
-        console.log("new round = " + data.msgContent.newRound + "|||||||| screen = " + screen);
-        if (screen === 3)
-          setScreen(2);
-        else if (screen === 2)
-          setScreen(3);
-      } else if (data.msgContent.update === 'gameEnd') {
-        console.log("game ended, final data below");
-        console.log(data.msgContent.finalData);
+      } 
+      
+      else if (data.msgContent.update === 'roundChange') {
+        console.log("new round = " + data.msgContent.newRound + " |||||||| screen = " + screen); //condition true when new round begins
+        if (!isScreenDescription)
+          screenSetter(2);
+        else if (isScreenDescription)
+          screenSetter(3);
+      } 
+      
+      else if (data.msgContent.update === 'roundInfo') { 
+        console.log("roundInfo below: " + " |||||||| screen = " + screen);  //condition true when received data from previous player
+        console.log(data.msgContent); 
       }
+      
+      else if (data.msgContent.update === 'gameEnd') {  //condition true when game ends
+        console.log("game ended, final data below");
+        console.log(data.msgContent.finalData); //this object has everything from the whole game of all players
+      }
+
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
