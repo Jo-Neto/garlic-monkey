@@ -70,6 +70,8 @@ module.exports = class SessionObject {
 
                 if (this.activeSockets.length === this.currentTurn + 1) { //match ended
 
+                    console.log("match ending");
+                    
                     this.waitingSockets = this.waitingSockets.concat(this.activeSockets);
                     this.activeSockets = [null, null, null, null, null, null];
 
@@ -94,21 +96,21 @@ module.exports = class SessionObject {
                     if (webs !== null && webs.readyState === 1) {
                         if (this.currentTurn > 0) {
                             if (webs.aID + this.currentTurn < this.activeSockets.length) {
-                                /*            console.log('if')
-                                              console.log(typeof webs.aID);
-                                              console.log(typeof Session.currentTurn);
-                                              console.log(webs.aID + Session.currentTurn);
-                                              console.log('index 2 ='+ Session.currentTurn); */
-                                webs.send(JSON.stringify(this.game[Number(webs.aID + this.currentTurn)][Number(this.currentTurn - 1)]));
+                                webs.send(JSON.stringify({
+                                    msgType: 'gameUpdate',
+                                    msgContent: { 
+                                        update: 'roundInfo', 
+                                        data: this.game[Number(webs.aID + this.currentTurn)][Number(this.currentTurn - 1)] 
+                                    }
+                                }));
                             } else {
-                                /*          console.log('else')
-                                            console.log(typeof webs.aID);
-                                            console.log(typeof Session.currentTurn);
-                                            console.log(typeof Session.activeSockets.length);
-                                            console.log(webs.aID + Session.currentTurn - Session.activeSockets.length);
-                                            console.log(typeof (webs.aID + Session.currentTurn - Session.activeSockets.length));
-                                            console.log('index 2 ='+ Session.currentTurn); */
-                                webs.send(JSON.stringify(this.game[Number(webs.aID + this.currentTurn - this.activeSockets.length)][Number(this.currentTurn - 1)]));
+                                webs.send(JSON.stringify({
+                                    msgType: 'gameUpdate',
+                                    msgContent: { 
+                                        update: 'roundInfo', 
+                                        data: this.game[Number(webs.aID + this.currentTurn - this.activeSockets.length)][Number(this.currentTurn - 1)]  
+                                    }
+                                }));
                             }
                         }
                     }
@@ -119,12 +121,9 @@ module.exports = class SessionObject {
             this.activateTimer(60000);
         }, time);
     }
-    saveOnDb() {
-        this.isFinished = true;
-        console.log(this);
-
-    }
     saveOnDB(erase = false) {
+        if (this.timerActive)
+            clearTimeout( this.timerId);
         console.log("save on db called");
         if (erase) {
             this.sessionName = null;

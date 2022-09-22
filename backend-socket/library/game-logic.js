@@ -4,42 +4,34 @@ module.exports = function mainLogic(Session, data, playerWs) {
             console.log(Session.game);
             console.log("===========================================================================================");
             if (playerWs.aID + Session.currentTurn < Session.activeSockets.length) {
-                /*            console.log('if')
-                              console.log(typeof playerWs.aID);
-                              console.log(typeof Session.currentTurn);
-                              console.log(playerWs.aID + Session.currentTurn);
-                              console.log('index 2 ='+ Session.currentTurn); */
                 let obj = {};
                 if (Session.currentTurn % 2 !== 0)
                     obj = {
                         type: 'image',
+                        owner: playerWs.garlicName,
                         data: data.msgContent
                     };
                 else
                     obj = {
                         type: 'desc',
+                        owner: playerWs.garlicName,
                         data: data.msgContent
                     };
                 console.log("accessing index [" + Number(playerWs.aID + Session.currentTurn) + "][" + Number(Session.currentTurn) + "]");
                 Session.game[Number(playerWs.aID + Session.currentTurn)][Number(Session.currentTurn)] = obj;
             }
             else {
-                /*          console.log('else')
-                            console.log(typeof playerWs.aID);
-                            console.log(typeof Session.currentTurn);
-                            console.log(typeof Session.activeSockets.length);
-                            console.log(playerWs.aID + Session.currentTurn - Session.activeSockets.length);
-                            console.log(typeof (playerWs.aID + Session.currentTurn - Session.activeSockets.length));
-                            console.log('index 2 ='+ Session.currentTurn); */
                 let obj = {};
                 if (Session.currentTurn % 2 !== 0)
                     obj = {
                         type: 'image',
+                        owner: playerWs.garlicName,
                         data: data.msgContent
                     };
                 else
                     obj = {
                         type: 'desc',
+                        owner: playerWs.garlicName,
                         data: data.msgContent
                     };
                 console.log("accessing index [" + Number(playerWs.aID + Session.currentTurn - Session.activeSockets.length) + "][" + Number(Session.currentTurn) + "]");
