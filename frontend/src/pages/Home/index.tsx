@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { Button } from '../../components/Form/Button';
+import { Button, Buttons } from '../../components/Form/Button';
 import { Input } from '../../components/Form/Input';
 import { GamePage } from '../../layout/GamePage';
 import { Players } from '../Players/index';
@@ -14,10 +14,7 @@ import { Actions } from '../../components/Game/Actions';
 import { Colors } from '../../components/Game/Colors';
 import { ColorObj } from '../../components/Game/Colors/type';
 import { Radius } from '../../components/Game/Radius';
-import {
-  WhiteBoardProps,
-  CanvasSizes,
-} from '../../components/Game/WhiteBoard/types';
+import { WhiteBoardProps, CanvasSizes } from '../../components/Game/WhiteBoard/types';
 ///////////////////////////////////////////////
 
 export function Home() {
@@ -27,13 +24,12 @@ export function Home() {
   const [room, setRoom] = useState('1');
   const [message, setMessage] = useState('');
   const [randomPhrase, setRandomPhrase] = useState('');
-  const [chatMessages, setChatMessages] = useState<
-    { user: string; msg: string }[]
-  >([]);
+  const [chatMessages, setChatMessages] = useState<{ user: string; msg: string }[]>([]);
   const [screen, setScreen] = useState<Number>(0);
   const [socket, setSocket] = useState<WebSocket>();
-
   const [timer, setTimer] = useState<any>(15);
+  const [disable, setDisable] = useState(false);
+
   let trueTime = 15;
   let timerId = 0;
   function timerFn() {
@@ -125,6 +121,7 @@ export function Home() {
         //condition true when game starting
         setScreen(2);
       } else if (data.msgContent.update === 'roundChange') {
+        setDisable(false);
         //condition true when new round begins
         console.log('new round = ' + data.msgContent.newRound); //condition true when new round begins
         if (!isScreenDescription) screenSetter(3);
@@ -201,6 +198,8 @@ export function Home() {
 
   useEffect(() => {
     const actualWidth = ContainerRef.current?.offsetWidth;
+    // const newWidth = actualWidth && actualWidth * 0.7;
+    // const newHeight = newWidth && newWidth * (1 / (16 / 9));
     const newWidth = actualWidth && actualWidth * 0.7;
     const newHeight = newWidth && newWidth * (1 / (16 / 9));
     const size = { width: newWidth, height: newHeight };
@@ -224,6 +223,7 @@ export function Home() {
 
   async function sendToBack() {
     const link = await parseToURL();
+    setDisable(true);
     socket.send(
       JSON.stringify({
         msgType: 'newData',
@@ -258,7 +258,15 @@ export function Home() {
         </div>
         <div className="flex flex-colum items-center">
           <div className="flex flex-row">
-            <div className="flex flex-col items-center w-[30rem] h-fit gap-5 rounded-[0.625rem]">
+            <form 
+              onSubmit={(e) =>{
+                 e.preventDefault()
+                 let a = new WebSocket('wss://localhost:9999', [room, nick]);
+                 setSocket(a);
+                 setScreen(1);
+                }} 
+              className="flex flex-col items-center w-[30rem] h-fit gap-5 rounded-[0.625rem]"
+            >
               <span className="defaultSpan"
                 >ESCOLHA UM NICKNAME</span>
               <Input
@@ -269,22 +277,17 @@ export function Home() {
               <span className="defaultSpan"
                 >ESCREVA O CODIGO DA SALA OU CRIE A SUA</span>
               <div className="flex flex-row">
-                <Input value={room} onChange={(e) => setRoom(e.target.value)} />
-              </div>
-              <div className="flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105">
-                <Button
-                  className="mr-[1rem]"
-                  onClick={() => {
-                    let a = new WebSocket('wss://localhost:9999', [room, nick]);
-                    setSocket(a);
-                    setScreen(1);
-                  }}
-                  icon={{ src: '/assets/icons/go.png', size: 22 }}
+                <Input 
+                  value={room} 
+                  onChange={(e) => setRoom(e.target.value)} 
                 />
-              <span
-                >ENTRAR</span> 
               </div>
-            </div>
+                <Buttons
+                  type="submit"
+                  icon={{ src: '/assets/icons/go.png', size: 22 }}
+                  children={<span>ENTRAR</span>}
+                />
+            </form>
             <div className="flex flex-col items-center"></div>
           </div>
           <div className="text-center flex flex-col  bg-gradient-to-r from-white/[12%] to-white/25 items-center w-[15rem] border-solid border-2 border-white/[0.50] rounded-1 p-[1.5rem]">
@@ -336,13 +339,12 @@ export function Home() {
             <div className="h-full chatBox overflow-scroll overflow-x-hidden">
               {
                 chatMessages.map((el) => {
-                  if (el.user === nick)
-                    return <Chat chatUser={true} user={el.user} msg={el.msg} />;
+                  if (el.user === nick) return <Chat chatUser={true} user={el.user} msg={el.msg} />;
                   return <Chat chatUser={false} user={el.user} msg={el.msg} />;
                 })
               }
             </div>
-            <div className=" inputs flex flex-row ml-2 w-[30rem]">
+            <form onSubmit={e => e.preventDefault()} className=" inputs flex flex-row ml-2 w-[30rem]">
               <Input
                 className="w-[27rem] h-[2rem] normal-case"
                 value={message}
@@ -361,7 +363,7 @@ export function Home() {
                   setMessage('');
                 }}
               />
-            </div>
+            </form>
           </div>
         </div>
         <div className="flex flex-row">
@@ -419,33 +421,36 @@ export function Home() {
         </div>
         <span className="defaultSpan mb-5 text-3xl"
           >ESCREVA UMA FRASE</span>
-        <div className="flex flex-row">
-          <Input
-            className="w-[30rem] mr-2"
-            value={inputData}
-            onChange={(e) => setInputData(e.target.value)}
-          />
-          <div
-            className="flex flex-row justify-center items-center bg-white w-[8rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105"
-            onClick={() => {
-              console.log('click received');
-              socket.send(
-                JSON.stringify({
-                  msgType: 'newData',
-                  msgContent: inputData,
-                }),
-              );
-              setInputData('');
-            }}
+        <form
+          onSubmit={e =>{
+            e.preventDefault();
+            console.log('click received');
+            socket.send(
+              JSON.stringify({
+                msgType: 'newData',
+                msgContent: inputData,
+              }));
+            setInputData("")
+            setDisable(true);
+          }} 
+        >
+          <fieldset 
+            disabled={disable}
+            className="flex flex-row"
           >
-            <span className="defaultSpan"
-              >PRONTO</span>
-            <Button
-              className="ml-[1rem]"
-              icon={{ src: '/assets/icons/go.png', size: 22 }}
+            <Input
+              className="w-[30rem] h-11 mr-2"
+              value={inputData}
+              onChange={(e) => setInputData(e.target.value)}
             />
-          </div>
-        </div>
+            <Buttons
+              type={"submit"}
+              className="h-10"
+              icon={{ src: '/assets/icons/go.png', size: 22 }}
+              children={<span className="defaultSpan">PRONTO</span>}
+            />
+          </ fieldset>
+        </form>
       </GamePage>
     );
   }
@@ -473,6 +478,7 @@ export function Home() {
             />
             <div className="shadow-md border-8 border-[#3F1802] rounded-md">
               <CanvasDraw
+                disabled={disable}
                 ref={WhiteBoardRef}
                 brushColor={addTransparency(selectedColor.hex)}
                 loadTimeOffset={2}
@@ -528,42 +534,46 @@ export function Home() {
   else if (screen === 4) {
     return (
       <GamePage>
-        <div className="animate-wiggle mb-[1rem]">
+        <div className="mb-[1rem] shadow-md border-8 border-[#3F1802] rounded-md">
           <img
             src={randomPhrase}
-            width={390}
-            height={300}
+            width={canvasSize.width}
+            height={canvasSize.height}
             alt="Garlic Monkey logo"
           />
         </div>
         <span className="defaultSpan mb-5 text-3xl"
           >ESCREVA UMA FRASE</span>
-        <div className="flex flex-row">
-          <Input
-            className="w-[30rem] mr-2"
-            value={inputData}
-            onChange={(e) => setInputData(e.target.value)}
-          />
-          <div
-            className="flex flex-row justify-center items-center bg-white w-[8rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105"
-            onClick={() => {
-              console.log('click received');
-              socket.send(
-                JSON.stringify({
-                  msgType: 'newData',
-                  msgContent: inputData,
-                }),
-              );
-            }}
+        <form
+          onSubmit={e =>{
+            e.preventDefault();
+            console.log('click received');
+            socket.send(
+              JSON.stringify({
+                msgType: 'newData',
+                msgContent: inputData,
+              }));
+            setInputData("")
+            setDisable(true);
+          }} 
+        >
+          <fieldset 
+            disabled={disable}
+            className="flex flex-row"
           >
-            <span className="defaultSpan"
-              >PRONTO</span>
-            <Button
-              className="ml-[1rem]"
-              icon={{ src: '/assets/icons/go.png', size: 22 }}
+            <Input
+              className="w-[30rem] h-11 mr-2"
+              value={inputData}
+              onChange={(e) => setInputData(e.target.value)}
             />
-          </div>
-        </div>
+            <Buttons
+              type={"submit"}
+              className="h-10"
+              icon={{ src: '/assets/icons/go.png', size: 22 }}
+              children={<span className="defaultSpan">PRONTO</span>}
+            />
+          </fieldset>
+        </form>
       </GamePage>
     );
   }

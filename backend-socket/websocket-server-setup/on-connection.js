@@ -68,7 +68,6 @@ module.exports = function onConnection(ws, req) {
                 ws.aID = null;
             } else {
                 //console.log("assigning to active as index: " + replaceableSocketIndex);
-                //TODO: send match data
                 activeSessionsArr[matchedIndex].activeSockets[replaceableSocketIndex] = ws;  //assign socket to first free socket of the match
                 ws.aID = replaceableSocketIndex;
             }
@@ -107,6 +106,6 @@ module.exports = function onConnection(ws, req) {
         }));
     }
     ws.garlicName = playerChoiceArr[1];
+    ws.isUndecidedOldPlayer = false;
     ws.hasPlayedThisTurn = false;
-    ws.isAlive = true;
 };
