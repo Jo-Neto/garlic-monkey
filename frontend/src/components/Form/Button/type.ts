@@ -4,5 +4,5 @@ export type ButtonProps = React.DetailedHTMLProps<
   React.ButtonHTMLAttributes<HTMLButtonElement>,
   HTMLButtonElement
 > & {
-  icon?: { src?: string; size?: number; node?: ReactNode };
+  icon?: {type?: string; src?: string; size?: number; node?: ReactNode };
 };
