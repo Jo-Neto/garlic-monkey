@@ -3,7 +3,6 @@ const activeSessionsArr = require('../memory-modules/active-sessions.js');
 const shouldStartGame = require('../library/should-game-start-checker.js');
 
 module.exports = function onConnection(ws, req) {
-    console.log("new connection");
     let playerChoiceArr = [];
     try {
         playerChoiceArr = req.headers['sec-websocket-protocol'].split(', ');
@@ -56,10 +55,15 @@ module.exports = function onConnection(ws, req) {
             //console.log('on-connection.js --> if(2-1) triggered');
             activeSessionsArr[matchedIndex].sessionName = null; //nullify session name
             onConnection(ws, req); //re-do logic
+        } else if (activeSessionsArr[matchedIndex].currentTurn !== -1) { //middle-game match
+            console.log("closing 1003");
+            if (ws.readyState === 1)
+                ws.close(1013, 'ongoing match, try again later');
+            return;
         } else { //if not finished
             //console.log('on-connection.js --> else(2-2) triggered');
             let replaceableSocketIndex = activeSessionsArr[matchedIndex].activeSockets.indexOf(null);
-            if (replaceableSocketIndex === -1 || activeSessionsArr[matchedIndex].currentTurn !== -1) {
+            if (replaceableSocketIndex === -1) {
                 let replaceableWaitingSocketIndex = activeSessionsArr[matchedIndex].waitingSockets.indexOf(null);
                 if (replaceableWaitingSocketIndex === -1)
                     activeSessionsArr[matchedIndex].waitingSockets.push(ws); //assign socket to waiting socket list
