@@ -53,7 +53,7 @@ module.exports = class SessionObject {
             this.currentTurn++;
             console.log("interval called round number --> " + this.currentTurn);
 
-            if (this.activeSockets.length === (this.currentTurn + 1)) { //match ended
+            if (this.activeSockets.length < this.currentTurn) { //match ended
                 console.log("match ending, round number --> " + this.currentTurn);
                 this.waitingSockets = this.waitingSockets.concat(this.activeSockets);
                 this.activeSockets = [null, null, null, null, null, null];
@@ -65,8 +65,8 @@ module.exports = class SessionObject {
                     }
                 });
                 if (this.gamerTimerID)
-                    clearInterval(this.gamerTimerID);
-                this.finisherInterval();
+                    clearTimeout(this.gamerTimerID);
+                this.finisherTimeout(0); //MARKUP: finsher time
                 return;
             }
 
@@ -88,7 +88,7 @@ module.exports = class SessionObject {
             });*/
 
             if (this.currentTurn > 0) {
-                console.log("sending round info of round --> " + this.currentTurn);
+                console.log("sending round info of round --> " + (this.currentTurn - 1) + " (previous round)");
                 this.activeSockets.forEach((ws) => {
                     if (ws !== null && ws.readyState === 1) {
                         if ((ws.aID + this.currentTurn /*- 1*/) < this.activeSockets.length) {
@@ -107,31 +107,32 @@ module.exports = class SessionObject {
                                     data: this.game[Number(ws.aID + this.currentTurn - this.activeSockets.length /*- 1*/)][Number(this.currentTurn - 1)]
                                 }
                             }));
-                        }
+                        } 
+                        if (!(this.currentTurn === this.activeSockets.length))  
+                            ws.hasPlayedThisTurn = false; 
                     }
                 });
             }
 
-            if (!(this.activeSockets.length === this.currentTurn + 1)) { //if match has not finished
-                console.log("activating new timer");
-                if ((this.currentTurn % 2) === 0)
-                    this.gameMaster(15000); //timer para descriição
-                else
-                    this.gameMaster(30000);  //timer para imagem
-                this.activeSockets.forEach(ws => { if (ws !== null) { ws.hasPlayedThisTurn = false; } });
-            }
+            console.log("activating new timer");
+            if ((this.currentTurn % 2) === 0)
+                this.gameMaster(15000); //MARKUP: timer para descriição
+            else
+                this.gameMaster(15000);  //MARKUP: timer para imagem
             console.log("ending game logic on round --> " + this.currentTurn);
 
         }, gameTimerAmount)
     }; //MARKUP: round timer
 
-    finisherInterval(finalTimerAmount) {
+    finisherTimeout(finalTimerAmount = 15000, i=0) {
 
         console.log("finisher interval running");
-        let i = 0;
-        this.finishertimerID = setInterval(() => {
+        this.finishertimerID = setTimeout(() => {
 
-            if (i <= this.currentTurn) {
+            console.log("finisherTimeout(fn) --> currentTurn = "+this.currentTurn);
+            console.log("finisherTimeout(fn) --> i = "+i);
+            if (i < (this.currentTurn - 1)) {
+                console.log("finisherTimeout(fn) --> first if");
                 this.waitingSockets.forEach((ws) => {
                     if (ws !== null && ws.readyState === 1) {
                         if ((ws.aID + this.currentTurn /*- 1*/) < this.activeSockets.length) {
@@ -142,16 +143,18 @@ module.exports = class SessionObject {
                         }
                     }
                 });
-                this.finisherInterval(60);
+                this.finisherTimeout(15000, ++i);   //MARKUP: finsher time
             }
 
-            else if (i === (this.currentTurn + 1)) {
+            else if (i === (this.currentTurn - 1)) {
+                console.log("finisherTimeout(fn) --> else if");
                 this.saveOnDB(false);
                 this.currentTurn = -1;
                 this.game = [[], []];
                 this.chat = [];
-                this.finishertimerID = null;
-                //give 60 segs to decide if will play, if not kick
+                this.starterTimerID = null;
+                this.gamerTimerID = null;
+                //give 60 segs to decide if will play, if not, kick
                 this.waitingSockets.forEach(ws => {
                     if (ws !== null && ws.readyState === 1) {
                         ws.send(JSON.stringify({
@@ -160,10 +163,13 @@ module.exports = class SessionObject {
                         }));
                     }
                 });
-                this.finisherInterval(60);
+                this.finisherTimeout(15000, ++i);   //MARKUP: finsher time
             }
 
-            if (i === (this.currentTurn + 2)) {
+            else {
+                console.log("finisherTimeout(fn) --> else");
+                clearTimeout(this.finishertimerID);
+                this.finishertimerID = null;
                 this.waitingSockets.forEach(ws => {
                     if (ws !== null && ws.readyState === 1) {
                         if (ws.isUndecidedOldPlayer) {
@@ -172,21 +178,20 @@ module.exports = class SessionObject {
                         }
                     }
                 });
-                clearInterval(this.finishertimerID);
+                this.waitingSockets = this.waitingSockets.filter(ws => { return ws !== null });
+                return;
             }
-
-            i++;
         }, finalTimerAmount); //MARKUP: finsher time
     };
 
     saveOnDB(erase = false) {
         console.log("save on db called");
         if (this.starterTimerID)
-            clearInterval(this.starterTimerID);
+            clearTimeout(this.starterTimerID);
         if (this.gamerTimerID)
             clearTimeout(this.gamerTimerID);
         if (this.finishertimerID)
-            clearInterval(this.finishertimerID);
+            clearTimeout(this.finishertimerID);
         if (erase) {
             this.sessionName = null;
             this.isFinished = true;

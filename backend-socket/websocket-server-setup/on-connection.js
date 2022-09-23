@@ -59,6 +59,7 @@ module.exports = function onConnection(ws, req) {
             console.log("closing 1003");
             if (ws.readyState === 1)
                 ws.close(1013, 'ongoing match, try again later');
+                ws.terminate();
             return;
         } else { //if not finished
             //console.log('on-connection.js --> else(2-2) triggered');
