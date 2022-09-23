@@ -30,7 +30,7 @@ export function Home() {
   const [chatMessages, setChatMessages] = useState<
     { user: string; msg: string }[]
   >([]);
-  const [screen, setScreen] = useState<Number>(3);
+  const [screen, setScreen] = useState<Number>(0);
   const [socket, setSocket] = useState<WebSocket>();
 
   const [timer, setTimer] = useState<any>(15);
