@@ -115,7 +115,7 @@ module.exports = class SessionObject {
             }
 
         }, time);
-    }
+    };
 
     finisherInterval() {
 
@@ -137,7 +137,6 @@ module.exports = class SessionObject {
                 this.currentTurn = -1;
                 this.game = [[], []];
                 this.chat = [];
-                clearInterval(this.finishertimerID);
                 this.finishertimerID = null;
                 //give 60 segs to decide if will play, if not kick
                 if (ws !== null && ws.readyState === 1) {
@@ -150,7 +149,6 @@ module.exports = class SessionObject {
             }
 
             if ( i > this.currentTurn) {
-                this.newGametimerActive = false;
                 this.waitingSockets.forEach(ws => { 
                     if (ws !== null && ws.readyState === 1) {
                         if (ws.isUndecidedOldPlayer) {
@@ -159,21 +157,23 @@ module.exports = class SessionObject {
                         }
                     }
                 });
+                clearInterval(this.finishertimerID);
+                this.newGametimerActive = false;
             }  
             i++;
         }, 60000);
-    }
+    };
 
     saveOnDB(erase = false) {
         console.log("save on db called");
         if (this.timerID)
             clearTimeout(this.timerID);
         if (this.finishertimerID)
-            clearInterval(this.finishertimerID)
+            clearInterval(this.finishertimerID);
         if (erase) {
             this.sessionName = null;
             this.isFinished = true;
         }
         //save data on database here
-    }
+    };
 };
