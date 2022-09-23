@@ -3,10 +3,10 @@ const shouldStartGame = require('./should-game-start-checker.js');
 module.exports = function partStatChanger(Session, data, playerWs) {
     if (Object.hasOwn(data, 'msgContent')) { //object has this property
         if (typeof data.msgContent === 'boolean') { //and msgContent is boolean
+            if (playerWs.isUndecidedOldPlayer)
+                playerWs.isUndecidedOldPlayer = false;
             if (data.msgContent === true) { //player wants to play
                 //if player is alreaady on active sockets do nothing, else move to active if there's an empty place
-                if (ws.isUndecidedOldPlayer)
-                    ws.isUndecidedOldPlayer = false;
                 if (playerWs.aID === null) { // player not on active
                     let availableIndex = Session.activeSockets.indexOf(null);
                     if (availableIndex === -1 && playerWs.readyState === 1) { //there`s no place for the player
