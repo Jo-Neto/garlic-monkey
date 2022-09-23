@@ -12,7 +12,6 @@ function sockServSetup(wss) {
     wss.on('error', (error) => { console.log('---->>>> SOCKET-SERVER ERROR: '); console.log(error); });
 };
 
-//TODO: broadcaster checker
 module.exports = sockServSetup;
 
 

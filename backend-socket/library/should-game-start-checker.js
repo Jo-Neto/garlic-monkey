@@ -3,11 +3,9 @@ module.exports = function shouldStartGame(Session) {
     console.log(Session.currentTurn);
     if (Session.currentTurn !== -1)
         return;
-    if (Session.timerId !== null) {
-        clearTimeout(Session.timerId);
-        Session.timerId = null;
-        Session.timerActive = false;
-        Session.timerActive = true;
+    if (Session.timerID !== null) {
+        clearTimeout(Session.timerID);
+        Session.timerID = null;
         Session.activateTimer(15000); // 30 segs  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         Session.activeSockets.forEach(ws => { //send new msg to all players in session
             if (ws !== null && ws.readyState === 1) {
@@ -32,7 +30,6 @@ module.exports = function shouldStartGame(Session) {
             playerCount++;
     });
     if (playerCount >= 4) {
-        Session.timerActive = true;
         Session.activateTimer(15000); // 20 segs  <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
         Session.activeSockets.forEach(ws => { //send new msg to all players in session
             if (ws !== null && ws.readyState === 1) {
