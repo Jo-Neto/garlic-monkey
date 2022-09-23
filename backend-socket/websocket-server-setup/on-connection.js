@@ -106,6 +106,6 @@ module.exports = function onConnection(ws, req) {
         }));
     }
     ws.garlicName = playerChoiceArr[1];
+    ws.isUndecidedOldPlayer = false;
     ws.hasPlayedThisTurn = false;
-    ws.isAlive = true;
 };
