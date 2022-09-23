@@ -24,7 +24,7 @@ const COLORS = [
 
 const SIZES = [1, 5, 10, 15, 20, 25];
 
-export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
+export function WhiteBoard({ proportion, nick }: WhiteBoardProps): JSX.Element {
   const [canvasSize, setCanvasSize] = useState<CanvasSizes>({
     width: 500,
     height: 500,
@@ -35,6 +35,8 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
 
   const ContainerRef = useRef<HTMLDivElement>(null);
   const WhiteBoardRef = useRef<CanvasDraw>(null);
+
+  const [drawData, setDrawData] = useState("")
 
   useEffect(() => {
     const actualWidth = ContainerRef.current?.offsetWidth;
@@ -56,13 +58,18 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
   function print() {
     const data = WhiteBoardRef.current?.getSaveData(); // Its stringied
     const objData = JSON.parse(data || '');
+    setDrawData(objData);
     console.log(objData);
   }
 
-  function parseToURL() {
+  const parseToURL = () => {
     // @ts-ignore: Unreachable code error
     const dataUrl = WhiteBoardRef.current?.getDataURL('svg', false, '#FFFFFF');
-    console.log(dataUrl);
+    return dataUrl
+  }
+
+  function loadData( saveData: string ){
+    const loadDraw = WhiteBoardRef.current?.loadSaveData(JSON.stringify(saveData), true);
   }
 
   function addTransparency(value: string): string {
@@ -114,6 +121,7 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
           functions={[
             { name: 'Reset', callback: () => resetCanvas() },
             { name: 'Desfazer', callback: () => undo() },
+            //{ name: 'Salvar', callback: () => print() },
           ]}
         />
         <input
