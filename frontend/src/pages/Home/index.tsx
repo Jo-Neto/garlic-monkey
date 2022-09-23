@@ -21,11 +21,11 @@ export function Home() {
 
   const [timer, setTimer] = useState<any>(15);
   let trueTime = 15;
-  let timerId = 0;
+  let timerID = 0;
   function timerFn() {
     setTimer(trueTime);
     if (trueTime === 0) {
-      clearInterval(timerId)
+      clearInterval(timerID)
       setTimer(0);
     } else {
       setTimer(trueTime);
@@ -100,9 +100,9 @@ export function Home() {
     else if (data.msgType === 'timerUpdate') {
       if (data.msgContent.msgContent === 'timerStart') {
         trueTime = 30;
-        timerId = setInterval(timerFn, 1000);
+        timerID = setInterval(timerFn, 1000);
       } else if (data.msgContent.msgContent === 'timerStop') {
-        clearInterval(timerId)
+        clearInterval(timerID)
         setTimer(15);
       }
     }
