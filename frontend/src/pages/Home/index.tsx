@@ -4,6 +4,7 @@ import { Input } from '../../components/Form/Input';
 import { GamePage } from '../../layout/GamePage';
 import { Players } from '../Players/index';
 import { Chat } from '../../components/Chat';
+import { Final } from '../../components/final';
 import { PlayerIcon } from '../../components/PlayerIcon';
 import { Player } from '../../components/Player';
 import { WhiteBoard } from '../../components/Game/WhiteBoard';
@@ -25,7 +26,9 @@ export function Home() {
   const [message, setMessage] = useState('');
   const [randomPhrase, setRandomPhrase] = useState('');
   const [chatMessages, setChatMessages] = useState<{ user: string; msg: string }[]>([]);
-  const [screen, setScreen] = useState<Number>(0);
+  const [finalScreen, setfinalScreen] = useState<{ type: string; owner: string; data: string }[]>([]);
+  const [finalPlayer, setFinalPlayer] = useState('');
+  const [screen, setScreen] = useState<Number>(2);
   const [socket, setSocket] = useState<WebSocket>();
   const [timer, setTimer] = useState<any>(15);
   const [disable, setDisable] = useState(false);
@@ -163,13 +166,11 @@ export function Home() {
     //+------------------------------------------------------------------+
 
     else if (data.msgType === 'finalData') {
-      if (data.msgContent.update) {
-        alert("player tem um tempo pra precisa decidir se vai jogar ou ficar de vela, se não decidir, será kickado");
-        return;
-      } else {
-        console.log('final data index ' + (data.msgContent.round) + " below");
-        console.log(data.msgContent); 
-      }
+      setScreen(5);
+      setFinalPlayer(data.msgContent[0].owner || '');
+      setfinalScreen(data.msgContent)
+      console.log('final data index ' + (data.msgContent.round) + " below");
+      console.log(data.msgContent.finalData); 
     }
 
 
@@ -638,6 +639,67 @@ export function Home() {
           </fieldset>
         </form>
       </GamePage>
+    );
+  }  
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //+------------------------------------------------------------------+
+  //|                GAME PAGE - DESCRIPTION WITH IMAGE                |
+  //+------------------------------------------------------------------+
+  else if (screen === 5) {
+    return (
+      <GamePage className="flex justify-between">
+      <div className="flex flex-row justify-between align-middle items-center  w-[90%]">
+        <img
+          className="top-5"
+          src="/assets/images/logo.png"
+          width={150}
+          height={116}
+          alt="Garlic Monkey logo"
+        />
+      </div>
+      <div className="flex flex-row h-[20rem] w-[45rem] justify-between">
+        <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-gradient-to-b from-black/25 to-black/50 rounded-l-[1rem]">
+          <div className="flex flex-col items-center">
+            <span className="defaultSpan uppercase mt-[1rem]"
+            >JOGADORES 1</span>
+            <div className="flex flex-col gap-2 mt-[1rem]">
+              <Player players={players} finalPlayer={finalPlayer}></Player>
+            </div>
+          </div>
+        </div>
+        <div className="border-solid border-2 p-2 border-white/[0.75] rounded-r-md w-[30rem] bg-gradient-to-r from-black/[12%] to-black/25 flex flex-col">
+          <div className="h-full chatBox overflow-scroll overflow-x-hidden">
+            {
+              finalScreen.map((el) => {
+                if (el.type === 'desc') return <Final img={false} owner={el.owner} data={el.data} />;
+                return <Final img={true} owner={el.owner} data={el.data} />;
+              })
+            }
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-row">
+        <div className="flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105">
+          <span
+            className="defaultSpan"
+            onClick={() => {
+              socket.send(
+                JSON.stringify({
+                  msgType: 'participationStatus',
+                  msgContent: false,
+                }),
+              );
+              setMessage('');
+            }}
+          >SÓ CHAT!</span>
+          <Button
+            className="ml-[0.5rem]"
+            icon={{ src: '/assets/icons/go.png', size: 22 }}
+          />
+        </div>
+      </div>
+    </GamePage>
     );
   }
 }
