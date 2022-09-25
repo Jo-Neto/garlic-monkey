@@ -5,6 +5,4 @@ export type CanvasSizes = {
 
 export interface WhiteBoardProps {
   proportion: number;
-  socket: WebSocket;
-  nick: string;
 }
