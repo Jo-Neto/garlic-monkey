@@ -129,6 +129,8 @@ export function Home() {
       if (data.msgContent.msgContent === 'timerStart') {
         trueTime = 15;
         timerFn();
+        if (timerId)
+          clearInterval(timerId);
         timerId = setInterval(timerFn, 1000);
       } else if (data.msgContent.msgContent === 'timerStop') {
         clearInterval(timerId);
