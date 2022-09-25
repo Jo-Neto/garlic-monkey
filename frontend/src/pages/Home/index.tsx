@@ -42,10 +42,9 @@ export function Home() {
     if (trueTime === 0) {
       clearInterval(timerId);
       setTimer(0);
-    } else 
+    } else
       trueTime--;
   }
-
   let isScreenDescription = true; // TRUE!
   function screenSetter(whichScreen: number) {
     isScreenDescription = !isScreenDescription;
@@ -145,7 +144,7 @@ export function Home() {
       if (data.msgContent.update === 'gameStart') {
         //condition true when game starting
         timerResetter();
-        if (data.msgContent.type === 'activePlayer') 
+        if (data.msgContent.type === 'activePlayer')
           setScreen(2);
         else
           alert('esse player nao pode jogar!!! ele esta fora dos players ativos, não clicou em "jogar!" ou nao tinha vaga');
@@ -177,14 +176,14 @@ export function Home() {
           timerId = setInterval(timerFn, 1000);
           console.log("setting screen to 3");
           screenSetter(3);
-          console.log("isScreenDescription = "+ isScreenDescription)
+          console.log("isScreenDescription = " + isScreenDescription)
         } else if (isScreenDescription) {
           trueTime = 15; //drawing timer
           timerFn();
           timerId = setInterval(timerFn, 1000);
           console.log("setting screen to 4");
           screenSetter(4);
-          console.log("isScreenDescription = "+ isScreenDescription)
+          console.log("isScreenDescription = " + isScreenDescription)
         }
       }
     }
@@ -404,14 +403,18 @@ export function Home() {
             <span className="defaultSpan uppercase"
             >{room}</span>
           </div>
-          <div className="text-[80px] bold"
-          >{timer}</div>
+          <div className='flex flex-col items-center'>
+            <span>Tempo</span>
+            <div className='defaultSpan text-[60px] mt-3'>
+              {timer}
+            </div>
+          </div>
         </div>
         <div className="flex flex-row h-[20rem] w-[45rem] justify-between">
           <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-gradient-to-b from-black/25 to-black/50 rounded-l-[1rem]">
             <div className="flex flex-col items-center">
               <span className="defaultSpan uppercase mt-[1rem]"
-              >JOGADORES 1</span>
+              >JOGADORES</span>
               <div className="flex flex-col gap-2 mt-[1rem]">
                 <Player players={players}></Player>
               </div>
@@ -449,9 +452,9 @@ export function Home() {
           </div>
         </div>
         <div className="flex flex-row">
-          <div className="flex flex-row justify-center items-center bg-white w-[7rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105 mr-10">
+          <div className="flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105 mr-10">
             <span
-              className="defaultSpan"
+              className="defaultSpan !w-[200px] text-center"
               onClick={() => {
                 socket.send(
                   JSON.stringify({
@@ -493,7 +496,12 @@ export function Home() {
   else if (screen === 2) {
     return (
       <GamePage>
-        <div className='w-full text-end text-[85px]'>{timer}</div>
+        <div className='mr-[100px] flex flex-col items-end w-full'>
+          <span>Tempo</span>
+          <span className='defaultSpan text-[60px] mt-3'>
+            {timer}
+          </span>
+        </div>
         <div className="animate-wiggle mb-[1rem]">
           <img
             src="/assets/images/bigLogo.png"
@@ -505,6 +513,7 @@ export function Home() {
         <span className="defaultSpan mb-5 text-3xl"
         >ESCREVA UMA FRASE</span>
         <form
+          className='mb-10'
           onSubmit={e => {
             e.preventDefault();
             console.log('click received');
@@ -544,10 +553,21 @@ export function Home() {
   else if (screen === 3) {
     return (
       <GamePage>
-        <p
-          >Desenhe essa frase bizonha:</p>
+        <div className='flex justify-between w-full'>
+          <div className='ml-[520px] text-center'>
+          <p
+            >Desenhe essa frase bizonha:</p>
         <span
           >{testingNull("phrase", randomPhraseOrUrl)}</span>
+          </div>
+          <div className='mr-[22px] flex flex-col items-center'>
+            <span>Tempo</span>
+            <span className='defaultSpan text-[60px] mt-3'>
+              {timer}
+            </span>
+          </div>
+        </div>
+        {/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */}
         <div
           ref={ContainerRef}
           className="flex flex-col items-center w-full max-w-7xl h-fit" >
@@ -557,7 +577,7 @@ export function Home() {
               colors={COLORS}
               callback={setSelectedColor}
               selectedColor={selectedColor} />
-            <div className="shadow-md border-8 border-[#3F1802] rounded-md">
+            <div className="shadow-md border-8 border-[#3F1802] rounded-md mb-2">
               <CanvasDraw
                 disabled={disable}
                 ref={WhiteBoardRef}
