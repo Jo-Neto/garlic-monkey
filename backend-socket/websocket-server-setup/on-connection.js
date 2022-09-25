@@ -64,6 +64,20 @@ module.exports = function onConnection(ws, req) {
         } else { //if not finished
             //console.log('on-connection.js --> else(2-2) triggered');
             let replaceableSocketIndex = activeSessionsArr[matchedIndex].activeSockets.indexOf(null);
+            activeSessionsArr[matchedIndex].activeSockets.forEach( webs =>{
+                if ( webs.garlicName === playerChoiceArr[1]) {
+                    ws.close(4003, 'player name already taken');
+                    ws.terminate();
+                    return;
+                }
+            });
+            activeSessionsArr[matchedIndex].waitingSockets.forEach( webs =>{
+                if ( webs.garlicName === playerChoiceArr[1]) {
+                    ws.close(4003, 'player name already taken');
+                    ws.terminate();
+                    return;
+                }
+            });
             if (replaceableSocketIndex === -1) {
                 let replaceableWaitingSocketIndex = activeSessionsArr[matchedIndex].waitingSockets.indexOf(null);
                 if (replaceableWaitingSocketIndex === -1)
