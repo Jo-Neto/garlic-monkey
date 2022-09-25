@@ -24,7 +24,7 @@ const COLORS = [
 
 const SIZES = [1, 5, 10, 15, 20, 25];
 
-export function WhiteBoard({ proportion, nick }: WhiteBoardProps): JSX.Element {
+export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
   const [canvasSize, setCanvasSize] = useState<CanvasSizes>({
     width: 500,
     height: 500,
