@@ -28,7 +28,7 @@ export function Home() {
   const [chatMessages, setChatMessages] = useState<{ user: string; msg: string }[]>([]);
   const [finalScreen, setfinalScreen] = useState<{ type: string; owner: string; data: string }[]>([]);
   const [finalPlayer, setFinalPlayer] = useState('');
-  const [screen, setScreen] = useState<Number>(2);
+  const [screen, setScreen] = useState<Number>(0);
   const [socket, setSocket] = useState<WebSocket>();
   const [timer, setTimer] = useState<any>(15);
   const [disable, setDisable] = useState(false);
@@ -37,14 +37,13 @@ export function Home() {
   let timerId: number = 0;
 
   function timerFn() {
+    console.log("timerfn")
     setTimer(trueTime);
     if (trueTime === 0) {
       clearInterval(timerId);
       setTimer(0);
-    } else {
-      setTimer(trueTime);
+    } else 
       trueTime--;
-    }
   }
 
   let isScreenDescription = false;
@@ -55,12 +54,12 @@ export function Home() {
 
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//+------------------------------------------------------------------+
-//|                    SOCKET LOGIC BEGINNING                        |
-//+------------------------------------------------------------------+  
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //+------------------------------------------------------------------+
+  //|                    SOCKET LOGIC BEGINNING                        |
+  //+------------------------------------------------------------------+  
 
   const onMessage = useCallback((message: any) => {
     const data = JSON.parse(message?.data);
@@ -141,26 +140,40 @@ export function Home() {
     else if (data.msgType === 'gameUpdate') {
       if (data.msgContent.update === 'gameStart') {
         //condition true when game starting
-        if (data.msgContent.type === 'activePlayer')
+        timerResetter();
+        if (data.msgContent.type === 'activePlayer') 
           setScreen(2);
         else
           alert('esse player nao pode jogar!!! ele esta fora dos players ativos, não clicou em "jogar!" ou nao tinha vaga');
-      } 
-      
+      }
+
       else if (data.msgContent.update === 'roundInfo' || data.msgContent.data === null) {
         console.log('roundInfo below: '); //condition true when received data from previous player
         console.log(data.msgContent);
-        if (data.msgContent.data === null)
-          setRandomPhrase("o players que mandou a mensagem quitou");
+        timerResetter();
+      }
+
+      function timerResetter() {
+        console.log("timerResetter")
+        if (timerId) {
+          console.log("clearing interval");
+          clearInterval(timerId);
+          console.log(timerId);
+          trueTime = 0;
+        }
+        if (!data.msgContent.data)
+          setRandomPhrase("o players que mandou a mensagem quitou, ou não mandou nada");
         else
           setRandomPhrase(data.msgContent.data.data);
         setDisable(false);
         if (!isScreenDescription) {
+          console.log("new interval");
           trueTime = 15; //description timer
           timerId = setInterval(timerFn, 1000);
           screenSetter(3);
         }
         else if (isScreenDescription) {
+          console.log("new interval");
           trueTime = 15; //drawing timer
           timerId = setInterval(timerFn, 1000);
           screenSetter(4);
@@ -180,7 +193,7 @@ export function Home() {
       setFinalPlayer(data.msgContent[0].owner || '');
       setfinalScreen(data.msgContent)
       console.log('final data index ' + (data.msgContent.round) + " below");
-      console.log(data.msgContent.finalData); 
+      console.log(data.msgContent.finalData);
     }
 
 
@@ -196,7 +209,7 @@ export function Home() {
       console.log('===========================================================================================');
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    else 
+    else
       console.log('ERROR: -->>>  invalid socket data received');
     console.log('===========================================================================================');
   }, []);
@@ -323,7 +336,7 @@ export function Home() {
                 //|                     SOCKET CLOSE EVENT                           |
                 //+------------------------------------------------------------------+
                 a.onclose = (event) => {
-                  console.log("close socket code -->"+event.code)
+                  console.log("close socket code -->" + event.code)
                   if (event.code === 1001)
                     alert('player foi kickado porque demorou pra decidir se jogava ou não');
                   else if (event.code === 1002 || event.code === 1003)
@@ -332,7 +345,7 @@ export function Home() {
                     alert("Partida em andamento");
                   else if (event.code === 4003)
                     alert("ja existe outro player com o mesmo nome");
-                  setScreen(1);
+                  setScreen(0);
                 };
                 //////////////////////////////////////////////////////////////////////////////
                 //////////////////////////////////////////////////////////////////////////////
@@ -652,7 +665,7 @@ export function Home() {
         </form>
       </GamePage>
     );
-  }  
+  }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //+------------------------------------------------------------------+
@@ -661,57 +674,57 @@ export function Home() {
   else if (screen === 5) {
     return (
       <GamePage className="flex justify-between">
-      <div className="flex flex-row justify-between align-middle items-center  w-[90%]">
-        <img
-          className="top-5"
-          src="/assets/images/logo.png"
-          width={150}
-          height={116}
-          alt="Garlic Monkey logo"
-        />
-      </div>
-      <div className="flex flex-row h-[20rem] w-[45rem] justify-between">
-        <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-gradient-to-b from-black/25 to-black/50 rounded-l-[1rem]">
-          <div className="flex flex-col items-center">
-            <span className="defaultSpan uppercase mt-[1rem]"
-            >JOGADORES 1</span>
-            <div className="flex flex-col gap-2 mt-[1rem]">
-              <Player players={players} finalPlayer={finalPlayer}></Player>
+        <div className="flex flex-row justify-between align-middle items-center  w-[90%]">
+          <img
+            className="top-5"
+            src="/assets/images/logo.png"
+            width={150}
+            height={116}
+            alt="Garlic Monkey logo"
+          />
+        </div>
+        <div className="flex flex-row h-[20rem] w-[45rem] justify-between">
+          <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-gradient-to-b from-black/25 to-black/50 rounded-l-[1rem]">
+            <div className="flex flex-col items-center">
+              <span className="defaultSpan uppercase mt-[1rem]"
+              >JOGADORES 1</span>
+              <div className="flex flex-col gap-2 mt-[1rem]">
+                <Player players={players} finalPlayer={finalPlayer}></Player>
+              </div>
+            </div>
+          </div>
+          <div className="border-solid border-2 p-2 border-white/[0.75] rounded-r-md w-[30rem] bg-gradient-to-r from-black/[12%] to-black/25 flex flex-col">
+            <div className="h-full chatBox overflow-scroll overflow-x-hidden">
+              {
+                finalScreen.map((el) => {
+                  if (el.type === 'desc') return <Final img={false} owner={el.owner} data={el.data} />;
+                  return <Final img={true} owner={el.owner} data={el.data} />;
+                })
+              }
             </div>
           </div>
         </div>
-        <div className="border-solid border-2 p-2 border-white/[0.75] rounded-r-md w-[30rem] bg-gradient-to-r from-black/[12%] to-black/25 flex flex-col">
-          <div className="h-full chatBox overflow-scroll overflow-x-hidden">
-            {
-              finalScreen.map((el) => {
-                if (el.type === 'desc') return <Final img={false} owner={el.owner} data={el.data} />;
-                return <Final img={true} owner={el.owner} data={el.data} />;
-              })
-            }
+        <div className="flex flex-row">
+          <div className="flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105">
+            <span
+              className="defaultSpan"
+              onClick={() => {
+                socket.send(
+                  JSON.stringify({
+                    msgType: 'participationStatus',
+                    msgContent: false,
+                  }),
+                );
+                setMessage('');
+              }}
+            >SÓ CHAT!</span>
+            <Button
+              className="ml-[0.5rem]"
+              icon={{ src: '/assets/icons/go.png', size: 22 }}
+            />
           </div>
         </div>
-      </div>
-      <div className="flex flex-row">
-        <div className="flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105">
-          <span
-            className="defaultSpan"
-            onClick={() => {
-              socket.send(
-                JSON.stringify({
-                  msgType: 'participationStatus',
-                  msgContent: false,
-                }),
-              );
-              setMessage('');
-            }}
-          >SÓ CHAT!</span>
-          <Button
-            className="ml-[0.5rem]"
-            icon={{ src: '/assets/icons/go.png', size: 22 }}
-          />
-        </div>
-      </div>
-    </GamePage>
+      </GamePage>
     );
   }
 }

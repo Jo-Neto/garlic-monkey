@@ -8,19 +8,16 @@ module.exports = function onConnection(ws, req) {
         playerChoiceArr = req.headers['sec-websocket-protocol'].split(', ');
     } catch (e) {
         ws.close(1002, 'invalid subprotocols');
-        ws.terminate(); //safety 
         //console.log('on-connection.js --> catch condition: ' + e);
         return false;
     }
     if (playerChoiceArr.length !== 2) {
         ws.close(1002, 'invalid subprotocols count');
-        ws.terminate(); //safety 
         //console.log('on-connection.js --> invalid subprotocols argument count');
         return false;
     }
     if (typeof playerChoiceArr[0] !== 'string' || typeof playerChoiceArr[1] !== 'string' /*|| typeof playerChoiceArr[2] !== 'string'*/) {
         ws.close(1003, 'invalid subprotocols type');
-        ws.terminate(); //safety 
         //console.log('on-connection.js --> subprotocols type error');
         return false;
     }
@@ -63,7 +60,7 @@ module.exports = function onConnection(ws, req) {
                     console.log("closing 4003");
                     ws.takenName = true;
                     ws.close(4003, 'player name already taken');
-                    ws.terminate();
+                    //ws.terminate();
                     shouldReturn = true;
                 }
             }
@@ -74,7 +71,7 @@ module.exports = function onConnection(ws, req) {
                     console.log("closing 4003");
                     ws.takenName = true;
                     ws.close(4003, 'player name already taken');
-                    ws.terminate();
+                    //ws.terminate();
                     shouldReturn = true;
                 }
             }
@@ -85,12 +82,10 @@ module.exports = function onConnection(ws, req) {
             console.log("closing 1003");
             if (ws.readyState === 1)
                 ws.close(1013, 'ongoing match, try again later');
-            ws.terminate();
             return;
         } else { //if not finished
             //console.log('on-connection.js --> else(2-2) triggered');
             let replaceableSocketIndex = activeSessionsArr[matchedIndex].activeSockets.indexOf(null);
-            console.log("return did not work 1");
             if (replaceableSocketIndex === -1) {
                 let replaceableWaitingSocketIndex = activeSessionsArr[matchedIndex].waitingSockets.indexOf(null);
                 if (replaceableWaitingSocketIndex === -1)
@@ -105,7 +100,6 @@ module.exports = function onConnection(ws, req) {
             }
             shouldStartGame(activeSessionsArr[matchedIndex]);
         }
-        console.log("return did not work 2");
         allActivePlayersName = activeSessionsArr[matchedIndex].activeSockets.map(webs => { if (webs !== null) return webs.garlicName; });
         allWaitingPlayersName = activeSessionsArr[matchedIndex].waitingSockets.map(webs => { if (webs !== null) return webs.garlicName; });
         if (ws.readyState === 1) {
@@ -132,7 +126,6 @@ module.exports = function onConnection(ws, req) {
         });
         ws.sID = matchedIndex; //assign session ID for socket
     }
-    console.log("return did not work 3");
     if (newRoom && ws.readyState === 1) {
         ws.send(JSON.stringify({
             msgType: 'playerRow',

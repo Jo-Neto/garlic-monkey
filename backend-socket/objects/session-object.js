@@ -174,7 +174,6 @@ module.exports = class SessionObject {
                     if (ws !== null && ws.readyState === 1) {
                         if (ws.isUndecidedOldPlayer) {
                             ws.close(1001, 'player has been kicked for not deciding fast enough');
-                            ws.terminate();
                         }
                     }
                 });
