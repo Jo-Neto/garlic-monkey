@@ -24,7 +24,7 @@ export function Home() {
   const [nick, setNick] = useState('');
   const [room, setRoom] = useState('1');
   const [message, setMessage] = useState('');
-  const [randomPhrase, setRandomPhrase] = useState('');
+  const [randomPhraseOrUrl, setRandomPhraseOrUrl] = useState('');
   const [chatMessages, setChatMessages] = useState<{ user: string; msg: string }[]>([]);
   const [finalScreen, setfinalScreen] = useState<{ type: string; owner: string; data: string }[]>([]);
   const [finalPlayer, setFinalPlayer] = useState('');
@@ -42,14 +42,27 @@ export function Home() {
     if (trueTime === 0) {
       clearInterval(timerId);
       setTimer(0);
-    } else 
+    } else
       trueTime--;
   }
-
-  let isScreenDescription = false;
+  let isScreenDescription = true; // TRUE!
   function screenSetter(whichScreen: number) {
     isScreenDescription = !isScreenDescription;
     setScreen(whichScreen);
+  }
+
+  const testingNull = (type :string, phrase :string) => {
+    let aux :string = phrase;
+    if ( type == "phrase" )  {
+      if ( phrase ) aux  = phrase;
+    } else if ( type == "URL" ) {
+      if ( aux.substr(0,10) == "data:image" ) {
+        aux = phrase
+      } else {
+        aux  = "/assets/images/escreva.png";
+      }
+    }
+    return aux;
   }
 
 
@@ -64,10 +77,7 @@ export function Home() {
   const onMessage = useCallback((message: any) => {
     const data = JSON.parse(message?.data);
     console.log(data);
-    if (!Object.hasOwn(data, 'msgType')) {
-      return;
-    }
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    if (!Object.hasOwn(data, 'msgType')) return;/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
     //|                           LINE LOGIC                             |
     //+------------------------------------------------------------------+
@@ -87,7 +97,8 @@ export function Home() {
         );
         //console.log(players);
       }
-    } else if (data.msgType === 'playerRow') {
+    } 
+    else if (data.msgType === 'playerRow') {
       //console.log(data.msgContent);
 
       let activePlayers = data.msgContent.activeNick.filter(function (el: any) {
@@ -100,9 +111,6 @@ export function Home() {
       });
       setPlayers(activePlayers);
     }
-
-
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
     //|                            CHAT LOGIC                            |
@@ -113,9 +121,6 @@ export function Home() {
         { user: data.msgContent.nick, msg: data.msgContent.msgContent },
       ]);
     }
-
-
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
     //|                           TIMER LOGIC                            |
@@ -131,9 +136,6 @@ export function Home() {
         timerFn();
       }
     }
-
-
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
     //|                            GAME LOGIC                            |
@@ -142,7 +144,7 @@ export function Home() {
       if (data.msgContent.update === 'gameStart') {
         //condition true when game starting
         timerResetter();
-        if (data.msgContent.type === 'activePlayer') 
+        if (data.msgContent.type === 'activePlayer')
           setScreen(2);
         else
           alert('esse player nao pode jogar!!! ele esta fora dos players ativos, não clicou em "jogar!" ou nao tinha vaga');
@@ -151,12 +153,13 @@ export function Home() {
       else if (data.msgContent.update === 'roundInfo' || data.msgContent.data === null) {
         console.log('roundInfo below: '); //condition true when received data from previous player
         console.log(data.msgContent);
-      if (!data.msgContent.data)
-        setRandomPhrase("o players que mandou a mensagem quitou, ou não mandou nada");
-      else
-        setRandomPhrase(data.msgContent.data.data);
-      setDisable(false);
-      timerResetter();
+        if (!data.msgContent.data) {
+          setRandomPhraseOrUrl("Desenho Livre");
+        } else {
+          setRandomPhraseOrUrl(data.msgContent.data.data);
+        }
+        setDisable(false);
+        timerResetter();
       }
 
       function timerResetter() {
@@ -173,20 +176,17 @@ export function Home() {
           timerId = setInterval(timerFn, 1000);
           console.log("setting screen to 3");
           screenSetter(3);
-          console.log("isScreenDescription = "+ isScreenDescription)
+          console.log("isScreenDescription = " + isScreenDescription)
         } else if (isScreenDescription) {
           trueTime = 15; //drawing timer
           timerFn();
           timerId = setInterval(timerFn, 1000);
           console.log("setting screen to 4");
           screenSetter(4);
-          console.log("isScreenDescription = "+ isScreenDescription)
+          console.log("isScreenDescription = " + isScreenDescription)
         }
       }
     }
-
-
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
     //|                         END GAME LOGIC                           |
@@ -199,9 +199,6 @@ export function Home() {
       console.log('final data index ' + (data.msgContent.round) + " below");
       console.log(data.msgContent.finalData);
     }
-
-
-
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
     //|                       BACK-END REPORTS                           |
@@ -217,15 +214,10 @@ export function Home() {
       console.log('ERROR: -->>>  invalid socket data received');
     console.log('===========================================================================================');
   }, []);
-
-
-
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //+------------------------------------------------------------------+
   //|                  SOCKET FUNCTIONS INITIALIZER                    |
   //+------------------------------------------------------------------+
-
-
   useEffect(() => {
     if (socket) {
       socket.addEventListener('message', onMessage);
@@ -235,9 +227,6 @@ export function Home() {
       };
     }
   }, [socket, onMessage]);
-
-
-
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //+------------------------------------------------------------------+
   //|                           HOME PAGE                              |
@@ -296,7 +285,7 @@ export function Home() {
   };
 
   async function sendToBack() {
-    const link = await parseToURL();
+    let link = await parseToURL();
     setDisable(true);
     socket.send(
       JSON.stringify({
@@ -414,14 +403,18 @@ export function Home() {
             <span className="defaultSpan uppercase"
             >{room}</span>
           </div>
-          <div className="text-[80px] bold"
-          >{timer}</div>
+          <div className='flex flex-col items-center'>
+            <span>Tempo</span>
+            <div className='defaultSpan text-[60px] mt-3'>
+              {timer}
+            </div>
+          </div>
         </div>
         <div className="flex flex-row h-[20rem] w-[45rem] justify-between">
           <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-gradient-to-b from-black/25 to-black/50 rounded-l-[1rem]">
             <div className="flex flex-col items-center">
               <span className="defaultSpan uppercase mt-[1rem]"
-              >JOGADORES 1</span>
+              >JOGADORES</span>
               <div className="flex flex-col gap-2 mt-[1rem]">
                 <Player players={players}></Player>
               </div>
@@ -459,9 +452,9 @@ export function Home() {
           </div>
         </div>
         <div className="flex flex-row">
-          <div className="flex flex-row justify-center items-center bg-white w-[7rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105 mr-10">
+          <div className="flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105 mr-10">
             <span
-              className="defaultSpan"
+              className="defaultSpan !w-[200px] text-center"
               onClick={() => {
                 socket.send(
                   JSON.stringify({
@@ -503,7 +496,12 @@ export function Home() {
   else if (screen === 2) {
     return (
       <GamePage>
-        <div className='w-full text-end text-[85px]'>{timer}</div>
+        <div className='mr-[100px] flex flex-col items-end w-full'>
+          <span>Tempo</span>
+          <span className='defaultSpan text-[60px] mt-3'>
+            {timer}
+          </span>
+        </div>
         <div className="animate-wiggle mb-[1rem]">
           <img
             src="/assets/images/bigLogo.png"
@@ -515,6 +513,7 @@ export function Home() {
         <span className="defaultSpan mb-5 text-3xl"
         >ESCREVA UMA FRASE</span>
         <form
+          className='mb-10'
           onSubmit={e => {
             e.preventDefault();
             console.log('click received');
@@ -554,22 +553,31 @@ export function Home() {
   else if (screen === 3) {
     return (
       <GamePage>
-        <p
-        >Desenhe essa frase bizonha:</p>
-        <span>{randomPhrase}</span>
+        <div className='flex justify-between w-full'>
+          <div className='ml-[520px] text-center'>
+          <p
+            >Desenhe essa frase bizonha:</p>
+        <span
+          >{testingNull("phrase", randomPhraseOrUrl)}</span>
+          </div>
+          <div className='mr-[22px] flex flex-col items-center'>
+            <span>Tempo</span>
+            <span className='defaultSpan text-[60px] mt-3'>
+              {timer}
+            </span>
+          </div>
+        </div>
         {/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */}
         <div
           ref={ContainerRef}
-          className="flex flex-col items-center w-full max-w-7xl h-fit"
-        >
+          className="flex flex-col items-center w-full max-w-7xl h-fit" >
           <div className="flex flex-row items-center justify-between">
             <Colors
               title="CORES"
               colors={COLORS}
               callback={setSelectedColor}
-              selectedColor={selectedColor}
-            />
-            <div className="shadow-md border-8 border-[#3F1802] rounded-md">
+              selectedColor={selectedColor} />
+            <div className="shadow-md border-8 border-[#3F1802] rounded-md mb-2">
               <CanvasDraw
                 disabled={disable}
                 ref={WhiteBoardRef}
@@ -581,15 +589,13 @@ export function Home() {
                 brushRadius={selectedRadius}
                 canvasHeight={canvasSize.height}
                 canvasWidth={canvasSize.width}
-                enablePanAndZoom
-              />
+                enablePanAndZoom />
             </div>
             <Radius
               radius={SIZES}
               callback={setSelectedRadius}
               selectedRadius={selectedRadius}
-              selectedColor={selectedColor}
-            />
+              selectedColor={selectedColor} />
           </div>
           <div className="flex flex-row ">
             <Actions
@@ -598,8 +604,7 @@ export function Home() {
                 { name: 'Desfazer', callback: () => undo() },
                 { name: 'Send', callback: () => sendToBack() },
                 //{ name: 'Salvar', callback: () => print() },
-              ]}
-            />
+              ]} />
             <input
               className="cursor-pointer"
               type="range"
@@ -607,11 +612,9 @@ export function Home() {
               max={100}
               step={1}
               value={gradient}
-              onChange={(e) => setGradient(Number(e.target.value))}
-            />
+              onChange={(e) => setGradient(Number(e.target.value))} />
           </div>
         </div>
-        {/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */}
         <div
           className="flex flex-row"
           onClick={() => console.log('click received')}
@@ -629,7 +632,7 @@ export function Home() {
       <GamePage>
         <div className="mb-[1rem] shadow-md border-8 border-[#3F1802] rounded-md">
           <img
-            src={randomPhrase}
+            src={testingNull("URL", randomPhraseOrUrl)}
             width={canvasSize.width}
             height={canvasSize.height}
             alt="Garlic Monkey logo"
@@ -701,7 +704,7 @@ export function Home() {
             <div className="h-full chatBox overflow-scroll overflow-x-hidden">
               {
                 finalScreen.map((el) => {
-                  if (el.type === 'desc') return <Final img={false} owner={el.owner} data={el.data} />;
+                  if (el?.type === 'desc') return <Final img={false} owner={el.owner} data={el.data} />;
                   return <Final img={true} owner={el.owner} data={el.data} />;
                 })
               }
