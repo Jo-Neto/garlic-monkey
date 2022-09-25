@@ -197,6 +197,7 @@ module.exports = class SessionObject {
             this.isFinished = true;
         }
         //save data on database here
+        const body = {chat: this.chat, game: this.game};
         const object = JSON.stringify({chat: this.chat, game: this.game})
         console.log(this.game)
         this.sessionName = null;            
@@ -204,12 +205,14 @@ module.exports = class SessionObject {
         fetch('http://localhost:8080/send-object', 
         {
             method: 'POST',
+            body: JSON.stringify(body),
             headers: {
-                body: {object}
+                "Content-Type": "application/json"
             }
         })
         .then(response => response.json())
         .then(data => console.log(data))
+        .catch(err => console.log(err));
             
     };
 };

@@ -17,7 +17,8 @@ app.use(cors({
 
 app.post('/send-object', jsonParser, (req, res) => {
     const { object } = req.body;
-    redisModule.set(object.sessionName, object);
+    console.log(object)
+    redisModule.set(object.game[0][0].owner, object);
     
     res.json({sucessMessage: "Finish Storing", data: data});
 });
