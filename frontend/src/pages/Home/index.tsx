@@ -32,6 +32,7 @@ export function Home() {
 
   let trueTime: number = 15;
   let timerId: number = 0;
+
   function timerFn() {
     setTimer(trueTime);
     if (trueTime === 0) {
@@ -60,6 +61,7 @@ export function Home() {
 
   const onMessage = useCallback((message: any) => {
     const data = JSON.parse(message?.data);
+    console.log(data);
     if (!Object.hasOwn(data, 'msgType')) {
       return;
     }
@@ -140,7 +142,9 @@ export function Home() {
           setScreen(2);
         else
           alert('esse player nao pode jogar!!! ele esta fora dos players ativos, não clicou em "jogar!" ou nao tinha vaga');
-      } else if (data.msgContent.update === 'roundInfo' || data.msgContent.data === null) {
+      } 
+      
+      else if (data.msgContent.update === 'roundInfo' || data.msgContent.data === null) {
         console.log('roundInfo below: '); //condition true when received data from previous player
         console.log(data.msgContent);
         if (data.msgContent.data === null)
@@ -148,10 +152,16 @@ export function Home() {
         else
           setRandomPhrase(data.msgContent.data.data);
         setDisable(false);
-        if (!isScreenDescription) 
+        if (!isScreenDescription) {
+          trueTime = 15; //description timer
+          timerId = setInterval(timerFn, 1000);
           screenSetter(3);
-        else if (isScreenDescription) 
+        }
+        else if (isScreenDescription) {
+          trueTime = 15; //drawing timer
+          timerId = setInterval(timerFn, 1000);
           screenSetter(4);
+        }
       }
     }
 
@@ -312,6 +322,7 @@ export function Home() {
                 //|                     SOCKET CLOSE EVENT                           |
                 //+------------------------------------------------------------------+
                 a.onclose = (event) => {
+                  console.log("close socket code -->"+event.code)
                   if (event.code === 1001)
                     alert('player foi kickado porque demorou pra decidir se jogava ou não');
                   else if (event.code === 1002 || event.code === 1003)
@@ -474,6 +485,7 @@ export function Home() {
   else if (screen === 2) {
     return (
       <GamePage>
+        <div className='w-full text-end text-[85px]'>{timer}</div>
         <div className="animate-wiggle mb-[1rem]">
           <img
             src="/assets/images/bigLogo.png"

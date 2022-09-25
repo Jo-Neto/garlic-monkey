@@ -2,7 +2,9 @@ const activeSessionsArr = require('../memory-modules/active-sessions.js');
 const shouldStartGame = require('../library/should-game-start-checker.js');
 
 module.exports = function onClose(ws) {
-    let removeIndex = activeSessionsArr[ws.sID].activeSockets.indexOf(ws);  //WHY THE ACTUAL FUCK DO I NEED THIS SHIIIIIIIIIIT!!!!!!!!!!!!!
+    if (ws.takenName)
+        return;
+    let removeIndex = activeSessionsArr[ws.sID].activeSockets.indexOf(ws);  //WHY THE ACTUAL FUCK DO I NEED THIS SHIIIIIIIIIIT!!!!!!!!!!!!!  
     if (removeIndex !== -1) {
         activeSessionsArr[ws.sID].activeSockets[removeIndex] = null;
         shouldStartGame(activeSessionsArr[ws.sID]);
