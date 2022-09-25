@@ -64,7 +64,6 @@ export function Home() {
 
   const onMessage = useCallback((message: any) => {
     const data = JSON.parse(message?.data);
-    console.log(data);
     if (!Object.hasOwn(data, 'msgType')) {
       return;
     }
@@ -145,15 +144,6 @@ export function Home() {
           setScreen(2);
         else
           alert('esse player nao pode jogar!!! ele esta fora dos players ativos, não clicou em "jogar!" ou nao tinha vaga');
-      }
-
-      else if (data.msgContent.update === 'roundChange') {
-        /*setDisable(false);
-        //condition true when new round begins
-        console.log('new round = ' + data.msgContent.newRound); //condition true when new round begins
-        if (!isScreenDescription) screenSetter(3);
-        else if (isScreenDescription) screenSetter(4);*/
-
       } else if (data.msgContent.update === 'roundInfo' || data.msgContent.data === null) {
         console.log('roundInfo below: '); //condition true when received data from previous player
         console.log(data.msgContent);
@@ -177,8 +167,13 @@ export function Home() {
     //+------------------------------------------------------------------+
 
     else if (data.msgType === 'finalData') {
-      console.log('final data index ' + (data.msgContent.round) + " below");
-      console.log(data.msgContent.finalData); 
+      if (data.msgContent.update) {
+        alert("player tem um tempo pra precisa decidir se vai jogar ou ficar de vela, se não decidir, será kickado");
+        return;
+      } else {
+        console.log('final data index ' + (data.msgContent.round) + " below");
+        console.log(data.msgContent); 
+      }
     }
 
 
@@ -317,6 +312,22 @@ export function Home() {
               onSubmit={(e) => {
                 e.preventDefault()
                 let a = new WebSocket('wss://localhost:9999', [room, nick]);
+                //+------------------------------------------------------------------+
+                //|                     SOCKET CLOSE EVENT                           |
+                //+------------------------------------------------------------------+
+                a.onclose = (event) => {
+                  console.log(event.code);
+                  if (event.code === 1001)
+                    alert('player foi kickado porque demorou pra decidir se jogava ou não');
+                  else if (event.code === 1002 || event.code === 1003)
+                    alert("Player tentou entrar na sala com string(s) invalida(s)");
+                  else if (event.code === 1013)
+                    alert("Partida em andamento");
+                  setScreen(1);
+                };
+                //////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////
                 setSocket(a);
                 setScreen(1);
               }}
