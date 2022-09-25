@@ -53,6 +53,15 @@ module.exports = class SessionObject {
             this.currentTurn++;
             console.log("interval called round number --> " + this.currentTurn);
 
+            
+            
+            if ( this.currentTurn === this.activeSockets.length) {
+                console.log("chamando finisher");
+                this.finisherTimeout(1, 0);
+            }
+
+
+            
             if (this.activeSockets.length < this.currentTurn) { //match ended
                 console.log("match ending, round number --> " + this.currentTurn);
                 this.waitingSockets = this.waitingSockets.concat(this.activeSockets);
@@ -86,13 +95,6 @@ module.exports = class SessionObject {
                     }));
                 }
             });*/
-
-           
-
-            if ( this.currentTurn === this.activeSockets.length) {
-                console.log("chamando finisher");
-                this.finisherTimeout(1, 0);
-            }
 
 
            
