@@ -7,7 +7,7 @@ redis = Redis.createClient({
 module.exports = {
     get: (key) => {
         return new Promise( (resolve, reject) => {
-            redis.get( key, async (error, data) => {
+            redis.get( `history:${key}`, async (error, data) => {
                 
                 if( error ) {
                     console.error(error);

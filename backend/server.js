@@ -15,12 +15,34 @@ app.use(cors({
     credentials: true,
 }));
 
-app.post('/send-object', jsonParser, (req, res) => {
+app.post('/send-object', jsonParser, async (req, res) => {
     const { object } = req.body;
-    console.log(object)
-    redisModule.set(object.game[0][0].owner, object);
     
-    res.json({sucessMessage: "Finish Storing", data: data});
+    const objectArray = [0]
+    let stream = await redis.scanStream({
+        match: "history:*",
+        count: 10
+    });
+    await stream.on("data", async (keys = []) => {
+        let key;
+        for (key of keys) {
+            key = key.split(":")
+            if (!objectArray.includes(key[1])) {
+                objectArray.push(key[1]);
+            }
+        }
+    });
+    await stream.on("end",  () => {
+        console.log("Finished finding keys")
+    });
+
+    const NEXT_POS = objectArray[objectArray.length-1] + 1
+
+    redisModule.set(`history:${NEXT_POS}`, object);
+    
+    redisModule.set(`history:${NEXT_POS}`, object);
+    
+    res.json({sucessMessage: "Finish Storing", data: "data"});
 });
 
 app.listen(8080, ()=>{ console.log('https backend server is listening'); });
