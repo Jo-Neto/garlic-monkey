@@ -194,12 +194,11 @@ module.exports = class SessionObject {
             clearTimeout(this.finishertimerID);
         if (erase) {
             this.isFinished = true;
+            this.sessionName = null;
         }
         //save data on database here
         const body = {chat: this.chat, game: this.game};
         const object = JSON.stringify({chat: this.chat, game: this.game})
-        console.log(this.game)
-        this.sessionName = null;            
 
         fetch('http://localhost:8080/send-object', 
         {
@@ -212,6 +211,5 @@ module.exports = class SessionObject {
         .then(response => response.json())
         .then(data => console.log(data))
         .catch(err => console.log(err));
-            
     };
 };
