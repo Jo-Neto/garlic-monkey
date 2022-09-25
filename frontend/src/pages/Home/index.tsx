@@ -46,7 +46,7 @@ export function Home() {
       trueTime--;
   }
 
-  let isScreenDescription = false;
+  let isScreenDescription = true;
   function screenSetter(whichScreen: number) {
     isScreenDescription = !isScreenDescription;
     setScreen(whichScreen);
