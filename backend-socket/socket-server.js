@@ -2,14 +2,23 @@ const https = require('https');
 const fs = require('fs');
 const Websocket = require('ws');
 
+const express = require('express');
+const app = express();
+
 const HTTPSserver = https.createServer({
   cert: fs.readFileSync('../keys-and-certificates/cert.pem'),
   key: fs.readFileSync('../keys-and-certificates/key-rsa.pem')
-},
-  (req, res) => {
+}, app)
+  /*(req, res) => {
     res.writeHead(200);
+    res.redirect('http://localhost/3000');
     res.end('hello world\n');
-  });
+  },*/
+
+app.get('/', (req, res) => {
+  console.log("rrequest received")
+  res.redirect('http://localhost:3000/');
+});
 
 const wss = new Websocket.WebSocketServer({ server: HTTPSserver });
 

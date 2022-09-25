@@ -8,19 +8,16 @@ module.exports = function onConnection(ws, req) {
         playerChoiceArr = req.headers['sec-websocket-protocol'].split(', ');
     } catch (e) {
         ws.close(1002, 'invalid subprotocols');
-        ws.terminate(); //safety 
         //console.log('on-connection.js --> catch condition: ' + e);
         return false;
     }
     if (playerChoiceArr.length !== 2) {
         ws.close(1002, 'invalid subprotocols count');
-        ws.terminate(); //safety 
         //console.log('on-connection.js --> invalid subprotocols argument count');
         return false;
     }
     if (typeof playerChoiceArr[0] !== 'string' || typeof playerChoiceArr[1] !== 'string' /*|| typeof playerChoiceArr[2] !== 'string'*/) {
         ws.close(1003, 'invalid subprotocols type');
-        ws.terminate(); //safety 
         //console.log('on-connection.js --> subprotocols type error');
         return false;
     }
@@ -55,11 +52,36 @@ module.exports = function onConnection(ws, req) {
             //console.log('on-connection.js --> if(2-1) triggered');
             activeSessionsArr[matchedIndex].sessionName = null; //nullify session name
             onConnection(ws, req); //re-do logic
-        } else if (activeSessionsArr[matchedIndex].currentTurn !== -1) { //middle-game match
+        }
+        let shouldReturn = false;
+        activeSessionsArr[matchedIndex].activeSockets.forEach(webs => {
+            if (webs !== null && webs.readyState === 1) {
+                if (webs.garlicName === playerChoiceArr[1]) {
+                    console.log("closing 4003");
+                    ws.takenName = true;
+                    ws.close(4003, 'player name already taken');
+                    //ws.terminate();
+                    shouldReturn = true;
+                }
+            }
+        });
+        activeSessionsArr[matchedIndex].waitingSockets.forEach(webs => {
+            if (webs !== null && webs.readyState === 1) {
+                if (webs.garlicName === playerChoiceArr[1]) {
+                    console.log("closing 4003");
+                    ws.takenName = true;
+                    ws.close(4003, 'player name already taken');
+                    //ws.terminate();
+                    shouldReturn = true;
+                }
+            }
+        });
+        if (shouldReturn)
+            return;
+            if (activeSessionsArr[matchedIndex].currentTurn !== -1) { //middle-game match
             console.log("closing 1003");
             if (ws.readyState === 1)
                 ws.close(1013, 'ongoing match, try again later');
-                ws.terminate();
             return;
         } else { //if not finished
             //console.log('on-connection.js --> else(2-2) triggered');

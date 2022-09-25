@@ -67,7 +67,7 @@ module.exports = class SessionObject {
                 });
                 if (this.gamerTimerID)
                     clearTimeout(this.gamerTimerID);
-                this.finisherTimeout(0); //MARKUP: finsher time
+                this.finisherTimeout(1, 0); //MARKUP: finsher time
                 return;
             }
 
@@ -125,7 +125,7 @@ module.exports = class SessionObject {
         }, gameTimerAmount)
     }; //MARKUP: round timer
 
-    finisherTimeout(finalTimerAmount = 15000, i=0) {
+    finisherTimeout(finalTimerAmount, i) {
 
         console.log("finisher interval running");
         this.finishertimerID = setTimeout(() => {
@@ -175,7 +175,6 @@ module.exports = class SessionObject {
                     if (ws !== null && ws.readyState === 1) {
                         if (ws.isUndecidedOldPlayer) {
                             ws.close(1001, 'player has been kicked for not deciding fast enough');
-                            ws.terminate();
                         }
                     }
                 });

@@ -4,6 +4,7 @@ import { Input } from '../../components/Form/Input';
 import { GamePage } from '../../layout/GamePage';
 import { Players } from '../Players/index';
 import { Chat } from '../../components/Chat';
+import { Final } from '../../components/final';
 import { PlayerIcon } from '../../components/PlayerIcon';
 import { Player } from '../../components/Player';
 import { WhiteBoard } from '../../components/Game/WhiteBoard';
@@ -25,6 +26,8 @@ export function Home() {
   const [message, setMessage] = useState('');
   const [randomPhrase, setRandomPhrase] = useState('');
   const [chatMessages, setChatMessages] = useState<{ user: string; msg: string }[]>([]);
+  const [finalScreen, setfinalScreen] = useState<{ type: string; owner: string; data: string }[]>([]);
+  const [finalPlayer, setFinalPlayer] = useState('');
   const [screen, setScreen] = useState<Number>(0);
   const [socket, setSocket] = useState<WebSocket>();
   const [timer, setTimer] = useState<any>(15);
@@ -32,15 +35,15 @@ export function Home() {
 
   let trueTime: number = 15;
   let timerId: number = 0;
+
   function timerFn() {
+    console.log("timerfn");
     setTimer(trueTime);
     if (trueTime === 0) {
       clearInterval(timerId);
       setTimer(0);
-    } else {
-      setTimer(trueTime);
+    } else 
       trueTime--;
-    }
   }
 
   let isScreenDescription = false;
@@ -51,15 +54,12 @@ export function Home() {
 
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//+------------------------------------------------------------------+
-//|                    SOCKET LOGIC BEGINNING                        |
-//+------------------------------------------------------------------+  
-  addEventListener('close', (event) => { 
-    console.log(event);
-  });
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //+------------------------------------------------------------------+
+  //|                    SOCKET LOGIC BEGINNING                        |
+  //+------------------------------------------------------------------+  
 
   const onMessage = useCallback((message: any) => {
     const data = JSON.parse(message?.data);
@@ -123,6 +123,7 @@ export function Home() {
     else if (data.msgType === 'timerUpdate') {
       if (data.msgContent.msgContent === 'timerStart') {
         trueTime = 15;
+        timerFn();
         timerId = setInterval(timerFn, 1000);
       } else if (data.msgContent.msgContent === 'timerStop') {
         clearInterval(timerId);
@@ -140,31 +141,47 @@ export function Home() {
     else if (data.msgType === 'gameUpdate') {
       if (data.msgContent.update === 'gameStart') {
         //condition true when game starting
-        if (data.msgContent.type === 'activePlayer')
+        timerResetter();
+        if (data.msgContent.type === 'activePlayer') 
           setScreen(2);
         else
           alert('esse player nao pode jogar!!! ele esta fora dos players ativos, não clicou em "jogar!" ou nao tinha vaga');
       }
 
-      else if (data.msgContent.update === 'roundChange') {
-        /*setDisable(false);
-        //condition true when new round begins
-        console.log('new round = ' + data.msgContent.newRound); //condition true when new round begins
-        if (!isScreenDescription) screenSetter(3);
-        else if (isScreenDescription) screenSetter(4);*/
-
-      } else if (data.msgContent.update === 'roundInfo' || data.msgContent.data === null) {
+      else if (data.msgContent.update === 'roundInfo' || data.msgContent.data === null) {
         console.log('roundInfo below: '); //condition true when received data from previous player
         console.log(data.msgContent);
-        if (data.msgContent.data.data === null) {
-          setRandomPhrase("o players que mandou a mensagem quitou");
-        }
+      if (!data.msgContent.data)
+        setRandomPhrase("o players que mandou a mensagem quitou, ou não mandou nada");
+      else
         setRandomPhrase(data.msgContent.data.data);
-        //setDisable(false);
-        if (!isScreenDescription) 
+      setDisable(false);
+      timerResetter();
+      }
+
+      function timerResetter() {
+        console.log("timerResetter");
+        if (timerId) {
+          console.log("clearing interval");
+          clearInterval(timerId);
+          timerId = 0;
+          trueTime = 0;
+        }
+        if (!isScreenDescription) {
+          trueTime = 15; //description timer
+          timerFn();
+          timerId = setInterval(timerFn, 1000);
+          console.log("setting screen to 3");
           screenSetter(3);
-        else if (isScreenDescription) 
+          console.log("isScreenDescription = "+ isScreenDescription)
+        } else if (isScreenDescription) {
+          trueTime = 15; //drawing timer
+          timerFn();
+          timerId = setInterval(timerFn, 1000);
+          console.log("setting screen to 4");
           screenSetter(4);
+          console.log("isScreenDescription = "+ isScreenDescription)
+        }
       }
     }
 
@@ -176,8 +193,11 @@ export function Home() {
     //+------------------------------------------------------------------+
 
     else if (data.msgType === 'finalData') {
+      setScreen(5);
+      setFinalPlayer(data.msgContent[0].owner || '');
+      setfinalScreen(data.msgContent)
       console.log('final data index ' + (data.msgContent.round) + " below");
-      console.log(data.msgContent.finalData); 
+      console.log(data.msgContent.finalData);
     }
 
 
@@ -193,7 +213,7 @@ export function Home() {
       console.log('===========================================================================================');
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    else 
+    else
       console.log('ERROR: -->>>  invalid socket data received');
     console.log('===========================================================================================');
   }, []);
@@ -214,9 +234,7 @@ export function Home() {
         socket.removeEventListener('message', onMessage);
       };
     }
-  }, [socket, onMessage, players]);
-
-  
+  }, [socket, onMessage]);
 
 
 
@@ -318,6 +336,24 @@ export function Home() {
               onSubmit={(e) => {
                 e.preventDefault()
                 let a = new WebSocket('wss://localhost:9999', [room, nick]);
+                //+------------------------------------------------------------------+
+                //|                     SOCKET CLOSE EVENT                           |
+                //+------------------------------------------------------------------+
+                a.onclose = (event) => {
+                  console.log("close socket code -->" + event.code)
+                  if (event.code === 1001)
+                    alert('player foi kickado porque demorou pra decidir se jogava ou não');
+                  else if (event.code === 1002 || event.code === 1003)
+                    alert("Player tentou entrar na sala com string(s) invalida(s)");
+                  else if (event.code === 1013)
+                    alert("Partida em andamento");
+                  else if (event.code === 4003)
+                    alert("ja existe outro player com o mesmo nome");
+                  setScreen(0);
+                };
+                //////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////
                 setSocket(a);
                 setScreen(1);
               }}
@@ -467,6 +503,7 @@ export function Home() {
   else if (screen === 2) {
     return (
       <GamePage>
+        <div className='w-full text-end text-[85px]'>{timer}</div>
         <div className="animate-wiggle mb-[1rem]">
           <img
             src="/assets/images/bigLogo.png"
@@ -630,6 +667,67 @@ export function Home() {
             />
           </fieldset>
         </form>
+      </GamePage>
+    );
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //+------------------------------------------------------------------+
+  //|                GAME PAGE - DESCRIPTION WITH IMAGE                |
+  //+------------------------------------------------------------------+
+  else if (screen === 5) {
+    return (
+      <GamePage className="flex justify-between">
+        <div className="flex flex-row justify-between align-middle items-center  w-[90%]">
+          <img
+            className="top-5"
+            src="/assets/images/logo.png"
+            width={150}
+            height={116}
+            alt="Garlic Monkey logo"
+          />
+        </div>
+        <div className="flex flex-row h-[20rem] w-[45rem] justify-between">
+          <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-gradient-to-b from-black/25 to-black/50 rounded-l-[1rem]">
+            <div className="flex flex-col items-center">
+              <span className="defaultSpan uppercase mt-[1rem]"
+              >JOGADORES 1</span>
+              <div className="flex flex-col gap-2 mt-[1rem]">
+                <Player players={players} finalPlayer={finalPlayer}></Player>
+              </div>
+            </div>
+          </div>
+          <div className="border-solid border-2 p-2 border-white/[0.75] rounded-r-md w-[30rem] bg-gradient-to-r from-black/[12%] to-black/25 flex flex-col">
+            <div className="h-full chatBox overflow-scroll overflow-x-hidden">
+              {
+                finalScreen.map((el) => {
+                  if (el.type === 'desc') return <Final img={false} owner={el.owner} data={el.data} />;
+                  return <Final img={true} owner={el.owner} data={el.data} />;
+                })
+              }
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-row">
+          <div className="flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105">
+            <span
+              className="defaultSpan"
+              onClick={() => {
+                socket.send(
+                  JSON.stringify({
+                    msgType: 'participationStatus',
+                    msgContent: false,
+                  }),
+                );
+                setMessage('');
+              }}
+            >SÓ CHAT!</span>
+            <Button
+              className="ml-[0.5rem]"
+              icon={{ src: '/assets/icons/go.png', size: 22 }}
+            />
+          </div>
+        </div>
       </GamePage>
     );
   }
