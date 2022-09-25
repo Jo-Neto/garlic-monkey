@@ -66,7 +66,7 @@ module.exports = class SessionObject {
                 });
                 if (this.gamerTimerID)
                     clearTimeout(this.gamerTimerID);
-                this.finisherTimeout(1, 0); //MARKUP: finsher time
+                //this.finisherTimeout(1, 0); //MARKUP: finsher time
                 return;
             }
 
@@ -87,6 +87,15 @@ module.exports = class SessionObject {
                 }
             });*/
 
+           
+
+            if ( this.currentTurn === this.activeSockets.length) {
+                console.log("chamando finisher");
+                this.finisherTimeout(1, 0);
+            }
+
+
+           
             if (this.currentTurn > 0) {
                 console.log("sending round info of round --> " + (this.currentTurn - 1) + " (previous round)");
                 this.activeSockets.forEach((ws) => {
