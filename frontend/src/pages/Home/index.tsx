@@ -57,10 +57,6 @@ export function Home() {
 //+------------------------------------------------------------------+
 //|                    SOCKET LOGIC BEGINNING                        |
 //+------------------------------------------------------------------+  
-  addEventListener('close', (event) => { 
-    console.log("on close tirggered");
-    console.log(event);
-  });
 
   const onMessage = useCallback((message: any) => {
     const data = JSON.parse(message?.data);
