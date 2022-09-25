@@ -16,8 +16,6 @@ const HTTPSserver = https.createServer({
   },*/
 
 app.get('/', (req, res) => {
-  console.log(HTTPSserver.address());
-  console.log("rrequest received")
   res.redirect('http://66.135.2.21:3000/');
 });
 

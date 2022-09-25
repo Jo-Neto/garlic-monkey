@@ -1,7 +1,7 @@
 module.exports = function shouldStartGame(Session) {
     if (Session.currentTurn !== -1)
         return;
-    if (Session.starterTimerID !== null && !Session.activeSockets.includes(null)) { //if timer is on, null not on active sockets
+    if (Session.starterTimerID !== null || !Session.activeSockets.includes(null)) { //if timer is on, null not on active sockets
         console.log("cancelling timer")
         clearTimeout(Session.starterTimerID);
         Session.starterTimerID = null;
