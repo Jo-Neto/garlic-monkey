@@ -3,7 +3,6 @@ const activeSessionsArr = require('../memory-modules/active-sessions.js');
 const shouldStartGame = require('../library/should-game-start-checker.js');
 
 module.exports = function onConnection(ws, req) {
-    console.log("new connection");
     let playerChoiceArr = [];
     try {
         playerChoiceArr = req.headers['sec-websocket-protocol'].split(', ');
@@ -56,10 +55,43 @@ module.exports = function onConnection(ws, req) {
             //console.log('on-connection.js --> if(2-1) triggered');
             activeSessionsArr[matchedIndex].sessionName = null; //nullify session name
             onConnection(ws, req); //re-do logic
+        }
+        let shouldReturn = false;
+        activeSessionsArr[matchedIndex].activeSockets.forEach(webs => {
+            if (webs !== null && webs.readyState === 1) {
+                if (webs.garlicName === playerChoiceArr[1]) {
+                    console.log("closing 4003");
+                    ws.takenName = true;
+                    ws.close(4003, 'player name already taken');
+                    ws.terminate();
+                    shouldReturn = true;
+                }
+            }
+        });
+        activeSessionsArr[matchedIndex].waitingSockets.forEach(webs => {
+            if (webs !== null && webs.readyState === 1) {
+                if (webs.garlicName === playerChoiceArr[1]) {
+                    console.log("closing 4003");
+                    ws.takenName = true;
+                    ws.close(4003, 'player name already taken');
+                    ws.terminate();
+                    shouldReturn = true;
+                }
+            }
+        });
+        if (shouldReturn)
+            return;
+            if (activeSessionsArr[matchedIndex].currentTurn !== -1) { //middle-game match
+            console.log("closing 1003");
+            if (ws.readyState === 1)
+                ws.close(1013, 'ongoing match, try again later');
+            ws.terminate();
+            return;
         } else { //if not finished
             //console.log('on-connection.js --> else(2-2) triggered');
             let replaceableSocketIndex = activeSessionsArr[matchedIndex].activeSockets.indexOf(null);
-            if (replaceableSocketIndex === -1 || activeSessionsArr[matchedIndex].currentTurn !== -1) {
+            console.log("return did not work 1");
+            if (replaceableSocketIndex === -1) {
                 let replaceableWaitingSocketIndex = activeSessionsArr[matchedIndex].waitingSockets.indexOf(null);
                 if (replaceableWaitingSocketIndex === -1)
                     activeSessionsArr[matchedIndex].waitingSockets.push(ws); //assign socket to waiting socket list
@@ -73,6 +105,7 @@ module.exports = function onConnection(ws, req) {
             }
             shouldStartGame(activeSessionsArr[matchedIndex]);
         }
+        console.log("return did not work 2");
         allActivePlayersName = activeSessionsArr[matchedIndex].activeSockets.map(webs => { if (webs !== null) return webs.garlicName; });
         allWaitingPlayersName = activeSessionsArr[matchedIndex].waitingSockets.map(webs => { if (webs !== null) return webs.garlicName; });
         if (ws.readyState === 1) {
@@ -99,6 +132,7 @@ module.exports = function onConnection(ws, req) {
         });
         ws.sID = matchedIndex; //assign session ID for socket
     }
+    console.log("return did not work 3");
     if (newRoom && ws.readyState === 1) {
         ws.send(JSON.stringify({
             msgType: 'playerRow',
@@ -106,6 +140,6 @@ module.exports = function onConnection(ws, req) {
         }));
     }
     ws.garlicName = playerChoiceArr[1];
+    ws.isUndecidedOldPlayer = false;
     ws.hasPlayedThisTurn = false;
-    ws.isAlive = true;
 };

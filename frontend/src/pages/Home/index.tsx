@@ -4,6 +4,7 @@ import { Input } from '../../components/Form/Input';
 import { GamePage } from '../../layout/GamePage';
 import { Players } from '../Players/index';
 import { Chat } from '../../components/Chat';
+import { Final } from '../../components/final';
 import { PlayerIcon } from '../../components/PlayerIcon';
 import { Player } from '../../components/Player';
 import { WhiteBoard } from '../../components/Game/WhiteBoard';
@@ -25,13 +26,16 @@ export function Home() {
   const [message, setMessage] = useState('');
   const [randomPhrase, setRandomPhrase] = useState('');
   const [chatMessages, setChatMessages] = useState<{ user: string; msg: string }[]>([]);
-  const [screen, setScreen] = useState<Number>(0);
+  const [finalScreen, setfinalScreen] = useState<{ type: string; owner: string; data: string }[]>([]);
+  const [finalPlayer, setFinalPlayer] = useState('');
+  const [screen, setScreen] = useState<Number>(2);
   const [socket, setSocket] = useState<WebSocket>();
   const [timer, setTimer] = useState<any>(15);
   const [disable, setDisable] = useState(false);
 
-  let trueTime = 15;
-  let timerId = 0;
+  let trueTime: number = 15;
+  let timerId: number = 0;
+
   function timerFn() {
     setTimer(trueTime);
     if (trueTime === 0) {
@@ -49,10 +53,18 @@ export function Home() {
     setScreen(whichScreen);
   }
 
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//+------------------------------------------------------------------+
+//|                    SOCKET LOGIC BEGINNING                        |
+//+------------------------------------------------------------------+  
+
   const onMessage = useCallback((message: any) => {
     const data = JSON.parse(message?.data);
     console.log(data);
-
     if (!Object.hasOwn(data, 'msgType')) {
       return;
     }
@@ -61,14 +73,14 @@ export function Home() {
     //|                           LINE LOGIC                             |
     //+------------------------------------------------------------------+
     if (data.msgType === 'playerUpdate') {
-      if (data.msgContent.updateType === 'in') {
+      if (data.msgContent.updateType === 'in' && data.msgContent.isOnGame !== null) {
         setPlayers((prevPlayers) => [
           ...prevPlayers,
           { nick: data.msgContent.nick, photo: '' },
         ]);
         //console.log(players);
       }
-      if (data.msgContent.updateType === 'out') {
+      if (data.msgContent.updateType === 'out' || data.msgContent.isOnGame === null) {
         setPlayers((prevPlayers) =>
           prevPlayers.filter((el) => {
             if (el.nick !== data.msgContent.nick) return el;
@@ -89,6 +101,9 @@ export function Home() {
       });
       setPlayers(activePlayers);
     }
+
+
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
     //|                            CHAT LOGIC                            |
@@ -99,19 +114,26 @@ export function Home() {
         { user: data.msgContent.nick, msg: data.msgContent.msgContent },
       ]);
     }
+
+
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
     //|                           TIMER LOGIC                            |
     //+------------------------------------------------------------------+
     else if (data.msgType === 'timerUpdate') {
       if (data.msgContent.msgContent === 'timerStart') {
-        trueTime = 30;
+        trueTime = 15;
         timerId = setInterval(timerFn, 1000);
       } else if (data.msgContent.msgContent === 'timerStop') {
         clearInterval(timerId);
-        setTimer(15);
+        trueTime = 15;
+        timerFn();
       }
     }
+
+
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
     //|                            GAME LOGIC                            |
@@ -119,40 +141,73 @@ export function Home() {
     else if (data.msgType === 'gameUpdate') {
       if (data.msgContent.update === 'gameStart') {
         //condition true when game starting
-        setScreen(2);
-      } else if (data.msgContent.update === 'roundChange') {
-        setDisable(false);
-        //condition true when new round begins
-        console.log('new round = ' + data.msgContent.newRound); //condition true when new round begins
-        if (!isScreenDescription) screenSetter(3);
-        else if (isScreenDescription) screenSetter(4);
-
-      } else if (data.msgContent.update === 'roundInfo') {
+        if (data.msgContent.type === 'activePlayer')
+          setScreen(2);
+        else
+          alert('esse player nao pode jogar!!! ele esta fora dos players ativos, não clicou em "jogar!" ou nao tinha vaga');
+      } 
+      
+      else if (data.msgContent.update === 'roundInfo' || data.msgContent.data === null) {
         console.log('roundInfo below: '); //condition true when received data from previous player
         console.log(data.msgContent);
-        setRandomPhrase(data.msgContent.data.data);
-      } else if (data.msgContent.update === 'gameEnd') {
-        //condition true when game ends
-        console.log('game ended, final data below');
-        console.log(data.msgContent.finalData); //this object has everything from the whole game of all players
+        if (data.msgContent.data === null)
+          setRandomPhrase("o players que mandou a mensagem quitou");
+        else
+          setRandomPhrase(data.msgContent.data.data);
+        setDisable(false);
+        if (!isScreenDescription) {
+          trueTime = 15; //description timer
+          timerId = setInterval(timerFn, 1000);
+          screenSetter(3);
+        }
+        else if (isScreenDescription) {
+          trueTime = 15; //drawing timer
+          timerId = setInterval(timerFn, 1000);
+          screenSetter(4);
+        }
       }
     }
+
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //+------------------------------------------------------------------+
+    //|                         END GAME LOGIC                           |
+    //+------------------------------------------------------------------+
+
+    else if (data.msgType === 'finalData') {
+      setScreen(5);
+      setFinalPlayer(data.msgContent[0].owner || '');
+      setfinalScreen(data.msgContent)
+      console.log('final data index ' + (data.msgContent.round) + " below");
+      console.log(data.msgContent.finalData); 
+    }
+
+
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
     //|                       BACK-END REPORTS                           |
     //+------------------------------------------------------------------+
     else if (data.msgType === 'devReport') {
-      console.log(
-        '===========================================================================================',
-      );
+      console.log('===========================================================================================');
       console.log('WARNING, RECEIVED DEV REPORT FROM BACK-END, DATA BELOW: ');
       console.log(data.msgContent.report);
-      console.log(
-        '===========================================================================================',
-      );
+      console.log('===========================================================================================');
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    else 
+      console.log('ERROR: -->>>  invalid socket data received');
+    console.log('===========================================================================================');
   }, []);
+
+
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //+------------------------------------------------------------------+
+  //|                  SOCKET FUNCTIONS INITIALIZER                    |
+  //+------------------------------------------------------------------+
+
 
   useEffect(() => {
     if (socket) {
@@ -162,7 +217,9 @@ export function Home() {
         socket.removeEventListener('message', onMessage);
       };
     }
-  }, [socket, onMessage, players]);
+  }, [socket, onMessage]);
+
+
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //+------------------------------------------------------------------+
@@ -258,43 +315,61 @@ export function Home() {
         </div>
         <div className="flex flex-colum items-center">
           <div className="flex flex-row">
-            <form 
-              onSubmit={(e) =>{
-                 e.preventDefault()
-                 let a = new WebSocket('wss://localhost:9999', [room, nick]);
-                 setSocket(a);
-                 setScreen(1);
-                }} 
+            <form
+              onSubmit={(e) => {
+                e.preventDefault()
+                let a = new WebSocket('wss://localhost:9999', [room, nick]);
+                //+------------------------------------------------------------------+
+                //|                     SOCKET CLOSE EVENT                           |
+                //+------------------------------------------------------------------+
+                a.onclose = (event) => {
+                  console.log("close socket code -->"+event.code)
+                  if (event.code === 1001)
+                    alert('player foi kickado porque demorou pra decidir se jogava ou não');
+                  else if (event.code === 1002 || event.code === 1003)
+                    alert("Player tentou entrar na sala com string(s) invalida(s)");
+                  else if (event.code === 1013)
+                    alert("Partida em andamento");
+                  else if (event.code === 4003)
+                    alert("ja existe outro player com o mesmo nome");
+                  setScreen(1);
+                };
+                //////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////
+                setSocket(a);
+                setScreen(1);
+              }}
               className="flex flex-col items-center w-[30rem] h-fit gap-5 rounded-[0.625rem]"
             >
               <span className="defaultSpan"
-                >ESCOLHA UM NICKNAME</span>
+              >ESCOLHA UM NICKNAME</span>
               <Input
                 className="normal-case"
                 value={nick}
                 onChange={(e) => setNick(e.target.value)}
               />
               <span className="defaultSpan"
-                >ESCREVA O CODIGO DA SALA OU CRIE A SUA</span>
+              >ESCREVA O CODIGO DA SALA OU CRIE A SUA</span>
               <div className="flex flex-row">
-                <Input 
-                  value={room} 
-                  onChange={(e) => setRoom(e.target.value)} 
+                <Input
+                  value={room}
+                  onChange={(e) => setRoom(e.target.value)}
                 />
               </div>
-                <Buttons
-                  type="submit"
-                  icon={{ src: '/assets/icons/go.png', size: 22 }}
-                  children={<span>ENTRAR</span>}
-                />
+              <Buttons
+                type="submit"
+                icon={{ src: '/assets/icons/go.png', size: 22 }}
+                children={<span>ENTRAR</span>}
+              />
             </form>
             <div className="flex flex-col items-center"></div>
           </div>
           <div className="text-center flex flex-col  bg-gradient-to-r from-white/[12%] to-white/25 items-center w-[15rem] border-solid border-2 border-white/[0.50] rounded-1 p-[1.5rem]">
             <p className="defaultSpan mb-[1rem] uppercase"
-              >Como Jogar</p>
+            >Como Jogar</p>
             <span className="text-[0.75rem]"
-              >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Mollitia esse tempore dolorum quis voluptas. Eligendi repellendus voluptatibus facilis doloremque maxime. Dolores quae vero dolor quo nesciunt optio excepturi nemo doloremque?</span>
+            >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Mollitia esse tempore dolorum quis voluptas. Eligendi repellendus voluptatibus facilis doloremque maxime. Dolores quae vero dolor quo nesciunt optio excepturi nemo doloremque?</span>
           </div>
         </div>
       </GamePage>
@@ -318,18 +393,18 @@ export function Home() {
           />
           <div className="flex flex-col text-center">
             <span className="defaultSpan uppercase"
-              >Codigo de sala</span>
+            >Codigo de sala</span>
             <span className="defaultSpan uppercase"
-              >{room}</span>
+            >{room}</span>
           </div>
           <div className="text-[80px] bold"
-            >{timer}</div>
+          >{timer}</div>
         </div>
         <div className="flex flex-row h-[20rem] w-[45rem] justify-between">
           <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-gradient-to-b from-black/25 to-black/50 rounded-l-[1rem]">
             <div className="flex flex-col items-center">
               <span className="defaultSpan uppercase mt-[1rem]"
-                >JOGADORES 1</span>
+              >JOGADORES 1</span>
               <div className="flex flex-col gap-2 mt-[1rem]">
                 <Player players={players}></Player>
               </div>
@@ -379,7 +454,7 @@ export function Home() {
                 );
                 setMessage('');
               }}
-              >QUERO JOGAR!</span>
+            >QUERO JOGAR!</span>
           </div>
           <div className="flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105">
             <span
@@ -393,7 +468,7 @@ export function Home() {
                 );
                 setMessage('');
               }}
-              >SÓ CHAT!</span>
+            >SÓ CHAT!</span>
             <Button
               className="ml-[0.5rem]"
               icon={{ src: '/assets/icons/go.png', size: 22 }}
@@ -411,6 +486,7 @@ export function Home() {
   else if (screen === 2) {
     return (
       <GamePage>
+        <div className='w-full text-end text-[85px]'>{timer}</div>
         <div className="animate-wiggle mb-[1rem]">
           <img
             src="/assets/images/bigLogo.png"
@@ -420,9 +496,9 @@ export function Home() {
           />
         </div>
         <span className="defaultSpan mb-5 text-3xl"
-          >ESCREVA UMA FRASE</span>
+        >ESCREVA UMA FRASE</span>
         <form
-          onSubmit={e =>{
+          onSubmit={e => {
             e.preventDefault();
             console.log('click received');
             socket.send(
@@ -432,9 +508,9 @@ export function Home() {
               }));
             setInputData("")
             setDisable(true);
-          }} 
+          }}
         >
-          <fieldset 
+          <fieldset
             disabled={disable}
             className="flex flex-row"
           >
@@ -462,7 +538,7 @@ export function Home() {
     return (
       <GamePage>
         <p
-          >Desenhe essa frase bizonha:</p>
+        >Desenhe essa frase bizonha:</p>
         <span>{randomPhrase}</span>
         {/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */}
         <div
@@ -543,9 +619,9 @@ export function Home() {
           />
         </div>
         <span className="defaultSpan mb-5 text-3xl"
-          >ESCREVA UMA FRASE</span>
+        >ESCREVA UMA FRASE</span>
         <form
-          onSubmit={e =>{
+          onSubmit={e => {
             e.preventDefault();
             console.log('click received');
             socket.send(
@@ -555,9 +631,9 @@ export function Home() {
               }));
             setInputData("")
             setDisable(true);
-          }} 
+          }}
         >
-          <fieldset 
+          <fieldset
             disabled={disable}
             className="flex flex-row"
           >
@@ -575,6 +651,67 @@ export function Home() {
           </fieldset>
         </form>
       </GamePage>
+    );
+  }  
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //+------------------------------------------------------------------+
+  //|                GAME PAGE - DESCRIPTION WITH IMAGE                |
+  //+------------------------------------------------------------------+
+  else if (screen === 5) {
+    return (
+      <GamePage className="flex justify-between">
+      <div className="flex flex-row justify-between align-middle items-center  w-[90%]">
+        <img
+          className="top-5"
+          src="/assets/images/logo.png"
+          width={150}
+          height={116}
+          alt="Garlic Monkey logo"
+        />
+      </div>
+      <div className="flex flex-row h-[20rem] w-[45rem] justify-between">
+        <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-gradient-to-b from-black/25 to-black/50 rounded-l-[1rem]">
+          <div className="flex flex-col items-center">
+            <span className="defaultSpan uppercase mt-[1rem]"
+            >JOGADORES 1</span>
+            <div className="flex flex-col gap-2 mt-[1rem]">
+              <Player players={players} finalPlayer={finalPlayer}></Player>
+            </div>
+          </div>
+        </div>
+        <div className="border-solid border-2 p-2 border-white/[0.75] rounded-r-md w-[30rem] bg-gradient-to-r from-black/[12%] to-black/25 flex flex-col">
+          <div className="h-full chatBox overflow-scroll overflow-x-hidden">
+            {
+              finalScreen.map((el) => {
+                if (el.type === 'desc') return <Final img={false} owner={el.owner} data={el.data} />;
+                return <Final img={true} owner={el.owner} data={el.data} />;
+              })
+            }
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-row">
+        <div className="flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105">
+          <span
+            className="defaultSpan"
+            onClick={() => {
+              socket.send(
+                JSON.stringify({
+                  msgType: 'participationStatus',
+                  msgContent: false,
+                }),
+              );
+              setMessage('');
+            }}
+          >SÓ CHAT!</span>
+          <Button
+            className="ml-[0.5rem]"
+            icon={{ src: '/assets/icons/go.png', size: 22 }}
+          />
+        </div>
+      </div>
+    </GamePage>
     );
   }
 }
