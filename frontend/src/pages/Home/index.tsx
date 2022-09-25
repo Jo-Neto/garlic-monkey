@@ -316,7 +316,6 @@ export function Home() {
                 //|                     SOCKET CLOSE EVENT                           |
                 //+------------------------------------------------------------------+
                 a.onclose = (event) => {
-                  console.log(event.code);
                   if (event.code === 1001)
                     alert('player foi kickado porque demorou pra decidir se jogava ou não');
                   else if (event.code === 1002 || event.code === 1003)
