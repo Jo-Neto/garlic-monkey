@@ -2,9 +2,12 @@ const shouldStartGame = require('./should-game-start-checker.js');
 
 module.exports = function partStatChanger(Session, data, playerWs) {
     if (Object.hasOwn(data, 'msgContent')) { //object has this property
+        console.log("partStatChanger")
         if (typeof data.msgContent === 'boolean') { //and msgContent is boolean
+            console.log("boolean pass")
             if (playerWs.isUndecidedOldPlayer)
                 playerWs.isUndecidedOldPlayer = false;
+            console.log("boolean pass 2")
             if (data.msgContent === true) { //player wants to play
                 //if player is alreaady on active sockets do nothing, else move to active if there's an empty place
                 console.log("player wants to play")
