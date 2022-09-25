@@ -37,7 +37,7 @@ export function Home() {
   let timerId: number = 0;
 
   function timerFn() {
-    console.log("timerfn")
+    console.log("timerfn");
     setTimer(trueTime);
     if (trueTime === 0) {
       clearInterval(timerId);
@@ -123,6 +123,7 @@ export function Home() {
     else if (data.msgType === 'timerUpdate') {
       if (data.msgContent.msgContent === 'timerStart') {
         trueTime = 15;
+        timerFn();
         timerId = setInterval(timerFn, 1000);
       } else if (data.msgContent.msgContent === 'timerStop') {
         clearInterval(timerId);
@@ -150,33 +151,36 @@ export function Home() {
       else if (data.msgContent.update === 'roundInfo' || data.msgContent.data === null) {
         console.log('roundInfo below: '); //condition true when received data from previous player
         console.log(data.msgContent);
-        timerResetter();
+      if (!data.msgContent.data)
+        setRandomPhrase("o players que mandou a mensagem quitou, ou não mandou nada");
+      else
+        setRandomPhrase(data.msgContent.data.data);
+      setDisable(false);
+      timerResetter();
       }
 
       function timerResetter() {
-        console.log("timerResetter")
+        console.log("timerResetter");
         if (timerId) {
           console.log("clearing interval");
           clearInterval(timerId);
-          console.log(timerId);
+          timerId = 0;
           trueTime = 0;
         }
-        if (!data.msgContent.data)
-          setRandomPhrase("o players que mandou a mensagem quitou, ou não mandou nada");
-        else
-          setRandomPhrase(data.msgContent.data.data);
-        setDisable(false);
         if (!isScreenDescription) {
-          console.log("new interval");
           trueTime = 15; //description timer
+          timerFn();
           timerId = setInterval(timerFn, 1000);
+          console.log("setting screen to 3");
           screenSetter(3);
-        }
-        else if (isScreenDescription) {
-          console.log("new interval");
+          console.log("isScreenDescription = "+ isScreenDescription)
+        } else if (isScreenDescription) {
           trueTime = 15; //drawing timer
+          timerFn();
           timerId = setInterval(timerFn, 1000);
+          console.log("setting screen to 4");
           screenSetter(4);
+          console.log("isScreenDescription = "+ isScreenDescription)
         }
       }
     }
