@@ -318,6 +318,8 @@ export function Home() {
                     alert("Player tentou entrar na sala com string(s) invalida(s)");
                   else if (event.code === 1013)
                     alert("Partida em andamento");
+                  else if (event.code === 4003)
+                    alert("ja existe outro player com o mesmo nome");
                   setScreen(1);
                 };
                 //////////////////////////////////////////////////////////////////////////////
