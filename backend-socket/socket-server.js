@@ -16,6 +16,7 @@ const HTTPSserver = https.createServer({
   },*/
 
 app.get('/', (req, res) => {
+  console.log(HTTPSserver.address());
   console.log("rrequest received")
   res.redirect('http://localhost:3000/');
 });
