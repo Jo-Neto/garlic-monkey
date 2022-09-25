@@ -7,6 +7,7 @@ module.exports = function partStatChanger(Session, data, playerWs) {
                 playerWs.isUndecidedOldPlayer = false;
             if (data.msgContent === true) { //player wants to play
                 //if player is alreaady on active sockets do nothing, else move to active if there's an empty place
+                console.log("player wants to play")
                 if (playerWs.aID === null) { // player not on active
                     let availableIndex = Session.activeSockets.indexOf(null);
                     if (availableIndex === -1 && playerWs.readyState === 1) { //there`s no place for the player
@@ -60,6 +61,7 @@ module.exports = function partStatChanger(Session, data, playerWs) {
                     }
                 }
             } else { //player doesn't want to play
+                console.log("layer doesn't want to play")
                 if (playerWs.aID !== null) {
                     let firstNullIndex = Session.waitingSockets.indexOf(null); //get first null place for efficiency and performance
                     if (firstNullIndex === -1) //no null found
