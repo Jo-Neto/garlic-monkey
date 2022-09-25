@@ -335,7 +335,7 @@ export function Home() {
             <form
               onSubmit={(e) => {
                 e.preventDefault()
-                let a = new WebSocket('wss://localhost:9999', [room, nick]);
+                let a = new WebSocket(`wss://${window.location.href.substring(7,18)}:9999`, [room, nick]);
                 //+------------------------------------------------------------------+
                 //|                     SOCKET CLOSE EVENT                           |
                 //+------------------------------------------------------------------+
