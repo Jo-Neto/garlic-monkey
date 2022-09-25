@@ -40,7 +40,7 @@ app.post('/send-object', jsonParser, async (req, res) => {
 
     redisModule.set(`history:${NEXT_POS}`, object);
     
-    redisModule.set(`history:${NEXT_POS}`, object);
+    redisModule.get(NEXT_POS, object);
     
     res.json({sucessMessage: "Finish Storing", data: "data"});
 });
