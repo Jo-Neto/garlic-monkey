@@ -58,6 +58,7 @@ export function Home() {
 //|                    SOCKET LOGIC BEGINNING                        |
 //+------------------------------------------------------------------+  
   addEventListener('close', (event) => { 
+    console.log("on close tirggered");
     console.log(event);
   });
 
@@ -156,11 +157,11 @@ export function Home() {
       } else if (data.msgContent.update === 'roundInfo' || data.msgContent.data === null) {
         console.log('roundInfo below: '); //condition true when received data from previous player
         console.log(data.msgContent);
-        if (data.msgContent.data.data === null) {
+        if (data.msgContent.data === null)
           setRandomPhrase("o players que mandou a mensagem quitou");
-        }
-        setRandomPhrase(data.msgContent.data.data);
-        //setDisable(false);
+        else
+          setRandomPhrase(data.msgContent.data.data);
+        setDisable(false);
         if (!isScreenDescription) 
           screenSetter(3);
         else if (isScreenDescription) 
@@ -214,9 +215,7 @@ export function Home() {
         socket.removeEventListener('message', onMessage);
       };
     }
-  }, [socket, onMessage, players]);
-
-  
+  }, [socket, onMessage]);
 
 
 
