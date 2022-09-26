@@ -201,8 +201,10 @@ export function Home() {
     //+------------------------------------------------------------------+
 
     else if (data.msgType === 'finalData') {
-      if (data.msgContent.finalData?.update)
-        setEndModal(true);
+      if (data.msgContent) {
+        if (data.msgContent.update === 'requireNewParticipationStatus')
+          setEndModal(true);
+      }
       setScreen(5);
       setFinalPlayer(data.msgContent[0]?.owner || '');
       setfinalScreen(data.msgContent || [])
