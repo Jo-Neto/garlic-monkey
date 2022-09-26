@@ -193,6 +193,8 @@ export function Home() {
     else if (data.msgType === 'finalData') {
       console.log('final data index ' + (data.msgContent.round) + " below");
       console.log(data.msgContent.finalData);
+      if (data.msgContent.finalData.update)
+        alert('ESCOLHA DO PLAYER');
       setScreen(5);
       setFinalPlayer(data.msgContent[0]?.owner || '');
       setfinalScreen(data.msgContent)
