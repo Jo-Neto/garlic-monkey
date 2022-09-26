@@ -44,8 +44,8 @@ export function Players(socket: WebSocket) {
             >JOGADORES 1</span>
             <div className='flex flex-col gap-2 mt-[1rem]'>
               { 
-                players.map( element => {
-                  return <PlayerIcon nick={element.nick} photo={element.photo} />
+                players.map( (element, index) => {
+                  return <PlayerIcon nick={element?.nick} photo={element?.photo} />
                 })
               }
             </div>  
@@ -55,7 +55,7 @@ export function Players(socket: WebSocket) {
           <div className='chatBox'>
             { 
               chatMessages.map( el => {
-                return <Chat user={el.user} msg={el.msg} />
+                return <Chat user={el?.user} msg={el?.msg} />
               })
             }
           </div>
