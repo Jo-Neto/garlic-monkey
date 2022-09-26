@@ -129,6 +129,8 @@ export function Home() {
       if (data.msgContent.msgContent === 'timerStart') {
         trueTime = 15;
         timerFn();
+        if (timerId)
+          clearInterval(timerId);
         timerId = setInterval(timerFn, 1000);
       } else if (data.msgContent.msgContent === 'timerStop') {
         clearInterval(timerId);
@@ -324,7 +326,7 @@ export function Home() {
             <form
               onSubmit={(e) => {
                 e.preventDefault()
-                let a = new WebSocket('wss://localhost:9999', [room, nick]);
+                let a = new WebSocket(`wss://${window.location.href.substring(7,18)}:9999`, [room, nick]);
                 //+------------------------------------------------------------------+
                 //|                     SOCKET CLOSE EVENT                           |
                 //+------------------------------------------------------------------+

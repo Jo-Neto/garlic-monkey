@@ -1,8 +1,14 @@
 module.exports = function shouldStartGame(Session) {
     if (Session.currentTurn !== -1)
         return;
-    if (Session.starterTimerID !== null && !Session.activeSockets.includes(null)) {
+    console.log(Session.starterTimerID);
+    if (Session.starterTimerID !== null || !Session.activeSockets.includes(null)) { //if timer is on, or no null on active sockets
+        console.log("cancelling timer")
         clearTimeout(Session.starterTimerID);
+        if (Session.gamerTimerID) {
+            console.log("cancelling timer 2")
+            clearTimeout(Session.gamerTimerID);
+        }
         Session.starterTimerID = null;
         Session.activeSockets.forEach(ws => { //send new msg to all players in session
             if (ws !== null && ws.readyState === 1) {

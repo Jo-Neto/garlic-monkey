@@ -54,6 +54,15 @@ module.exports = class SessionObject {
             this.currentTurn++;
             console.log("interval called round number --> " + this.currentTurn);
 
+            
+
+            if ( this.currentTurn === (this.activeSockets.length - 2)) {
+                console.log("chamando finisher");
+                this.finisherTimeout(1, 0);
+            }
+
+
+            
             if (this.activeSockets.length < this.currentTurn) { //match ended
                 console.log("match ending, round number --> " + this.currentTurn);
                 this.waitingSockets = this.waitingSockets.concat(this.activeSockets);
@@ -67,7 +76,7 @@ module.exports = class SessionObject {
                 });
                 if (this.gamerTimerID)
                     clearTimeout(this.gamerTimerID);
-                this.finisherTimeout(1, 0); //MARKUP: finsher time
+                //this.finisherTimeout(1, 0); //MARKUP: finsher time
                 return;
             }
 
@@ -88,6 +97,8 @@ module.exports = class SessionObject {
                 }
             });*/
 
+
+           
             if (this.currentTurn > 0) {
                 console.log("sending round info of round --> " + (this.currentTurn - 1) + " (previous round)");
                 this.activeSockets.forEach((ws) => {
