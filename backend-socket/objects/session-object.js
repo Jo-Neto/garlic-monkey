@@ -54,29 +54,27 @@ module.exports = class SessionObject {
             this.currentTurn++;
             console.log("interval called round number --> " + this.currentTurn);
 
-            
 
-            if ( this.currentTurn === (this.activeSockets.length - 2)) {
+
+            if (this.currentTurn === this.activeSockets.length) {
                 console.log("chamando finisher");
-                this.finisherTimeout(1, 0);
-            }
-
-
-            
-            if (this.activeSockets.length < this.currentTurn) { //match ended
-                console.log("match ending, round number --> " + this.currentTurn);
                 this.waitingSockets = this.waitingSockets.concat(this.activeSockets);
                 this.activeSockets = [null, null, null, null, null, null];
-                this.waitingSockets.forEach(ws => { //send new msg to all players in session
+                this.waitingSockets.forEach(ws => { 
                     if (ws !== null && ws.readyState === 1) {
                         ws.aID = null;
                         ws.isUndecidedOldPlayer = true;
                         ws.hasPlayedThisTurn = true;
                     }
                 });
+                this.finisherTimeout(1, 0);
+            }
+
+
+
+            if (this.activeSockets.length < this.currentTurn) { //match ended
                 if (this.gamerTimerID)
                     clearTimeout(this.gamerTimerID);
-                //this.finisherTimeout(1, 0); //MARKUP: finsher time
                 return;
             }
 
@@ -98,7 +96,7 @@ module.exports = class SessionObject {
             });*/
 
 
-           
+
             if (this.currentTurn > 0) {
                 console.log("sending round info of round --> " + (this.currentTurn - 1) + " (previous round)");
                 this.activeSockets.forEach((ws) => {
@@ -119,9 +117,9 @@ module.exports = class SessionObject {
                                     data: this.game[Number(ws.aID + this.currentTurn - this.activeSockets.length /*- 1*/)][Number(this.currentTurn - 1)]
                                 }
                             }));
-                        } 
-                        if (!(this.currentTurn === this.activeSockets.length))  
-                            ws.hasPlayedThisTurn = false; 
+                        }
+                        if (!(this.currentTurn === this.activeSockets.length))
+                            ws.hasPlayedThisTurn = false;
                     }
                 });
             }
@@ -141,8 +139,6 @@ module.exports = class SessionObject {
         console.log("finisher interval running");
         this.finishertimerID = setTimeout(() => {
 
-            console.log("finisherTimeout(fn) --> currentTurn = "+this.currentTurn);
-            console.log("finisherTimeout(fn) --> i = "+i);
             if (i < (this.currentTurn - 1)) {
                 console.log("finisherTimeout(fn) --> first if");
                 this.waitingSockets.forEach((ws) => {
