@@ -3,8 +3,9 @@ interface ChatProps {
     setEndModal: any;
     sender: any;
     socket: WebSocket | undefined;
+    setScreen: any;
 }
-export function EndModal({ endModal, setEndModal, sender, socket }: ChatProps) {
+export function EndModal({ endModal, setEndModal, sender, socket, setScreen }: ChatProps) {
 
     return (
         <div className={`w-[100vw] absolute h-[100vh] ${endModal ? 'flex' : 'hidden'}  items-center justify-center`}>
@@ -27,6 +28,7 @@ export function EndModal({ endModal, setEndModal, sender, socket }: ChatProps) {
                         onClick={() => {
                             setEndModal(false);
                             socket?.close(1000);
+                            setScreen(0);
                         }}
                         className="flex ml-8 flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105"
                     >

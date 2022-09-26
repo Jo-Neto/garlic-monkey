@@ -745,7 +745,7 @@ export function Home() {
   else if (screen === 5) {
     return (
       <GamePage className="flex justify-between">
-        <EndModal endModal={endModal} sender={sender} setEndModal={setEndModal} socket={socket} />
+        <EndModal endModal={endModal} sender={sender} setEndModal={setEndModal} socket={socket} setScreen={setScreen} />
         <div className="flex flex-row justify-center align-middle items-center  w-[90%]">
           <img
             className="top-5"
