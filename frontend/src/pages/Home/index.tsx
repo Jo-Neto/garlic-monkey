@@ -205,7 +205,7 @@ export function Home() {
         setEndModal(true);
       setScreen(5);
       setFinalPlayer(data.msgContent[0]?.owner || '');
-      setfinalScreen(data.msgContent)
+      setfinalScreen(data.msgContent || [])
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
