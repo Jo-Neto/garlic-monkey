@@ -383,7 +383,7 @@ export function Home() {
                   console.log("close socket code -->" + event.code)
                   if (event.code === 1001) {
                     setScreen(0);
-                    setAlertMessage({ title: 'Retirada de jogador', description: 'Player kickado pois não decidiu se jogava ou não' });
+                    setAlertMessage({ title: 'Voce foi kickado', description: 'Voce não decidiu se jogava ou não!' });
                     setShowAlert(true);
                   } else if (event.code === 1002 || event.code === 1003) {
                     setScreen(0);
