@@ -31,7 +31,7 @@ export function Home() {
   const [finalScreen, setfinalScreen] = useState<{ type: string; owner: string; data: string }[]>([]);
   const [finalPlayer, setFinalPlayer] = useState('');
   const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState({title: '', description: ''})
+  const [alertMessage, setAlertMessage] = useState({ title: '', description: '' })
   const [screen, setScreen] = useState<Number>(0);
   const [socket, setSocket] = useState<WebSocket>();
   const [timer, setTimer] = useState<any>(15);
@@ -40,6 +40,14 @@ export function Home() {
 
   let trueTime: number = 15;
   let timerId: number = 0;
+
+  function sender(bool) {
+    socket.send(
+      JSON.stringify({
+        msgType: 'participationStatus',
+        msgContent: bool,
+      }));
+  }
 
   function timerFn() {
     setTimer(trueTime);
@@ -313,7 +321,7 @@ export function Home() {
   if (screen === 0) {
     return (
       <GamePage>
-        <Alert setShowAlert={setShowAlert} showAlert={showAlert} alertMessage={alertMessage}/>
+        <Alert setShowAlert={setShowAlert} showAlert={showAlert} alertMessage={alertMessage} />
         <div className="animate-wiggle mb-[1rem]">
           <img
             src="/assets/images/logo.png"
@@ -327,7 +335,7 @@ export function Home() {
             <form
               onSubmit={(e) => {
                 e.preventDefault()
-                let a = new WebSocket(`wss://${window.location.href.substring(7,18)}:9999`, [room, nick]);
+                let a = new WebSocket(`wss://${window.location.href.substring(7, 18)}:9999`, [room, nick]);
                 //+------------------------------------------------------------------+
                 //|                     SOCKET CLOSE EVENT                           |
                 //+------------------------------------------------------------------+
@@ -335,20 +343,20 @@ export function Home() {
                   console.log("close socket code -->" + event.code)
                   if (event.code === 1001) {
                     setScreen(0);
-                    setAlertMessage({title: 'Retirada de jogador', description: 'Player kickado pois não decidiu se jogava ou não'});
+                    setAlertMessage({ title: 'Retirada de jogador', description: 'Player kickado pois não decidiu se jogava ou não' });
                     setShowAlert(true);
                   } else if (event.code === 1002 || event.code === 1003) {
                     setScreen(0);
-                    setAlertMessage({title: 'Nickname inválido', description: 'Não pode usar caracteres especiais'});
+                    setAlertMessage({ title: 'Nickname inválido', description: 'Não pode usar caracteres especiais' });
                     setShowAlert(true);
                   } else if (event.code === 1013) {
                     setScreen(0);
-                    setAlertMessage({title: 'Partida em andamento', description: 'Não foi possível entrar no jogo'});
+                    setAlertMessage({ title: 'Partida em andamento', description: 'Não foi possível entrar no jogo' });
                     setShowAlert(true);
                   } else if (event.code === 4003) {
                     setScreen(0);
                     setShowAlert(true);
-                    setAlertMessage({title: 'Nickname existente', description: 'Já existe player com o mesmo nome'});
+                    setAlertMessage({ title: 'Nickname existente', description: 'Já existe player com o mesmo nome' });
                     setShowAlert(true)
                   }
                 };
@@ -693,7 +701,7 @@ export function Home() {
   else if (screen === 5) {
     return (
       <GamePage className="flex justify-between">
-        <EndModal endModal={endModal} setEndModal={setEndModal} />
+        <EndModal endModal={endModal} sender={sender} setEndModal={setEndModal} />
         <div className="flex flex-row justify-center align-middle items-center  w-[90%]">
           <img
             className="top-5"
@@ -716,7 +724,7 @@ export function Home() {
           <div className="border-solid border-2 p-2 border-white/[0.75] rounded-r-md w-[30rem] bg-gradient-to-r from-black/[12%] to-black/25 flex flex-col">
             <div className="h-full chatBox overflow-scroll overflow-x-hidden">
               {
-                finalScreen.map( (el, index) => {
+                finalScreen.map((el, index) => {
                   if (el?.type === 'desc') return <Final img={false} owner={el?.owner} data={el?.data} key={index} />;
                   return <Final img={true} owner={el?.owner} data={el?.data} key={index} />;
                 })
@@ -727,4 +735,13 @@ export function Home() {
       </GamePage>
     );
   }
+}
+
+
+function sender() {
+  socket.send(
+    JSON.stringify({
+      msgType: 'participationStatus',
+      msgContent: true,
+    }));
 }

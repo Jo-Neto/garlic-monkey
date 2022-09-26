@@ -1,8 +1,9 @@
 interface ChatProps {
     endModal?: boolean;
     setEndModal: any;
+    sender: any
 }
-export function EndModal({ endModal, setEndModal }: ChatProps) {
+export function EndModal({ endModal, setEndModal, sender }: ChatProps) {
 
     return (
         <div className={`w-[100vw] absolute h-[100vh] ${endModal ? 'flex' : 'hidden'}  items-center justify-center`}>
@@ -13,6 +14,7 @@ export function EndModal({ endModal, setEndModal }: ChatProps) {
                 <div className="flex mt-[100px]">
                     <button
                         onClick={() => {
+                            sender(true);
                             setEndModal(false);
                         }}
                         className="flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105"
