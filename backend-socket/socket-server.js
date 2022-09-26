@@ -9,11 +9,6 @@ const HTTPSserver = https.createServer({
   cert: fs.readFileSync('../keys-and-certificates/cert.pem'),
   key: fs.readFileSync('../keys-and-certificates/key-rsa.pem')
 }, app)
-  /*(req, res) => {
-    res.writeHead(200);
-    res.redirect('http://localhost/3000');
-    res.end('hello world\n');
-  },*/
 
 app.get('/', (req, res) => {
   res.redirect('http://66.135.2.21:3000/');
