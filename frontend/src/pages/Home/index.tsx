@@ -58,7 +58,7 @@ export function Home() {
     if (type == "phrase") {
       if (phrase) aux = phrase;
     } else if (type == "URL") {
-      if (aux.substr(0, 10) == "data:image") {
+      if (aux.substring(0, 10) == "data:image") {
         aux = phrase
       } else {
         aux = "/assets/images/escreva.png";
@@ -193,7 +193,7 @@ export function Home() {
     else if (data.msgType === 'finalData') {
       console.log('final data index ' + (data.msgContent.round) + " below");
       console.log(data.msgContent.finalData);
-      if (data.msgContent.finalData.update)
+      if (data.msgContent.finalData?.update)
         alert('ESCOLHA DO PLAYER');
       setScreen(5);
       setFinalPlayer(data.msgContent[0]?.owner || '');
@@ -325,7 +325,7 @@ export function Home() {
             <form
               onSubmit={(e) => {
                 e.preventDefault()
-                let a = new WebSocket(`wss://${window.location.href.substring(7,18)}:9999`, [room, nick]);
+                let a = new WebSocket(`wss://localhost:9999`, [room, nick]);
                 //+------------------------------------------------------------------+
                 //|                     SOCKET CLOSE EVENT                           |
                 //+------------------------------------------------------------------+
@@ -409,9 +409,9 @@ export function Home() {
           />
           <div className="flex flex-col text-center">
             <span className="defaultSpan uppercase"
-            >Codigo de sala</span>
+              >Codigo de sala</span>
             <span className="defaultSpan uppercase"
-            >{room}</span>
+              >{room}</span>
           </div>
           <div className='flex flex-col items-center'>
             <span>Tempo</span>
@@ -424,7 +424,7 @@ export function Home() {
           <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-gradient-to-b from-black/25 to-black/50 rounded-l-[1rem]">
             <div className="flex flex-col items-center">
               <span className="defaultSpan uppercase mt-[1rem]"
-              >JOGADORES</span>
+                >JOGADORES</span>
               <div className="flex flex-col gap-2 mt-[1rem]">
                 <Player players={players}></Player>
               </div>
