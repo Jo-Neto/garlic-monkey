@@ -4,8 +4,9 @@ interface ChatProps {
     sender: any;
     socket: WebSocket | undefined;
     setScreen: any;
+    kickerCount: number;
 }
-export function EndModal({ endModal, setEndModal, sender, socket, setScreen }: ChatProps) {
+export function EndModal({ endModal, setEndModal, sender, socket, setScreen, kickerCount }: ChatProps) {
 
     return (
         <div className={`w-[100vw] absolute h-[100vh] ${endModal ? 'flex' : 'hidden'}  items-center justify-center`}>
@@ -35,6 +36,7 @@ export function EndModal({ endModal, setEndModal, sender, socket, setScreen }: C
                         <img className='mr-1' src={'/assets/icons/Desfazer.png'} width={22} height={22} />
                         Voltar ao inicio
                     </button>
+                    <span className="font-semibold text-[80px] !text-white defaultSpan">{kickerCount}</span>
                 </div>
             </div>
         </div>

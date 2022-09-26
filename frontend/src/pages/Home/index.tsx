@@ -43,6 +43,7 @@ export function Home() {
   const [disable, setDisable] = useState(false);
   const [endModal, setEndModal] = useState(false);
   const [waiterRound, setwaiterRound] = useState<number>(1);
+  const [kicker, setKicker] = useState<number>(60);
 
   let trueTime: number = 15;
   let timerId: number = 0;
@@ -93,10 +94,21 @@ export function Home() {
   }
 
   function waitingCountManager(reset: boolean) {
-    if (reset) 
+    if (reset)
       waiterCounter = 0;
     waiterCounter++;
     setwaiterRound(waiterCounter);
+  }
+
+  let kickerCounter: number = 60;
+  let kickerCounterID: number = 0;
+  function kickerTimer(): void {
+    if (kickerCounter === 0) {
+      clearInterval(kickerCounterID);
+      kickerCounter = 60;
+    } else 
+      kickerCounter--;
+    setKicker(kickerCounter);
   }
 
 
@@ -226,12 +238,8 @@ export function Home() {
       setScreen(5);
       if (data.msgContent) {
         if (data.msgContent.update === 'requireNewParticipationStatus') {
-          socket?.send(
-            JSON.stringify({
-              msgType: 'participationStatus',
-              msgContent: false,
-            }),
-          );
+          kickerCounter--;
+          kickerCounterID = setInterval(() => { kickerTimer(); }, 1000)
           waitingManager(true);
           setEndModal(true);
           trueTime = 15;
@@ -250,11 +258,9 @@ export function Home() {
     //|                       BACK-END REPORTS                           |
     //+------------------------------------------------------------------+
     else if (data.msgType === 'participationFeedback') {
-      console.log('participation feedback: ');
-      console.log(data.msgContent);
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    else if (data.msgType === 'devReport'){
+    else if (data.msgType === 'devReport') {
       console.log('WARNING, RECEIVED DEV REPORT FROM BACK-END, DATA BELOW: ');
       console.log(data.msgContent.report);
     } else {
@@ -355,7 +361,7 @@ export function Home() {
 
   ///////////////////////////////////////////////////////////////////////////////////////
 
-  if (screen === 0) {  
+  if (screen === 0) {
     return (
       <GamePage>
         <Alert setShowAlert={setShowAlert} showAlert={showAlert} alertMessage={alertMessage} />
@@ -412,14 +418,14 @@ export function Home() {
               className="flex flex-col items-center w-[30rem] h-fit gap-5 rounded-[0.625rem]"
             >
               <span className="defaultSpan"
-                >ESCOLHA UM APELIDO</span>
+              >ESCOLHA UM APELIDO</span>
               <Input
                 className="normal-case"
                 value={nick}
                 onChange={(e) => setNick(e.target.value)}
               />
               <span className="defaultSpan"
-                >ESCREVA O CODIGO DA SALA OU CRIE A SUA</span>
+              >ESCREVA O CODIGO DA SALA OU CRIE A SUA</span>
               <div className="flex flex-row">
                 <Input
                   value={room}
@@ -436,15 +442,15 @@ export function Home() {
           </div>
           <div className="text-center flex flex-col  bg-gradient-to-r from-white/[12%] to-white/25 items-center w-[15rem] border-solid border-2 border-white/[0.50] rounded-1 p-[1.5rem]">
             <p className="defaultSpan mb-[1rem] uppercase"
-              >Como Jogar</p>
+            >Como Jogar</p>
             <p className="text-[0.75rem]"
-              >1. Digite um apelido engraçado.</p>
+            >1. Digite um apelido engraçado.</p>
             <p className="text-[0.75rem]"
-              >2. Coloque o codigo da sala dos seus amigos,  ou crie uma nova.</p>
+            >2. Coloque o codigo da sala dos seus amigos,  ou crie uma nova.</p>
             <p className="text-[0.75rem]"
-              >3. Espere de 4 a 6 jogadores entrar na sala, para o jogo começar automaticamente.</p>
+            >3. Espere de 4 a 6 jogadores entrar na sala, para o jogo começar automaticamente.</p>
             <p className="text-[0.75rem]"
-              >4. Siga as instruções das telas</p>
+            >4. Siga as instruções das telas</p>
 
           </div>
         </div>
@@ -569,10 +575,10 @@ export function Home() {
         <div className='mr-[100px] flex flex-col items-end w-full'>
           <div className='flex flex-col justify-center items-center'>
 
-          <span className='defaultSpan !text-white'>Tempo</span>
-          <span className='defaultSpan text-[60px] mt-3'>
-            {timer}
-          </span>
+            <span className='defaultSpan !text-white'>Tempo</span>
+            <span className='defaultSpan text-[60px] mt-3'>
+              {timer}
+            </span>
           </div>
         </div>
         <div className="animate-wiggle mb-[1rem]">
@@ -628,7 +634,7 @@ export function Home() {
         <div className='flex justify-between w-full'>
           <div className='ml-[520px] text-center'>
             <p
-            >Desenhe essa frase bizonha:</p> 
+            >Desenhe essa frase bizonha:</p>
             <span
             >{testingNull("phrase", randomPhraseOrUrl)}</span>
           </div>
@@ -699,7 +705,7 @@ export function Home() {
   //|                GAME PAGE - DESCRIPTION WITH IMAGE                |
   //+------------------------------------------------------------------+
   else if (screen === 4) {  //TODO , melhorar o ux do "escreva uma frase", deixar mais claro pro player o que ele tem que fazer, destacar, explicar melhor, etc
-    return ( 
+    return (
       <GamePage>
         <div className="mb-[1rem] shadow-md border-8 border-[#3F1802] rounded-md">
           <img
@@ -752,7 +758,7 @@ export function Home() {
   else if (screen === 5) {
     return (
       <GamePage className="flex justify-between">
-        <EndModal endModal={endModal} sender={sender} setEndModal={setEndModal} socket={socket} setScreen={setScreen} />
+        <EndModal endModal={endModal} sender={sender} setEndModal={setEndModal} socket={socket} setScreen={setScreen} kickerCount = {kicker} />
         <div className="flex flex-row justify-center align-middle items-center  w-[90%]">
           <img
             className="top-5"
@@ -785,13 +791,13 @@ export function Home() {
         </div>
       </GamePage>
     );
-  } 
-  
+  }
+
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //+------------------------------------------------------------------+
   //|                           SPECTATOR PAGE                         |
   //+------------------------------------------------------------------+
-  
+
   else if (screen === 6) {
     return (
       <GamePage>
