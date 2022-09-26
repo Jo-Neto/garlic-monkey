@@ -54,8 +54,8 @@ module.exports = class SessionObject {
             console.log("interval called round number --> " + this.currentTurn);
 
             
-            
-            if ( this.currentTurn === this.activeSockets.length) {
+
+            if ( this.currentTurn === (this.activeSockets.length - 1)) {
                 console.log("chamando finisher");
                 this.finisherTimeout(1, 0);
             }
