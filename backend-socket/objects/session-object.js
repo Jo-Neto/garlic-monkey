@@ -116,7 +116,7 @@ module.exports = class SessionObject {
             console.log("i = " + i)
             console.log("currentTurn = " + this.currentTurn)
 
-            if (i < (this.currentTurn - 1)) {
+            if (i < this.currentTurn ) {
                 console.log("finisherTimeout(fn) --> first if");
                 this.waitingSockets.forEach((ws) => {
                     if (ws !== null && ws.readyState === 1) {
@@ -131,7 +131,7 @@ module.exports = class SessionObject {
                 this.finisherTimeout(15000, ++i);   //MARKUP: finsher time
             }
 
-            else if (i === (this.currentTurn - 1)) {
+            else if (i === this.currentTurn ) {
                 console.log("finisherTimeout(fn) --> else if");
                 this.saveOnDB(false);
                 this.currentTurn = -1;
