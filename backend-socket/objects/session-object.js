@@ -97,6 +97,16 @@ module.exports = class SessionObject {
                             ws.hasPlayedThisTurn = false;
                     }
                 });
+                this.waitingSockets.forEach((ws) => {
+                    if (ws !== null && ws.readyState === 1) {
+                        ws.send(JSON.stringify({
+                            msgType: 'gameUpdate',
+                            msgContent: {
+                                update: 'roundInfo',
+                            }
+                        }));
+                    }
+                });
             }
 
             if ((this.currentTurn % 2) === 0)

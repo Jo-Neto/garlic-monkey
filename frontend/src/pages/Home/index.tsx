@@ -59,6 +59,7 @@ export function Home() {
     } else
       trueTime--;
   }
+
   let isScreenDescription = true; // TRUE!
   function screenSetter(whichScreen: number) {
     isScreenDescription = !isScreenDescription;
@@ -188,6 +189,7 @@ export function Home() {
         console.log(data.msgContent);
         if (isWaiting) {
           waitingCountManager(false);
+          return;
           //set use state for round count
         }
         if (!data.msgContent.data) {
@@ -224,13 +226,16 @@ export function Home() {
     //+------------------------------------------------------------------+
 
     else if (data.msgType === 'finalData') {
-      waitingManager(true);
       setScreen(5);
-      setPlayers([]);
-      waitingCountManager(true);
       if (data.msgContent) {
-        if (data.msgContent.update === 'requireNewParticipationStatus')
+        if (data.msgContent.update === 'requireNewParticipationStatus') {
+          waitingManager(true);
           setEndModal(true);
+          trueTime = 15;
+          timerFn();
+          setPlayers([]);
+          waitingCountManager(true);
+        }
         else {
           setFinalPlayer(data.msgContent[0]?.owner || '');
           setfinalScreen(data.msgContent || []);
