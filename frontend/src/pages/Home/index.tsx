@@ -105,7 +105,6 @@ export function Home() {
 
   const onMessage = useCallback((message: any) => {
     const data = JSON.parse(message?.data);
-    console.log(data);
     if (!Object.hasOwn(data, 'msgType')) return;/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
     //|                           LINE LOGIC                             |
@@ -116,7 +115,6 @@ export function Home() {
           ...prevPlayers,
           { nick: data.msgContent.nick, photo: '' },
         ]);
-        //console.log(players);
       }
       if (data.msgContent.updateType === 'out' || data.msgContent.isOnGame === null) {
         setPlayers((prevPlayers) =>
@@ -124,14 +122,11 @@ export function Home() {
             if (el.nick !== data.msgContent.nick) return el;
           }),
         );
-        //console.log(players);
       }
     }
     else if (data.msgType === 'playerRow') {
-      //console.log(data.msgContent);
 
       let activePlayers = data.msgContent.activeNick.filter(function (el: any) {
-        //console.log(el)
         if (el !== null) return el;
       });
 
@@ -173,7 +168,6 @@ export function Home() {
     //+------------------------------------------------------------------+
     else if (data.msgType === 'gameUpdate') {
       if (data.msgContent.update === 'gameStart') {
-        //condition true when game starting
         timerResetter();
         if (data.msgContent.type === 'activePlayer') {
           waitingManager(false);
@@ -185,12 +179,9 @@ export function Home() {
       }
 
       else if (data.msgContent.update === 'roundInfo' || data.msgContent.data === null) {
-        console.log('roundInfo below: '); //condition true when received data from previous player
-        console.log(data.msgContent);
         if (isWaiting) {
           waitingCountManager(false);
           return;
-          //set use state for round count
         }
         if (!data.msgContent.data) {
           setRandomPhraseOrUrl("Desenho Livre");
@@ -247,15 +238,14 @@ export function Home() {
     //|                       BACK-END REPORTS                           |
     //+------------------------------------------------------------------+
     else if (data.msgType === 'devReport') {
-      console.log('===========================================================================================');
       console.log('WARNING, RECEIVED DEV REPORT FROM BACK-END, DATA BELOW: ');
       console.log(data.msgContent.report);
-      console.log('===========================================================================================');
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    else
-      console.log('ERROR: -->>>  invalid socket data received');
-    console.log('===========================================================================================');
+    else {
+      console.log('ERROR: -->>>  invalid socket data received, data below:');
+      console.log(data);
+    }
   }, []);
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //+------------------------------------------------------------------+
@@ -309,7 +299,6 @@ export function Home() {
     const newWidth = 500 // actualWidth && actualWidth * 0.7;
     const newHeight = 500 // newWidth && newWidth * (1 / (16 / 9));
     const size = { width: newWidth, height: newHeight };
-    console.log(size);
     setCanvasSize(size);
   }, []);
 
@@ -380,7 +369,6 @@ export function Home() {
                 //|                     SOCKET CLOSE EVENT                           |
                 //+------------------------------------------------------------------+
                 a.onclose = (event) => {
-                  console.log("close socket code -->" + event.code)
                   if (event.code === 1001) {
                     setScreen(0);
                     setAlertMessage({ title: 'Voce foi kickado', description: 'Voce não decidiu se jogava ou não!' });
@@ -586,7 +574,6 @@ export function Home() {
           className='mb-10'
           onSubmit={e => {
             e.preventDefault();
-            console.log('click received');
             socket?.send(
               JSON.stringify({
                 msgType: 'newData',
@@ -687,7 +674,6 @@ export function Home() {
         </div>
         <div
           className="flex flex-row"
-          onClick={() => console.log('click received')}
         ></div>
       </GamePage>
     );
@@ -714,7 +700,6 @@ export function Home() {
         <form
           onSubmit={e => {
             e.preventDefault();
-            console.log('click received');
             socket?.send(
               JSON.stringify({
                 msgType: 'newData',
@@ -776,7 +761,6 @@ export function Home() {
             <div className="h-full chatBox overflow-scroll overflow-x-hidden">
               {
                 finalScreen.map((el, index) => {
-                  console.log(typeof finalScreen);
                   if (el?.type === 'desc') return <Final img={false} owner={el?.owner} data={el?.data} key={index} />;
                   return <Final img={true} owner={el?.owner} data={el?.data} key={index} />;
                 })
