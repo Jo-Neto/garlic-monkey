@@ -5,6 +5,7 @@ import { GamePage } from '../../layout/GamePage';
 import { Players } from '../Players/index';
 import { Chat } from '../../components/Chat';
 import { Final } from '../../components/final';
+import { Alert } from '../../components/alert';
 import { PlayerIcon } from '../../components/PlayerIcon';
 import { Player } from '../../components/Player';
 import { WhiteBoard } from '../../components/Game/WhiteBoard';
@@ -28,6 +29,8 @@ export function Home() {
   const [chatMessages, setChatMessages] = useState<{ user: string; msg: string }[]>([]);
   const [finalScreen, setfinalScreen] = useState<{ type: string; owner: string; data: string }[]>([]);
   const [finalPlayer, setFinalPlayer] = useState('');
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState({title: '', description: ''})
   const [screen, setScreen] = useState<Number>(0);
   const [socket, setSocket] = useState<WebSocket>();
   const [timer, setTimer] = useState<any>(15);
@@ -50,15 +53,15 @@ export function Home() {
     setScreen(whichScreen);
   }
 
-  const testingNull = (type :string, phrase :string) => {
-    let aux :string = phrase;
-    if ( type == "phrase" )  {
-      if ( phrase ) aux  = phrase;
-    } else if ( type == "URL" ) {
-      if ( aux.substr(0,10) == "data:image" ) {
+  const testingNull = (type: string, phrase: string) => {
+    let aux: string = phrase;
+    if (type == "phrase") {
+      if (phrase) aux = phrase;
+    } else if (type == "URL") {
+      if (aux.substr(0, 10) == "data:image") {
         aux = phrase
       } else {
-        aux  = "/assets/images/escreva.png";
+        aux = "/assets/images/escreva.png";
       }
     }
     return aux;
@@ -96,7 +99,7 @@ export function Home() {
         );
         //console.log(players);
       }
-    } 
+    }
     else if (data.msgType === 'playerRow') {
       //console.log(data.msgContent);
 
@@ -306,6 +309,7 @@ export function Home() {
   if (screen === 0) {
     return (
       <GamePage>
+        <Alert setShowAlert={setShowAlert} showAlert={showAlert} alertMessage={alertMessage}/>
         <div className="animate-wiggle mb-[1rem]">
           <img
             src="/assets/images/logo.png"
@@ -325,15 +329,24 @@ export function Home() {
                 //+------------------------------------------------------------------+
                 a.onclose = (event) => {
                   console.log("close socket code -->" + event.code)
-                  if (event.code === 1001)
-                    alert('player foi kickado porque demorou pra decidir se jogava ou não');
-                  else if (event.code === 1002 || event.code === 1003)
-                    alert("Player tentou entrar na sala com string(s) invalida(s)");
-                  else if (event.code === 1013)
-                    alert("Partida em andamento");
-                  else if (event.code === 4003)
-                    alert("ja existe outro player com o mesmo nome");
-                  setScreen(0);
+                  if (event.code === 1001) {
+                    setScreen(0);
+                    setAlertMessage({title: 'Retirada de jogador', description: 'Player kickado pois não decidiu se jogava ou não'});
+                    setShowAlert(true);
+                  } else if (event.code === 1002 || event.code === 1003) {
+                    setScreen(0);
+                    setAlertMessage({title: 'Nickname inválido', description: 'Não pode usar caracteres especiais'});
+                    setShowAlert(true);
+                  } else if (event.code === 1013) {
+                    setScreen(0);
+                    setAlertMessage({title: 'Partida em andamento', description: 'Não foi possível entrar no jogo'});
+                    setShowAlert(true);
+                  } else if (event.code === 4003) {
+                    setScreen(0);
+                    setShowAlert(true);
+                    setAlertMessage({title: 'Nickname existente', description: 'Já existe player com o mesmo nome'});
+                    setShowAlert(true)
+                  }
                 };
                 //////////////////////////////////////////////////////////////////////////////
                 //////////////////////////////////////////////////////////////////////////////
@@ -550,10 +563,10 @@ export function Home() {
       <GamePage>
         <div className='flex justify-between w-full'>
           <div className='ml-[520px] text-center'>
-          <p
+            <p
             >Desenhe essa frase bizonha:</p>
-        <span
-          >{testingNull("phrase", randomPhraseOrUrl)}</span>
+            <span
+            >{testingNull("phrase", randomPhraseOrUrl)}</span>
           </div>
           <div className='mr-[22px] flex flex-col items-center'>
             <span>Tempo</span>
