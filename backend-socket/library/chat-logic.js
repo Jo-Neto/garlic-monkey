@@ -1,8 +1,8 @@
 module.exports = function chatLogic(Session, data, playerWs) {
-    if (Object.hasOwn(data, 'msgContent')) { //object has this property
-        if (typeof data.msgContent === 'string') { //and msgContent is string
+    if (Object.hasOwn(data, 'msgContent')) { 
+        if (typeof data.msgContent === 'string') { 
             Session.chat.push({ nick: playerWs.garlicName, msgContent: data.msgContent });
-            Session.activeSockets.forEach(ws => { //send new msg to all players in session
+            Session.activeSockets.forEach(ws => { 
                 if (ws !== null && ws.readyState === 1) {
                     ws.send(JSON.stringify({
                         msgType: 'chatUpdate',
@@ -10,7 +10,7 @@ module.exports = function chatLogic(Session, data, playerWs) {
                     }));
                 }
             });
-            Session.waitingSockets.forEach(ws => { //send new msg to all players in session
+            Session.waitingSockets.forEach(ws => { 
                 if (ws !== null && ws.readyState === 1) {
                     ws.send(JSON.stringify({
                         msgType: 'chatUpdate',

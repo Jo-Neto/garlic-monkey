@@ -3,14 +3,14 @@ const partLogic = require('./participation-status.js');
 const gameLogic = require('./game-logic.js');
 
 module.exports = function mainLogic(Session, data, playerWs) {
-    if (Object.hasOwn(data, 'msgType')) { //check if object has required minimun property
-        if (typeof data.msgType === 'string') { //check if property is a string
+    if (Object.hasOwn(data, 'msgType')) { 
+        if (typeof data.msgType === 'string') { 
             switch (data.msgType) {
                 case 'chatNew':
                     chatLogic(Session, data, playerWs);
                     break;
                 case 'newData':
-                    if (playerWs.aID === null) { //inctive sockets can only chat, non started games can not receive inputs
+                    if (playerWs.aID === null) { 
                         if (playerWs.readyState === 1) {
                             playerWs.send(JSON.stringify({
                                 msgType: 'devReport',
@@ -34,7 +34,7 @@ module.exports = function mainLogic(Session, data, playerWs) {
                         gameLogic(Session, data, playerWs);
                     }
                     break;
-                case 'participationStatus': //changes player status if possible
+                case 'participationStatus': 
                     partLogic(Session, data, playerWs);
                     break;
                 default:

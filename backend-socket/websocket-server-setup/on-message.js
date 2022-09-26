@@ -11,7 +11,7 @@ module.exports = function onMessage(data, isBinary, ws) {
     }
     if (!(parsedData !== null && typeof parsedData === 'object' && !Array.isArray(parsedData)))
         return false;
-    if (ws.sID >= activeSessionsArr.length) //safety, don't try to access indexes that don't exist
+    if (ws.sID >= activeSessionsArr.length) 
         return null;
     mainLogic(activeSessionsArr[ws.sID], parsedData, ws);
 };
