@@ -131,6 +131,7 @@ export function Home() {
     }
     else if (data.msgType === 'playerRow') {
 
+      screenSetter(1);
       let activePlayers = data.msgContent.activeNick.filter(function (el: any) {
         if (el !== null) return el;
       });
@@ -248,12 +249,15 @@ export function Home() {
     //+------------------------------------------------------------------+
     //|                       BACK-END REPORTS                           |
     //+------------------------------------------------------------------+
-    else if (data.msgType === 'devReport') {
-      console.log('WARNING, RECEIVED DEV REPORT FROM BACK-END, DATA BELOW: ');
-      console.log(data.msgContent.report);
+    else if (data.msgType === 'participationFeedback') {
+      console.log('participation feedback: ');
+      console.log(data.msgContent);
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    else {
+    else if (data.msgType === 'devReport'){
+      console.log('WARNING, RECEIVED DEV REPORT FROM BACK-END, DATA BELOW: ');
+      console.log(data.msgContent.report);
+    } else {
       console.log('ERROR: -->>>  invalid socket data received, data below:');
       console.log(data);
     }
@@ -743,7 +747,7 @@ export function Home() {
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //+------------------------------------------------------------------+
-  //|                GAME PAGE - DESCRIPTION WITH IMAGE                |
+  //|                       GAME PAGE - END MODAL                      |
   //+------------------------------------------------------------------+
   else if (screen === 5) {
     return (
@@ -781,7 +785,14 @@ export function Home() {
         </div>
       </GamePage>
     );
-  } else if (screen === 6) {
+  } 
+  
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //+------------------------------------------------------------------+
+  //|                           SPECTATOR PAGE                         |
+  //+------------------------------------------------------------------+
+  
+  else if (screen === 6) {
     return (
       <GamePage>
         <div className='mr-[100px] flex flex-col justify-center items-end w-full'>
