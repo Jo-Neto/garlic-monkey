@@ -9,40 +9,49 @@ redis = Redis.createClient({
     host: "127.0.0.1"
 });
 const app = express();
+let i = 0;
 
 app.use(cors({
     origin : "https://localhost:9999",
     credentials: true,
 }));
 
-app.post('/send-object', jsonParser, async (req, res) => {
-    const { object } = req.body;
+app.post('/send-object', jsonParser, (req, res) => {
+    const object = req.body;
     
-    const objectArray = [0]
-    let stream = await redis.scanStream({
-        match: "history:*",
-        count: 10
-    });
-    await stream.on("data", async (keys = []) => {
-        let key;
-        for (key of keys) {
-            key = key.split(":")
-            if (!objectArray.includes(key[1])) {
-                objectArray.push(key[1]);
+        const objectArray = [0]
+        let stream = redis.scanStream({
+            match: "history:*",
+            count: 10
+        });
+        stream.on("data", async (keys = []) => {
+            try {
+                let key;
+                for (key of keys) {
+                    key = key.split(":")
+                    if (!objectArray.includes(key[1])) {
+                        objectArray.push(parseInt(key[1]));
+                    }
+                }
+                
+                const NEXT_POS = objectArray[objectArray.length-1] + 1
+                
+                await redisModule.set(NEXT_POS, object);
+                
+                const data = await redisModule.get(NEXT_POS, object);
+                
+                res.json(data);
+            } catch (error) {
+                console.log(error)
+                res.json({errorMessage: "Error Storing", data: error}); 
             }
-        }
-    });
-    await stream.on("end",  () => {
-        console.log("Finished finding keys")
-    });
-
-    const NEXT_POS = objectArray[objectArray.length-1] + 1
-
-    redisModule.set(`history:${NEXT_POS}`, object);
+        });
+        stream.on("end",  () => {
+            console.log("Finished finding keys")
+        });
+         
     
-    redisModule.get(NEXT_POS, object);
     
-    res.json({sucessMessage: "Finish Storing", data: "data"});
 });
 
 app.listen(8080, ()=>{ console.log('https backend server is listening'); });

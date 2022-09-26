@@ -8,7 +8,6 @@ module.exports = {
     get: (key) => {
         return new Promise( (resolve, reject) => {
             redis.get( `history:${key}`, async (error, data) => {
-                
                 if( error ) {
                     console.error(error);
 
@@ -18,15 +17,15 @@ module.exports = {
                 if( data != null ) {
                     console.log({ sucessMessage: "Redis Hit!", data: data });
 
-                    return resolve(data);
+                    return resolve({ sucessMessage: "Redis Hit!", data: data });
                 };
-                return resolve({});
+                return resolve(data);
             });
         });
     },
     set: (key, value) => {
         return new Promise( (resolve, reject) => {
-            redis.get( key, async (error, data) => {
+            redis.get( `history:${key}`, async (error, data) => {
                 if( error ) {
                     console.error(error);
 
@@ -34,24 +33,14 @@ module.exports = {
                 };
 
                 if( data != null ) {
-                    console.log({ sucessMessage: "Redis Hit! Object Updated", data: data });
-                    const object = value
-                    redis.setex( key, 10, JSON.stringify(object), (err, result) => {
-                        if( err ){
-                            console.log(err);
-    
-                            return reject(err);
-                        }
-                        
-                        console.log(result + ": Stored on Redis")
-                    });
+                    console.log({ errorMessage: "Redis Hit! Object already stored", data: data });
                     
-                    return resolve(object);
+                    return reject({ errorMessage: "Redis Hit! Object already stored", data: data });
                 };
 
                 const object = value
                 
-                redis.setex( key, 10, JSON.stringify(object), (err, result) => {
+                redis.setex( `history:${key}`, 10 * 60, JSON.stringify(object), (err, result) => {
                     if( err ){
                         console.log(err);
 
@@ -61,7 +50,7 @@ module.exports = {
                     console.log(result + ": Stored on Redis")
                 });
 
-                return resolve(object);
+                return resolve({ sucessMessage: "Object Stored!", data: object });
             });
         });
     }
