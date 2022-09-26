@@ -42,6 +42,8 @@ export function Home() {
   let timerId: number = 0;
 
   function sender(bool: boolean) {
+    setPlayers([]);
+    setScreen(1);
     socket?.send(
       JSON.stringify({
         msgType: 'participationStatus',
