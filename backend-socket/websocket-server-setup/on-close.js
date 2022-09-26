@@ -6,7 +6,7 @@ module.exports = function onClose(ws) {
     if (ws.takenName)
         return;
     try {
-        removeIndex = activeSessionsArr[ws.sID].activeSockets.indexOf(ws);   //WHY THE ACTUAL FUCK DO I NEED THIS SHIIIIIIIIIIT!!!!!!!!!!!!!  
+        removeIndex = activeSessionsArr[ws.sID].activeSockets.indexOf(ws);    
         if (removeIndex !== -1) {
             activeSessionsArr[ws.sID].activeSockets[removeIndex] = null;
             shouldStartGame(activeSessionsArr[ws.sID]);
@@ -22,10 +22,10 @@ module.exports = function onClose(ws) {
     if (ws !== null)
         ws.terminate();
     try {
-        if (activeSessionsArr[ws.sID].activeSockets.every(el => { el === null }) && activeSessionsArr[ws.sID].waitingSockets.every(el => { el === null })) //if session empty save on redis
+        if (activeSessionsArr[ws.sID].activeSockets.every(el => { el === null }) && activeSessionsArr[ws.sID].waitingSockets.every(el => { el === null })) 
             activeSessionsArr[ws.sID].saveOnDB(true);
-        else { //player disconnected but there are still players
-            activeSessionsArr[ws.sID].activeSockets.forEach(webs => { //send new msg to all players in session
+        else { 
+            activeSessionsArr[ws.sID].activeSockets.forEach(webs => { 
                 if (webs !== null && webs.readyState === 1) {
                     webs.send(JSON.stringify({
                         msgType: 'playerUpdate',
@@ -33,7 +33,7 @@ module.exports = function onClose(ws) {
                     }));
                 }
             });
-            activeSessionsArr[ws.sID].waitingSockets.forEach(webs => { //send new msg to all players in session
+            activeSessionsArr[ws.sID].waitingSockets.forEach(webs => { 
                 if (webs !== null && webs.readyState === 1) {
                     webs.send(JSON.stringify({
                         msgType: 'playerUpdate',

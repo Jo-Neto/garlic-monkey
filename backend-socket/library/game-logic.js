@@ -1,8 +1,6 @@
 module.exports = function mainLogic(Session, data, playerWs) {
-    if (Object.hasOwn(data, 'msgType')) { //check if object has required minimun property
-        if (typeof data.msgContent === 'string' && !playerWs.hasPlayedThisTurn) { //check if property  */
-            //console.log(Session.game);
-            //console.log("===========================================================================================");
+    if (Object.hasOwn(data, 'msgType')) { 
+        if (typeof data.msgContent === 'string' && !playerWs.hasPlayedThisTurn) { 
             if (playerWs.aID + Session.currentTurn < Session.activeSockets.length) {
                 let obj = {};
                 if (Session.currentTurn % 2 !== 0)
@@ -48,13 +46,6 @@ module.exports = function mainLogic(Session, data, playerWs) {
                 }
             }
             playerWs.hasPlayedThisTurn = true;
-            /* console.log(Session.game);
-            console.log("===========================================================================================");
-            console.log("===========================================================================================");
-            console.log("===========================================================================================");
-            console.log("===========================================================================================");
-            console.log("===========================================================================================");
-            console.log("===========================================================================================");  */
         } else
             console.log("ERROR --> game-logic.js --> msgType type error or player has tried playing twice");
     } else

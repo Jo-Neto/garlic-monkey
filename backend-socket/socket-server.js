@@ -24,3 +24,5 @@ module.exports = {
   wss,
   HTTPSserver
 };
+
+//TODO: clean the code

@@ -1,3 +1,8 @@
+//TODO: colocar som
+//TODO: auto scroll no chat
+//TODO: tirar os console logs do navegador
+//TODO: desbagunçar código
+
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Button, Buttons } from '../../components/Form/Button';
 import { Input } from '../../components/Form/Input';
@@ -35,6 +40,7 @@ export function Home() {
   const [disable, setDisable] = useState(false);
   const [endModal, setEndModal] = useState(false);
   const [waiterRound, setwaiterRound] = useState<number>(1);
+  const [kicker, setKicker] = useState<number>(60);
 
   let trueTime: number = 15;
   let timerId: number = 0;
@@ -85,10 +91,21 @@ export function Home() {
   }
 
   function waitingCountManager(reset: boolean) {
-    if (reset) 
+    if (reset)
       waiterCounter = 0;
     waiterCounter++;
     setwaiterRound(waiterCounter);
+  }
+
+  let kickerCounter: number = 60;
+  let kickerCounterID: number = 0;
+  function kickerTimer(): void {
+    if (kickerCounter === 0) {
+      clearInterval(kickerCounterID);
+      kickerCounter = 60;
+    } else 
+      kickerCounter--;
+    setKicker(kickerCounter);
   }
 
 
@@ -102,7 +119,6 @@ export function Home() {
 
   const onMessage = useCallback((message: any) => {
     const data = JSON.parse(message?.data);
-    console.log(data);
     if (!Object.hasOwn(data, 'msgType')) return;/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
     //|                           LINE LOGIC                             |
@@ -113,7 +129,6 @@ export function Home() {
           ...prevPlayers,
           { nick: data.msgContent.nick, photo: '' },
         ]);
-        //console.log(players);
       }
       if (data.msgContent.updateType === 'out' || data.msgContent.isOnGame === null) {
         setPlayers((prevPlayers) =>
@@ -121,14 +136,12 @@ export function Home() {
             if (el.nick !== data.msgContent.nick) return el;
           }),
         );
-        //console.log(players);
       }
     }
     else if (data.msgType === 'playerRow') {
-      //console.log(data.msgContent);
 
+      screenSetter(1);
       let activePlayers = data.msgContent.activeNick.filter(function (el: any) {
-        //console.log(el)
         if (el !== null) return el;
       });
 
@@ -170,7 +183,6 @@ export function Home() {
     //+------------------------------------------------------------------+
     else if (data.msgType === 'gameUpdate') {
       if (data.msgContent.update === 'gameStart') {
-        //condition true when game starting
         timerResetter();
         if (data.msgContent.type === 'activePlayer') {
           waitingManager(false);
@@ -182,12 +194,9 @@ export function Home() {
       }
 
       else if (data.msgContent.update === 'roundInfo' || data.msgContent.data === null) {
-        console.log('roundInfo below: '); //condition true when received data from previous player
-        console.log(data.msgContent);
         if (isWaiting) {
           waitingCountManager(false);
           return;
-          //set use state for round count
         }
         if (!data.msgContent.data) {
           setRandomPhraseOrUrl("Desenho Livre");
@@ -205,12 +214,12 @@ export function Home() {
           trueTime = 0;
         }
         if (!isScreenDescription) {
-          trueTime = 15; //description timer
+          trueTime = 15; //MARKUP: description timer
           timerFn();
           timerId = setInterval(timerFn, 1000);
           screenSetter(3);
         } else if (isScreenDescription) {
-          trueTime = 15; //drawing timer
+          trueTime = 15; //MARKUP: drawing timer
           timerFn();
           timerId = setInterval(timerFn, 1000);
           screenSetter(4);
@@ -226,6 +235,8 @@ export function Home() {
       setScreen(5);
       if (data.msgContent) {
         if (data.msgContent.update === 'requireNewParticipationStatus') {
+          kickerCounter--;
+          kickerCounterID = setInterval(() => { kickerTimer(); }, 1000)
           waitingManager(true);
           setEndModal(true);
           trueTime = 15;
@@ -243,16 +254,16 @@ export function Home() {
     //+------------------------------------------------------------------+
     //|                       BACK-END REPORTS                           |
     //+------------------------------------------------------------------+
-    else if (data.msgType === 'devReport') {
-      console.log('===========================================================================================');
-      console.log('WARNING, RECEIVED DEV REPORT FROM BACK-END, DATA BELOW: ');
-      console.log(data.msgContent.report);
-      console.log('===========================================================================================');
+    else if (data.msgType === 'participationFeedback') {
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    else
-      console.log('ERROR: -->>>  invalid socket data received');
-    console.log('===========================================================================================');
+    else if (data.msgType === 'devReport') {
+      console.log('WARNING, RECEIVED DEV REPORT FROM BACK-END, DATA BELOW: ');
+      console.log(data.msgContent.report);
+    } else {
+      console.log('ERROR: -->>>  invalid socket data received, data below:');
+      console.log(data);
+    }
   }, []);
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //+------------------------------------------------------------------+
@@ -306,7 +317,6 @@ export function Home() {
     const newWidth = 500 // actualWidth && actualWidth * 0.7;
     const newHeight = 500 // newWidth && newWidth * (1 / (16 / 9));
     const size = { width: newWidth, height: newHeight };
-    console.log(size);
     setCanvasSize(size);
   }, []);
 
@@ -364,15 +374,21 @@ export function Home() {
             <form
               onSubmit={(e) => {
                 e.preventDefault()
-                let a = new WebSocket(`wss://${window.location.href.substring(7, 18)}:9999`, [room, nick]);
+                let a: WebSocket;
+                try {
+                  a = new WebSocket(`wss://${window.location.href.substring(7, 18)}:9999`, [room, nick]);
+                } catch (e) {
+                  setAlertMessage({ title: 'Nickname e/ou sala inválido(s)', description: 'Não pode usar caracteres especiais' });
+                  setShowAlert(true);
+                  return;
+                }
                 //+------------------------------------------------------------------+
                 //|                     SOCKET CLOSE EVENT                           |
                 //+------------------------------------------------------------------+
                 a.onclose = (event) => {
-                  console.log("close socket code -->" + event.code)
                   if (event.code === 1001) {
                     setScreen(0);
-                    setAlertMessage({ title: 'Retirada de jogador', description: 'Player kickado pois não decidiu se jogava ou não' });
+                    setAlertMessage({ title: 'Voce foi kickado', description: 'Voce não decidiu se jogava ou não!' });
                     setShowAlert(true);
                   } else if (event.code === 1002 || event.code === 1003) {
                     setScreen(0);
@@ -397,13 +413,13 @@ export function Home() {
               }}
               className="flex flex-col items-center w-[30rem] h-fit gap-5 rounded-[0.625rem]" >
               <span className="defaultSpan"
-                >ESCOLHA UM APELIDO</span>
+              >ESCOLHA UM APELIDO</span>
               <Input
                 className="normal-case"
                 value={nick}
                 onChange={(e) => setNick(e.target.value)} />
               <span className="defaultSpan"
-                >ESCREVA O CODIGO DA SALA OU CRIE A SUA</span>
+              >ESCREVA O CODIGO DA SALA OU CRIE A SUA</span>
               <div className="flex flex-row">
                 <Input
                   value={room}
@@ -430,7 +446,7 @@ export function Home() {
           </div>
         </div>
       </GamePage>
-    );
+    ); //TODO , melhorar o ux do tutorial, dar mais destaque visual, talvez outras coisas???
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -564,7 +580,6 @@ export function Home() {
           className='mb-10'
           onSubmit={e => {
             e.preventDefault();
-            console.log('click received');
             socket?.send(
               JSON.stringify({
                 msgType: 'newData',
@@ -597,7 +612,7 @@ export function Home() {
   //|                     GAME PAGE - DRAWING                          |
   //+------------------------------------------------------------------+
   else if (screen === 3) {
-    return (
+    return ( //TODO , melhorar o ux do "desenhe a frase", deixar mais claro pro player o que ele tem que fazer, destacar, explicar melhor, etc
       <GamePage>
         <div className='flex justify-between w-full'>
           <div className='ml-[520px] text-center'>
@@ -672,7 +687,7 @@ export function Home() {
   //+------------------------------------------------------------------+
   //|                GAME PAGE - DESCRIPTION WITH IMAGE                |
   //+------------------------------------------------------------------+
-  else if (screen === 4) {
+  else if (screen === 4) {  //TODO , melhorar o ux do "escreva uma frase", deixar mais claro pro player o que ele tem que fazer, destacar, explicar melhor, etc
     return (
       <GamePage>
         <div className="mb-[1rem] shadow-md border-8 border-[#3F1802] rounded-md">
@@ -688,7 +703,6 @@ export function Home() {
         <form
           onSubmit={e => {
             e.preventDefault();
-            console.log('click received');
             socket?.send(
               JSON.stringify({
                 msgType: 'newData',
@@ -717,12 +731,12 @@ export function Home() {
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   //+------------------------------------------------------------------+
-  //|                GAME PAGE - DESCRIPTION WITH IMAGE                |
+  //|                       GAME PAGE - END MODAL                      |
   //+------------------------------------------------------------------+
   else if (screen === 5) {
     return (
       <GamePage className="flex justify-between">
-        <EndModal endModal={endModal} sender={sender} setEndModal={setEndModal} socket={socket} />
+        <EndModal endModal={endModal} sender={sender} setEndModal={setEndModal} socket={socket} setScreen={setScreen} kickerCount = {kicker} />
         <div className="flex flex-row justify-center align-middle items-center  w-[90%]">
           <img
             className="top-5"
@@ -745,7 +759,6 @@ export function Home() {
             <div className="h-full chatBox overflow-scroll overflow-x-hidden">
               {
                 finalScreen.map((el, index) => {
-                  console.log(typeof finalScreen);
                   if (el?.type === 'desc') return <Final img={false} owner={el?.owner} data={el?.data} key={index} />;
                   return <Final img={true} owner={el?.owner} data={el?.data} key={index} />;
                 })
@@ -755,7 +768,14 @@ export function Home() {
         </div>
       </GamePage>
     );
-  } else if (screen === 6) {
+  }
+
+  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  //+------------------------------------------------------------------+
+  //|                           SPECTATOR PAGE                         |
+  //+------------------------------------------------------------------+
+
+  else if (screen === 6) {
     return (
       <GamePage>
         <div className='mr-[100px] flex flex-col justify-center items-end w-full'>

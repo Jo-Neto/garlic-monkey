@@ -9,7 +9,7 @@ module.exports = class SessionObject {
         this.starterTimerID = null;
         this.gamerTimerID = null;
         this.finishertimerID = null;
-        this.activeSockets = [creatorWs, null, null, null, null, null]; //shall not have more than 6 elements on array
+        this.activeSockets = [creatorWs, null, null, null, null, null]; 
         this.waitingSockets = [];
         this.chat = [];
         this.game = [[], []];
@@ -17,7 +17,6 @@ module.exports = class SessionObject {
 
     starterTimeout() {
         this.starterTimerID = setTimeout(() => {
-            console.log("first timeout logic start, round number --> " + this.currentTurn);
 
             this.activeSockets = this.activeSockets.filter(ws => { return ws !== null });
             this.activeSockets = shuffler(this.activeSockets);
@@ -28,7 +27,7 @@ module.exports = class SessionObject {
                 for (let j = 0; j < this.activeSockets.length; j++)
                     this.game[i][j] = null;
             }
-            this.activeSockets.forEach(ws => { //send new msg to all players in session
+            this.activeSockets.forEach(ws => { 
                 if (ws.readyState === 1) {
                     ws.send(JSON.stringify({
                         msgType: 'gameUpdate',
@@ -36,7 +35,7 @@ module.exports = class SessionObject {
                     }));
                 }
             });
-            this.waitingSockets.forEach(ws => { //send new msg to all players in session
+            this.waitingSockets.forEach(ws => {
                 if (ws !== null && ws.readyState === 1) {
                     ws.send(JSON.stringify({
                         msgType: 'gameUpdate',
@@ -51,8 +50,7 @@ module.exports = class SessionObject {
     gameMaster(gameTimerAmount) {
         this.gamerTimerID = setTimeout(() => {
 
-            this.currentTurn++;
-            console.log("interval called round number --> " + this.currentTurn)         
+            this.currentTurn++;     
 
             
             if (this.currentTurn === this.activeSockets.length) {
@@ -76,12 +74,12 @@ module.exports = class SessionObject {
             if (this.currentTurn > 0) {
                 this.activeSockets.forEach((ws) => {
                     if (ws !== null && ws.readyState === 1) {
-                        if ((ws.aID + this.currentTurn /*- 1*/) < this.activeSockets.length) {
+                        if ((ws.aID + this.currentTurn ) < this.activeSockets.length) {
                             ws.send(JSON.stringify({
                                 msgType: 'gameUpdate',
                                 msgContent: {
                                     update: 'roundInfo',
-                                    data: this.game[Number(ws.aID + this.currentTurn /*- 1*/)][Number(this.currentTurn - 1)]
+                                    data: this.game[Number(ws.aID + this.currentTurn )][Number(this.currentTurn - 1)]
                                 }
                             }));
                         } else {
@@ -89,7 +87,7 @@ module.exports = class SessionObject {
                                 msgType: 'gameUpdate',
                                 msgContent: {
                                     update: 'roundInfo',
-                                    data: this.game[Number(ws.aID + this.currentTurn - this.activeSockets.length /*- 1*/)][Number(this.currentTurn - 1)]
+                                    data: this.game[Number(ws.aID + this.currentTurn - this.activeSockets.length )][Number(this.currentTurn - 1)]
                                 }
                             }));
                         }
@@ -110,21 +108,16 @@ module.exports = class SessionObject {
             }
 
             if ((this.currentTurn % 2) === 0)
-                this.gameMaster(15000); //MARKUP: timer para descriição
+                this.gameMaster(15000); //MARKUP: timer para descrição
             else
                 this.gameMaster(15000);  //MARKUP: timer para imagem
-            console.log("ending game logic on round --> " + this.currentTurn);
 
         }, gameTimerAmount)
     }; //MARKUP: round timer
 
     finisherTimeout(finalTimerAmount, i) {
 
-        console.log("finisher interval running");
         this.finishertimerID = setTimeout(() => {
-
-            console.log("i = " + i)
-            console.log("currentTurn = " + this.currentTurn)
 
             if (i < this.currentTurn ) {
                 console.log("finisherTimeout(fn) --> first if");
@@ -142,14 +135,12 @@ module.exports = class SessionObject {
             }
 
             else if (i === this.currentTurn ) {
-                console.log("finisherTimeout(fn) --> else if");
                 this.saveOnDB(false);
                 this.currentTurn = -1;
                 this.game = [[], []];
                 this.chat = [];
                 this.starterTimerID = null;
                 this.gamerTimerID = null;
-                //give 60 segs to decide if will play, if not, kick
                 this.waitingSockets.forEach(ws => {
                     if (ws !== null && ws.readyState === 1) {
                         ws.send(JSON.stringify({
@@ -164,7 +155,6 @@ module.exports = class SessionObject {
             }
 
             else {
-                console.log("finisherTimeout(fn) --> else");
                 clearTimeout(this.finishertimerID);
                 this.finishertimerID = null;
                 this.waitingSockets.forEach(ws => {
@@ -181,7 +171,6 @@ module.exports = class SessionObject {
     };
 
     saveOnDB(erase = false) {
-        console.log("save on db called");
         if (this.starterTimerID)
             clearTimeout(this.starterTimerID);
         if (this.gamerTimerID)
@@ -192,7 +181,6 @@ module.exports = class SessionObject {
             this.isFinished = true;
             this.sessionName = null;
         }
-        //save data on database here
         const body = {chat: this.chat, game: this.game};
 
         fetch('http://66.135.2.21:8080/send-object', 
