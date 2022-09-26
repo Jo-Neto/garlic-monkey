@@ -54,8 +54,6 @@ module.exports = class SessionObject {
             this.currentTurn++;
             console.log("interval called round number --> " + this.currentTurn);
 
-
-
             if (this.currentTurn === this.activeSockets.length) {
                 console.log("chamando finisher");
                 this.waitingSockets = this.waitingSockets.concat(this.activeSockets);
@@ -78,25 +76,8 @@ module.exports = class SessionObject {
                 return;
             }
 
-            /*this.activeSockets.forEach(ws => { //send new msg to all players in session
-                if (ws !== null && ws.readyState === 1) {
-                    ws.send(JSON.stringify({
-                        msgType: 'gameUpdate',
-                        msgContent: { update: 'roundChange', newRound: this.currentTurn }
-                    }));
-                }
-            });
-            this.waitingSockets.forEach(ws => { //send new msg to all players in session
-                if (ws !== null && ws.readyState === 1) {
-                    ws.send(JSON.stringify({
-                        msgType: 'gameUpdate',
-                        msgContent: { update: 'roundChange', newRound: this.currentTurn }
-                    }));
-                }
-            });*/
 
-
-
+  
             if (this.currentTurn > 0) {
                 console.log("sending round info of round --> " + (this.currentTurn - 1) + " (previous round)");
                 this.activeSockets.forEach((ws) => {
@@ -152,6 +133,8 @@ module.exports = class SessionObject {
                         }));
                     }
                 });
+                if(this.finishertimerID)
+                    clearTimeout(this.finishertimerID);
                 this.finisherTimeout(15000, ++i);   //MARKUP: finsher time
             }
 
@@ -172,6 +155,8 @@ module.exports = class SessionObject {
                         }));
                     }
                 });
+                if(this.finishertimerID)
+                    clearTimeout(this.finishertimerID);
                 this.finisherTimeout(15000, ++i);   //MARKUP: finsher time
             }
 
