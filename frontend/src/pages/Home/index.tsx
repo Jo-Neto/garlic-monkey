@@ -79,6 +79,19 @@ export function Home() {
     return aux;
   }
 
+  let isWaiting = false;
+  let waiterCounter = 1;
+
+  function waitingManager(isWaiter: boolean) {
+    isWaiting = isWaiter;
+  }
+
+  function waitingCountManager(reset: boolean) {
+    if (reset) 
+      waiterCounter = 0;
+    waiterCounter++;
+  }
+
 
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -160,15 +173,22 @@ export function Home() {
       if (data.msgContent.update === 'gameStart') {
         //condition true when game starting
         timerResetter();
-        if (data.msgContent.type === 'activePlayer')
+        if (data.msgContent.type === 'activePlayer') {
+          waitingManager(false);
           setScreen(2);
-        else
-          alert('esse player nao pode jogar!!! ele esta fora dos players ativos, não clicou em "jogar!" ou nao tinha vaga');
+        } else {
+          waitingManager(true);
+          setScreen(6);
+        }
       }
 
       else if (data.msgContent.update === 'roundInfo' || data.msgContent.data === null) {
         console.log('roundInfo below: '); //condition true when received data from previous player
         console.log(data.msgContent);
+        if (isWaiting) {
+          waitingCountManager(false);
+          //set use state for round count
+        }
         if (!data.msgContent.data) {
           setRandomPhraseOrUrl("Desenho Livre");
         } else {
@@ -203,7 +223,9 @@ export function Home() {
     //+------------------------------------------------------------------+
 
     else if (data.msgType === 'finalData') {
+      waitingManager(true);
       setScreen(5);
+      waitingCountManager(true);
       if (data.msgContent) {
         if (data.msgContent.update === 'requireNewParticipationStatus')
           setEndModal(true);
