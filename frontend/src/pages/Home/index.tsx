@@ -368,7 +368,14 @@ export function Home() {
             <form
               onSubmit={(e) => {
                 e.preventDefault()
-                let a = new WebSocket(`wss://${window.location.href.substring(7, 18)}:9999`, [room, nick]);
+                let a: WebSocket;
+                try {
+                  a = new WebSocket(`wss://${window.location.href.substring(7, 18)}:9999`, [room, nick]);
+                } catch (e) {
+                  setAlertMessage({ title: 'Nickname e/ou sala inválido(s)', description: 'Não pode usar caracteres especiais' });
+                  setShowAlert(true);
+                  return;
+                }
                 //+------------------------------------------------------------------+
                 //|                     SOCKET CLOSE EVENT                           |
                 //+------------------------------------------------------------------+
