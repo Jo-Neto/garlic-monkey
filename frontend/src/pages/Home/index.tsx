@@ -306,8 +306,8 @@ export function Home() {
     const actualWidth = ContainerRef.current?.offsetWidth;
     // const newWidth = actualWidth && actualWidth * 0.7;
     // const newHeight = newWidth && newWidth * (1 / (16 / 9));
-    const newWidth = 600 // actualWidth && actualWidth * 0.7;
-    const newHeight = 400 // newWidth && newWidth * (1 / (16 / 9));
+    const newWidth = 500 // actualWidth && actualWidth * 0.7;
+    const newHeight = 500 // newWidth && newWidth * (1 / (16 / 9));
     const size = { width: newWidth, height: newHeight };
     console.log(size);
     setCanvasSize(size);
@@ -402,14 +402,14 @@ export function Home() {
               className="flex flex-col items-center w-[30rem] h-fit gap-5 rounded-[0.625rem]"
             >
               <span className="defaultSpan"
-              >ESCOLHA UM NICKNAME</span>
+                >ESCOLHA UM APELIDO</span>
               <Input
                 className="normal-case"
                 value={nick}
                 onChange={(e) => setNick(e.target.value)}
               />
               <span className="defaultSpan"
-              >ESCREVA O CODIGO DA SALA OU CRIE A SUA</span>
+                >ESCREVA O CODIGO DA SALA OU CRIE A SUA</span>
               <div className="flex flex-row">
                 <Input
                   value={room}
@@ -426,9 +426,16 @@ export function Home() {
           </div>
           <div className="text-center flex flex-col  bg-gradient-to-r from-white/[12%] to-white/25 items-center w-[15rem] border-solid border-2 border-white/[0.50] rounded-1 p-[1.5rem]">
             <p className="defaultSpan mb-[1rem] uppercase"
-            >Como Jogar</p>
-            <span className="text-[0.75rem]"
-            >Lorem ipsum dolor, sit amet consectetur adipisicing elit. Mollitia esse tempore dolorum quis voluptas. Eligendi repellendus voluptatibus facilis doloremque maxime. Dolores quae vero dolor quo nesciunt optio excepturi nemo doloremque?</span>
+              >Como Jogar</p>
+            <p className="text-[0.75rem]"
+              >1. Digite um apelido engraçado.</p>
+            <p className="text-[0.75rem]"
+              >2. Coloque o codigo da sala dos seus amigos,  ou crie uma nova.</p>
+            <p className="text-[0.75rem]"
+              >3. Espere de 4 a 6 jogadores entrar na sala, para o jogo começar automaticamente.</p>
+            <p className="text-[0.75rem]"
+              >4. Siga as instruções das telas</p>
+
           </div>
         </div>
       </GamePage>
@@ -656,9 +663,9 @@ export function Home() {
           <div className="flex flex-row ">
             <Actions
               functions={[
-                { name: 'Reset', callback: () => resetCanvas() },
+                { name: 'Resetar', callback: () => resetCanvas() },
                 { name: 'Desfazer', callback: () => undo() },
-                { name: 'Send', callback: () => sendToBack() },
+                { name: 'Enviar', callback: () => sendToBack() },
                 //{ name: 'Salvar', callback: () => print() },
               ]} />
             <input
@@ -688,6 +695,7 @@ export function Home() {
       <GamePage>
         <div className="mb-[1rem] shadow-md border-8 border-[#3F1802] rounded-md">
           <img
+            className='bg-white'
             src={testingNull("URL", randomPhraseOrUrl)}
             width={canvasSize.width}
             height={canvasSize.height}
