@@ -54,8 +54,19 @@ module.exports = class SessionObject {
             this.currentTurn++;
             console.log("interval called round number --> " + this.currentTurn);
 
+            
+
+            if (this.activeSockets.length < this.currentTurn) { //match ended
+                console.log("match ended")
+                if(this.gamerTimerID)
+                    clearTimeout(this.gamerTimerID);
+                return;
+            }
+            console.log("did not return")
+            
+            
+            
             if (this.currentTurn === this.activeSockets.length) {
-                console.log("chamando finisher");
                 this.waitingSockets = this.waitingSockets.concat(this.activeSockets);
                 this.activeSockets = [null, null, null, null, null, null];
                 this.waitingSockets.forEach(ws => {
@@ -69,17 +80,8 @@ module.exports = class SessionObject {
             }
 
 
-
-            if (this.activeSockets.length < this.currentTurn) { //match ended
-                if (this.gamerTimerID)
-                    clearTimeout(this.gamerTimerID);
-                return;
-            }
-
-
   
             if (this.currentTurn > 0) {
-                console.log("sending round info of round --> " + (this.currentTurn - 1) + " (previous round)");
                 this.activeSockets.forEach((ws) => {
                     if (ws !== null && ws.readyState === 1) {
                         if ((ws.aID + this.currentTurn /*- 1*/) < this.activeSockets.length) {
@@ -105,7 +107,6 @@ module.exports = class SessionObject {
                 });
             }
 
-            console.log("activating new timer");
             if ((this.currentTurn % 2) === 0)
                 this.gameMaster(15000); //MARKUP: timer para descriição
             else
