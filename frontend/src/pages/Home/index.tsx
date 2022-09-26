@@ -6,6 +6,7 @@ import { Players } from '../Players/index';
 import { Chat } from '../../components/Chat';
 import { Final } from '../../components/final';
 import { Alert } from '../../components/alert';
+import { EndModal } from '../../components/End_modal';
 import { PlayerIcon } from '../../components/PlayerIcon';
 import { Player } from '../../components/Player';
 import { WhiteBoard } from '../../components/Game/WhiteBoard';
@@ -30,14 +31,23 @@ export function Home() {
   const [finalScreen, setfinalScreen] = useState<{ type: string; owner: string; data: string }[]>([]);
   const [finalPlayer, setFinalPlayer] = useState('');
   const [showAlert, setShowAlert] = useState(false);
-  const [alertMessage, setAlertMessage] = useState({title: '', description: ''})
+  const [alertMessage, setAlertMessage] = useState({ title: '', description: '' })
   const [screen, setScreen] = useState<Number>(0);
   const [socket, setSocket] = useState<WebSocket>();
   const [timer, setTimer] = useState<any>(15);
   const [disable, setDisable] = useState(false);
+  const [endModal, setEndModal] = useState(false);
 
   let trueTime: number = 15;
   let timerId: number = 0;
+
+  function sender(bool) {
+    socket.send(
+      JSON.stringify({
+        msgType: 'participationStatus',
+        msgContent: bool,
+      }));
+  }
 
   function timerFn() {
     setTimer(trueTime);
@@ -311,7 +321,7 @@ export function Home() {
   if (screen === 0) {
     return (
       <GamePage>
-        <Alert setShowAlert={setShowAlert} showAlert={showAlert} alertMessage={alertMessage}/>
+        <Alert setShowAlert={setShowAlert} showAlert={showAlert} alertMessage={alertMessage} />
         <div className="animate-wiggle mb-[1rem]">
           <img
             src="/assets/images/logo.png"
@@ -325,7 +335,7 @@ export function Home() {
             <form
               onSubmit={(e) => {
                 e.preventDefault()
-                let a = new WebSocket(`wss://localhost:9999`, [room, nick]);
+                let a = new WebSocket(`wss://${window.location.href.substring(7, 18)}:9999`, [room, nick]);
                 //+------------------------------------------------------------------+
                 //|                     SOCKET CLOSE EVENT                           |
                 //+------------------------------------------------------------------+
@@ -333,20 +343,20 @@ export function Home() {
                   console.log("close socket code -->" + event.code)
                   if (event.code === 1001) {
                     setScreen(0);
-                    setAlertMessage({title: 'Retirada de jogador', description: 'Player kickado pois não decidiu se jogava ou não'});
+                    setAlertMessage({ title: 'Retirada de jogador', description: 'Player kickado pois não decidiu se jogava ou não' });
                     setShowAlert(true);
                   } else if (event.code === 1002 || event.code === 1003) {
                     setScreen(0);
-                    setAlertMessage({title: 'Nickname inválido', description: 'Não pode usar caracteres especiais'});
+                    setAlertMessage({ title: 'Nickname inválido', description: 'Não pode usar caracteres especiais' });
                     setShowAlert(true);
                   } else if (event.code === 1013) {
                     setScreen(0);
-                    setAlertMessage({title: 'Partida em andamento', description: 'Não foi possível entrar no jogo'});
+                    setAlertMessage({ title: 'Partida em andamento', description: 'Não foi possível entrar no jogo' });
                     setShowAlert(true);
                   } else if (event.code === 4003) {
                     setScreen(0);
                     setShowAlert(true);
-                    setAlertMessage({title: 'Nickname existente', description: 'Já existe player com o mesmo nome'});
+                    setAlertMessage({ title: 'Nickname existente', description: 'Já existe player com o mesmo nome' });
                     setShowAlert(true)
                   }
                 };
@@ -691,7 +701,8 @@ export function Home() {
   else if (screen === 5) {
     return (
       <GamePage className="flex justify-between">
-        <div className="flex flex-row justify-between align-middle items-center  w-[90%]">
+        <EndModal endModal={endModal} sender={sender} setEndModal={setEndModal} />
+        <div className="flex flex-row justify-center align-middle items-center  w-[90%]">
           <img
             className="top-5"
             src="/assets/images/logo.png"
@@ -700,11 +711,11 @@ export function Home() {
             alt="Garlic Monkey logo"
           />
         </div>
-        <div className="flex flex-row h-[20rem] w-[45rem] justify-between">
+        <div className="flex flex-row h-[470px] w-[45rem] justify-between">
           <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-gradient-to-b from-black/25 to-black/50 rounded-l-[1rem]">
             <div className="flex flex-col items-center">
               <span className="defaultSpan uppercase mt-[1rem]"
-              >JOGADORES 1</span>
+              >JOGADORES</span>
               <div className="flex flex-col gap-2 mt-[1rem]">
                 <Player players={players} finalPlayer={finalPlayer}></Player>
               </div>
@@ -713,7 +724,7 @@ export function Home() {
           <div className="border-solid border-2 p-2 border-white/[0.75] rounded-r-md w-[30rem] bg-gradient-to-r from-black/[12%] to-black/25 flex flex-col">
             <div className="h-full chatBox overflow-scroll overflow-x-hidden">
               {
-                finalScreen.map( (el, index) => {
+                finalScreen.map((el, index) => {
                   if (el?.type === 'desc') return <Final img={false} owner={el?.owner} data={el?.data} key={index} />;
                   return <Final img={true} owner={el?.owner} data={el?.data} key={index} />;
                 })
@@ -721,27 +732,16 @@ export function Home() {
             </div>
           </div>
         </div>
-        <div className="flex flex-row">
-          <div className="flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105">
-            <span
-              className="defaultSpan"
-              onClick={() => {
-                socket.send(
-                  JSON.stringify({
-                    msgType: 'participationStatus',
-                    msgContent: false,
-                  }),
-                );
-                setMessage('');
-              }}
-            >SÓ CHAT!</span>
-            <Button
-              className="ml-[0.5rem]"
-              icon={{ src: '/assets/icons/go.png', size: 22 }}
-            />
-          </div>
-        </div>
       </GamePage>
     );
   }
+}
+
+
+function sender() {
+  socket.send(
+    JSON.stringify({
+      msgType: 'participationStatus',
+      msgContent: true,
+    }));
 }
