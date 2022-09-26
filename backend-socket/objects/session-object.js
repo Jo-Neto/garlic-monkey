@@ -140,7 +140,7 @@ module.exports = class SessionObject {
         this.finishertimerID = setTimeout(() => {
 
             console.log("i = " + i)
-            console.log("currentTurn = " + currentTurn)
+            console.log("currentTurn = " + this.currentTurn)
 
             if (i < (this.currentTurn - 1)) {
                 console.log("finisherTimeout(fn) --> first if");
