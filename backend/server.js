@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const jsonParser = bodyParser.json();
+const jsonParser = bodyParser.json({limit: '1mb', extended: true});
 const redisModule = require('./modules/redis');
 const Redis = require('ioredis'),
 redis = Redis.createClient({
@@ -38,7 +38,7 @@ app.post('/send-object', jsonParser, (req, res) => {
                 const pos = objectArray.reduce(function(a, b) {
                 return Math.max(a, b);
                 }, -Infinity);
-                
+
                 const NEXT_POS = pos + 1
                 
                 await redisModule.set(NEXT_POS, object);  [0]
