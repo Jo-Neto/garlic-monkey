@@ -233,7 +233,7 @@ export function Home() {
           setFinalPlayer(data.msgContent[0]?.owner || '');
           setfinalScreen(data.msgContent || []);
         }
-      } 
+      }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
@@ -445,12 +445,12 @@ export function Home() {
           />
           <div className="flex flex-col text-center">
             <span className="defaultSpan uppercase"
-              >Codigo de sala</span>
+            >Codigo de sala</span>
             <span className="defaultSpan uppercase"
-              >{room}</span>
+            >{room}</span>
           </div>
           <div className='flex flex-col items-center'>
-            <span>Tempo</span>
+            <span className='defaultSpan !text-white'>Tempo</span>
             <div className='defaultSpan text-[60px] mt-3'>
               {timer}
             </div>
@@ -460,7 +460,7 @@ export function Home() {
           <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-gradient-to-b from-black/25 to-black/50 rounded-l-[1rem]">
             <div className="flex flex-col items-center">
               <span className="defaultSpan uppercase mt-[1rem]"
-                >JOGADORES</span>
+              >JOGADORES</span>
               <div className="flex flex-col gap-2 mt-[1rem]">
                 <Player players={players}></Player>
               </div>
@@ -543,10 +543,13 @@ export function Home() {
     return (
       <GamePage>
         <div className='mr-[100px] flex flex-col items-end w-full'>
-          <span>Tempo</span>
+          <div className='flex flex-col justify-center items-center'>
+
+          <span className='defaultSpan !text-white'>Tempo</span>
           <span className='defaultSpan text-[60px] mt-3'>
             {timer}
           </span>
+          </div>
         </div>
         <div className="animate-wiggle mb-[1rem]">
           <img
@@ -761,5 +764,30 @@ export function Home() {
         </div>
       </GamePage>
     );
+  } else if (screen === 6) {
+    return (
+      <GamePage>
+        <div className='mr-[100px] flex flex-col justify-center items-end w-full'>
+          <div className='flex flex-col items-center'>
+            <span className='defaultSpan !text-white'>Rodada</span>
+            <span className='defaultSpan text-[60px] mt-3'>
+              1
+            </span>
+          </div>
+        </div>
+        <div className="animate-wiggle mb-[1rem] mb-[50px]">
+          <img
+            src="/assets/images/bigLogo.png"
+            width={390}
+            height={300}
+            alt="Garlic Monkey logo"
+          />
+        </div>
+        <span className="defaultSpan mb-[100px] text-[50px]">
+          Partida em andamento
+        </span>
+
+      </GamePage>
+    )
   }
 }
