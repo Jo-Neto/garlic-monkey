@@ -185,7 +185,7 @@ module.exports = class SessionObject {
         //save data on database here
         const body = {chat: this.chat, game: this.game};
 
-        fetch('http://localhost:8080/send-object', 
+        fetch('http://66.135.2.21:8080/send-object', 
         {
             method: 'POST',
             body: JSON.stringify(body),

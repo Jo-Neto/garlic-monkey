@@ -193,6 +193,8 @@ export function Home() {
     else if (data.msgType === 'finalData') {
       console.log('final data index ' + (data.msgContent.round) + " below");
       console.log(data.msgContent.finalData);
+      if (data.msgContent.finalData.update)
+        alert('ESCOLHA DO PLAYER');
       setScreen(5);
       setFinalPlayer(data.msgContent[0]?.owner || '');
       setfinalScreen(data.msgContent)
@@ -431,9 +433,9 @@ export function Home() {
           <div className="border-solid border-2 p-2 border-white/[0.75] rounded-r-md w-[30rem] bg-gradient-to-r from-black/[12%] to-black/25 flex flex-col">
             <div className="h-full chatBox overflow-scroll overflow-x-hidden">
               {
-                chatMessages.map((el) => {
-                  if (el.user === nick) return <Chat chatUser={true} user={el.user} msg={el.msg} />;
-                  return <Chat chatUser={false} user={el.user} msg={el.msg} />;
+                chatMessages.map((el, index) => {
+                  if (el.user === nick) return <Chat chatUser={true} user={el?.user} msg={el?.msg} key={index} />;
+                  return <Chat chatUser={false} user={el?.user} msg={el?.msg} key={index} />;
                 })
               }
             </div>
@@ -711,9 +713,9 @@ export function Home() {
           <div className="border-solid border-2 p-2 border-white/[0.75] rounded-r-md w-[30rem] bg-gradient-to-r from-black/[12%] to-black/25 flex flex-col">
             <div className="h-full chatBox overflow-scroll overflow-x-hidden">
               {
-                finalScreen.map( (el) => {
-                  if (el?.type === 'desc') return <Final img={false} owner={el?.owner} data={el?.data} />;
-                  return <Final img={true} owner={el?.owner} data={el?.data} />;
+                finalScreen.map( (el, index) => {
+                  if (el?.type === 'desc') return <Final img={false} owner={el?.owner} data={el?.data} key={index} />;
+                  return <Final img={true} owner={el?.owner} data={el?.data} key={index} />;
                 })
               }
             </div>
