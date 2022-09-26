@@ -57,32 +57,23 @@ module.exports = class SessionObject {
 
             if (this.currentTurn === this.activeSockets.length) {
                 console.log("chamando finisher");
-                this.waitingSockets.forEach((ws) => {
-                    if (ws !== null && ws.readyState === 1) {
-                        ws.send(JSON.stringify({
-                            msgType: 'finalData',
-                            msgContent: this.game[0]
-                        }));
-                    }
-                });
-            }
-
-
-
-            if (this.activeSockets.length < this.currentTurn) { //match ended
-                console.log("match ending, round number --> " + this.currentTurn);
                 this.waitingSockets = this.waitingSockets.concat(this.activeSockets);
                 this.activeSockets = [null, null, null, null, null, null];
-                this.waitingSockets.forEach(ws => { //send new msg to all players in session
+                this.waitingSockets.forEach(ws => { 
                     if (ws !== null && ws.readyState === 1) {
                         ws.aID = null;
                         ws.isUndecidedOldPlayer = true;
                         ws.hasPlayedThisTurn = true;
                     }
                 });
+                this.finisherTimeout(1, 0);
+            }
+
+
+
+            if (this.activeSockets.length < this.currentTurn) { //match ended
                 if (this.gamerTimerID)
                     clearTimeout(this.gamerTimerID);
-                //this.finisherTimeout(1, 0); //MARKUP: finsher time
                 return;
             }
 
