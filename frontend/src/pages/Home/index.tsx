@@ -1,3 +1,8 @@
+//TODO: colocar som
+//TODO: auto scroll no chat
+//TODO: tirar os console logs do navegador
+//TODO: desbagunçar código
+
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { Button, Buttons } from '../../components/Form/Button';
 import { Input } from '../../components/Form/Input';
@@ -199,12 +204,12 @@ export function Home() {
           trueTime = 0;
         }
         if (!isScreenDescription) {
-          trueTime = 15; //description timer
+          trueTime = 15; //MARKUP: description timer
           timerFn();
           timerId = setInterval(timerFn, 1000);
           screenSetter(3);
         } else if (isScreenDescription) {
-          trueTime = 15; //drawing timer
+          trueTime = 15; //MARKUP: drawing timer
           timerFn();
           timerId = setInterval(timerFn, 1000);
           screenSetter(4);
@@ -220,6 +225,12 @@ export function Home() {
       setScreen(5);
       if (data.msgContent) {
         if (data.msgContent.update === 'requireNewParticipationStatus') {
+          socket?.send(
+            JSON.stringify({
+              msgType: 'participationStatus',
+              msgContent: false,
+            }),
+          );
           waitingManager(true);
           setEndModal(true);
           trueTime = 15;
@@ -340,7 +351,7 @@ export function Home() {
 
   ///////////////////////////////////////////////////////////////////////////////////////
 
-  if (screen === 0) {
+  if (screen === 0) {  
     return (
       <GamePage>
         <Alert setShowAlert={setShowAlert} showAlert={showAlert} alertMessage={alertMessage} />
@@ -434,7 +445,7 @@ export function Home() {
           </div>
         </div>
       </GamePage>
-    );
+    ); //TODO , melhorar o ux do tutorial, dar mais destaque visual, talvez outras coisas???
   }
 
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -608,12 +619,12 @@ export function Home() {
   //|                     GAME PAGE - DRAWING                          |
   //+------------------------------------------------------------------+
   else if (screen === 3) {
-    return (
+    return ( //TODO , melhorar o ux do "desenhe a frase", deixar mais claro pro player o que ele tem que fazer, destacar, explicar melhor, etc
       <GamePage>
         <div className='flex justify-between w-full'>
           <div className='ml-[520px] text-center'>
             <p
-            >Desenhe essa frase bizonha:</p>
+            >Desenhe essa frase bizonha:</p> 
             <span
             >{testingNull("phrase", randomPhraseOrUrl)}</span>
           </div>
@@ -683,8 +694,8 @@ export function Home() {
   //+------------------------------------------------------------------+
   //|                GAME PAGE - DESCRIPTION WITH IMAGE                |
   //+------------------------------------------------------------------+
-  else if (screen === 4) {
-    return (
+  else if (screen === 4) {  //TODO , melhorar o ux do "escreva uma frase", deixar mais claro pro player o que ele tem que fazer, destacar, explicar melhor, etc
+    return ( 
       <GamePage>
         <div className="mb-[1rem] shadow-md border-8 border-[#3F1802] rounded-md">
           <img
