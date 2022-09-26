@@ -41,8 +41,8 @@ export function Home() {
   let trueTime: number = 15;
   let timerId: number = 0;
 
-  function sender(bool) {
-    socket.send(
+  function sender(bool: boolean) {
+    socket?.send(
       JSON.stringify({
         msgType: 'participationStatus',
         msgContent: bool,
@@ -297,7 +297,7 @@ export function Home() {
   async function sendToBack() {
     let link = await parseToURL();
     setDisable(true);
-    socket.send(
+    socket?.send(
       JSON.stringify({
         msgType: 'newData',
         msgContent: link,
@@ -459,7 +459,7 @@ export function Home() {
                 className="ml-1"
                 icon={{ src: '/assets/icons/go.png', size: 22 }}
                 onClick={() => {
-                  socket.send(
+                  socket?.send(
                     JSON.stringify({
                       msgType: 'chatNew',
                       msgContent: message,
@@ -476,7 +476,7 @@ export function Home() {
             <span
               className="defaultSpan !w-[200px] text-center"
               onClick={() => {
-                socket.send(
+                socket?.send(
                   JSON.stringify({
                     msgType: 'participationStatus',
                     msgContent: true,
@@ -490,7 +490,7 @@ export function Home() {
             <span
               className="defaultSpan"
               onClick={() => {
-                socket.send(
+                socket?.send(
                   JSON.stringify({
                     msgType: 'participationStatus',
                     msgContent: false,
@@ -537,7 +537,7 @@ export function Home() {
           onSubmit={e => {
             e.preventDefault();
             console.log('click received');
-            socket.send(
+            socket?.send(
               JSON.stringify({
                 msgType: 'newData',
                 msgContent: inputData,
@@ -664,7 +664,7 @@ export function Home() {
           onSubmit={e => {
             e.preventDefault();
             console.log('click received');
-            socket.send(
+            socket?.send(
               JSON.stringify({
                 msgType: 'newData',
                 msgContent: inputData,
@@ -735,13 +735,4 @@ export function Home() {
       </GamePage>
     );
   }
-}
-
-
-function sender() {
-  socket.send(
-    JSON.stringify({
-      msgType: 'participationStatus',
-      msgContent: true,
-    }));
 }
