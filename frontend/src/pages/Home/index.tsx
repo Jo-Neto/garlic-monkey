@@ -201,13 +201,15 @@ export function Home() {
     //+------------------------------------------------------------------+
 
     else if (data.msgType === 'finalData') {
+      setScreen(5);
       if (data.msgContent) {
         if (data.msgContent.update === 'requireNewParticipationStatus')
           setEndModal(true);
-      }
-      setScreen(5);
-      setFinalPlayer(data.msgContent[0]?.owner || '');
-      setfinalScreen(data.msgContent || [])
+        else {
+          setFinalPlayer(data.msgContent[0]?.owner || '');
+          setfinalScreen(data.msgContent || []);
+        }
+      } 
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
