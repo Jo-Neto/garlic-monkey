@@ -6,6 +6,7 @@ import { Players } from '../Players/index';
 import { Chat } from '../../components/Chat';
 import { Final } from '../../components/final';
 import { Alert } from '../../components/alert';
+import { EndModal } from '../../components/End_modal';
 import { PlayerIcon } from '../../components/PlayerIcon';
 import { Player } from '../../components/Player';
 import { WhiteBoard } from '../../components/Game/WhiteBoard';
@@ -35,6 +36,7 @@ export function Home() {
   const [socket, setSocket] = useState<WebSocket>();
   const [timer, setTimer] = useState<any>(15);
   const [disable, setDisable] = useState(false);
+  const [endModal, setEndModal] = useState(false);
 
   let trueTime: number = 15;
   let timerId: number = 0;
@@ -194,7 +196,7 @@ export function Home() {
       console.log('final data index ' + (data.msgContent.round) + " below");
       console.log(data.msgContent.finalData);
       if (data.msgContent.finalData.update)
-        alert('ESCOLHA DO PLAYER');
+        setEndModal(true);
       setScreen(5);
       setFinalPlayer(data.msgContent[0]?.owner || '');
       setfinalScreen(data.msgContent)
@@ -691,7 +693,8 @@ export function Home() {
   else if (screen === 5) {
     return (
       <GamePage className="flex justify-between">
-        <div className="flex flex-row justify-between align-middle items-center  w-[90%]">
+        <EndModal endModal={endModal} setEndModal={setEndModal} />
+        <div className="flex flex-row justify-center align-middle items-center  w-[90%]">
           <img
             className="top-5"
             src="/assets/images/logo.png"
@@ -700,11 +703,11 @@ export function Home() {
             alt="Garlic Monkey logo"
           />
         </div>
-        <div className="flex flex-row h-[20rem] w-[45rem] justify-between">
+        <div className="flex flex-row h-[470px] w-[45rem] justify-between">
           <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-gradient-to-b from-black/25 to-black/50 rounded-l-[1rem]">
             <div className="flex flex-col items-center">
               <span className="defaultSpan uppercase mt-[1rem]"
-              >JOGADORES 1</span>
+              >JOGADORES</span>
               <div className="flex flex-col gap-2 mt-[1rem]">
                 <Player players={players} finalPlayer={finalPlayer}></Player>
               </div>
@@ -719,26 +722,6 @@ export function Home() {
                 })
               }
             </div>
-          </div>
-        </div>
-        <div className="flex flex-row">
-          <div className="flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105">
-            <span
-              className="defaultSpan"
-              onClick={() => {
-                socket.send(
-                  JSON.stringify({
-                    msgType: 'participationStatus',
-                    msgContent: false,
-                  }),
-                );
-                setMessage('');
-              }}
-            >SÓ CHAT!</span>
-            <Button
-              className="ml-[0.5rem]"
-              icon={{ src: '/assets/icons/go.png', size: 22 }}
-            />
           </div>
         </div>
       </GamePage>
