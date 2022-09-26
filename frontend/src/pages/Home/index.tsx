@@ -7,14 +7,11 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { Button, Buttons } from '../../components/Form/Button';
 import { Input } from '../../components/Form/Input';
 import { GamePage } from '../../layout/GamePage';
-import { Players } from '../Players/index';
 import { Chat } from '../../components/Chat';
 import { Final } from '../../components/final';
 import { Alert } from '../../components/alert';
 import { EndModal } from '../../components/End_modal';
-import { PlayerIcon } from '../../components/PlayerIcon';
 import { Player } from '../../components/Player';
-import { WhiteBoard } from '../../components/Game/WhiteBoard';
 
 /////////////////////////////////////////////// White Board imports //
 import CanvasDraw from 'react-canvas-draw';
@@ -22,7 +19,7 @@ import { Actions } from '../../components/Game/Actions';
 import { Colors } from '../../components/Game/Colors';
 import { ColorObj } from '../../components/Game/Colors/type';
 import { Radius } from '../../components/Game/Radius';
-import { WhiteBoardProps, CanvasSizes } from '../../components/Game/WhiteBoard/types';
+import { CanvasSizes } from '../../components/Game/WhiteBoard/types';
 ///////////////////////////////////////////////
 
 export function Home() {
@@ -47,7 +44,7 @@ export function Home() {
 
   let trueTime: number = 15;
   let timerId: number = 0;
-
+  
   function sender(bool: boolean) {
     setScreen(1);
     socket?.send(
@@ -370,8 +367,7 @@ export function Home() {
             src="/assets/images/logo.png"
             width={250}
             height={227}
-            alt="Garlic Monkey logo"
-          />
+            alt="Garlic Monkey logo" />
         </div>
         <div className="flex flex-colum items-center">
           <div className="flex flex-row">
@@ -415,43 +411,38 @@ export function Home() {
                 setSocket(a);
                 setScreen(1);
               }}
-              className="flex flex-col items-center w-[30rem] h-fit gap-5 rounded-[0.625rem]"
-            >
+              className="flex flex-col items-center w-[30rem] h-fit gap-5 rounded-[0.625rem]" >
               <span className="defaultSpan"
               >ESCOLHA UM APELIDO</span>
               <Input
                 className="normal-case"
                 value={nick}
-                onChange={(e) => setNick(e.target.value)}
-              />
+                onChange={(e) => setNick(e.target.value)} />
               <span className="defaultSpan"
               >ESCREVA O CODIGO DA SALA OU CRIE A SUA</span>
               <div className="flex flex-row">
                 <Input
                   value={room}
-                  onChange={(e) => setRoom(e.target.value)}
-                />
+                  onChange={(e) => setRoom(e.target.value)} />
               </div>
               <Buttons
                 type="submit"
                 icon={{ src: '/assets/icons/go.png', size: 22 }}
-                children={<span>ENTRAR</span>}
-              />
+                children={<span>ENTRAR</span>} />
             </form>
             <div className="flex flex-col items-center"></div>
           </div>
           <div className="text-center flex flex-col  bg-gradient-to-r from-white/[12%] to-white/25 items-center w-[15rem] border-solid border-2 border-white/[0.50] rounded-1 p-[1.5rem]">
             <p className="defaultSpan mb-[1rem] uppercase"
-            >Como Jogar</p>
+              >Como Jogar</p>
             <p className="text-[0.75rem]"
-            >1. Digite um apelido engraçado.</p>
+              >1. Digite um apelido engraçado.</p>
             <p className="text-[0.75rem]"
-            >2. Coloque o codigo da sala dos seus amigos,  ou crie uma nova.</p>
+              >2. Coloque o codigo da sala dos seus amigos,  ou crie uma nova.</p>
             <p className="text-[0.75rem]"
-            >3. Espere de 4 a 6 jogadores entrar na sala, para o jogo começar automaticamente.</p>
+              >3. Espere de 4 a 6 jogadores entrar na sala, para o jogo começar automaticamente.</p>
             <p className="text-[0.75rem]"
-            >4. Siga as instruções das telas</p>
-
+              >4. Siga as instruções das telas</p>
           </div>
         </div>
       </GamePage>
@@ -465,32 +456,31 @@ export function Home() {
   else if (screen === 1) {
     return (
       <GamePage className="flex justify-between">
-        <div className="flex flex-row justify-between align-middle items-center  w-[90%]">
+        <div className="flex flex-row justify-between align-middle items-center  w-[90%]" >
           <img
             className="top-5"
             src="/assets/images/logo.png"
             width={150}
             height={116}
-            alt="Garlic Monkey logo"
-          />
+            alt="Garlic Monkey logo" />
           <div className="flex flex-col text-center">
             <span className="defaultSpan uppercase"
-            >Codigo de sala</span>
+              >Codigo de sala</span>
             <span className="defaultSpan uppercase"
-            >{room}</span>
+              >{room}</span>
           </div>
           <div className='flex flex-col items-center'>
-            <span className='defaultSpan !text-white'>Tempo</span>
-            <div className='defaultSpan text-[60px] mt-3'>
-              {timer}
-            </div>
+            <span className='defaultSpan !text-white'
+              >Tempo</span>
+            <span className='defaultSpan text-[60px] mt-3'
+              >{timer}</span>
           </div>
         </div>
         <div className="flex flex-row h-[20rem] w-[45rem] justify-between">
-          <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-gradient-to-b from-black/25 to-black/50 rounded-l-[1rem]">
+          <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-gradient-to-b from-black/25 to-black/50 rounded-l-[1rem]" >
             <div className="flex flex-col items-center">
               <span className="defaultSpan uppercase mt-[1rem]"
-              >JOGADORES</span>
+                >JOGADORES</span>
               <div className="flex flex-col gap-2 mt-[1rem]">
                 <Player players={players}></Player>
               </div>
@@ -509,8 +499,7 @@ export function Home() {
               <Input
                 className="w-[27rem] h-[2rem] normal-case"
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
-              />
+                onChange={(e) => setMessage(e.target.value)} />
               <Button
                 className="ml-1"
                 icon={{ src: '/assets/icons/go.png', size: 22 }}
@@ -522,8 +511,7 @@ export function Home() {
                     }),
                   );
                   setMessage('');
-                }}
-              />
+                }} />
             </form>
           </div>
         </div>
@@ -540,7 +528,7 @@ export function Home() {
                 );
                 setMessage('');
               }}
-            >QUERO JOGAR!</span>
+                >QUERO JOGAR!</span>
           </div>
           <div className="flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105">
             <span
@@ -554,11 +542,10 @@ export function Home() {
                 );
                 setMessage('');
               }}
-            >SÓ CHAT!</span>
+              >SÓ CHAT!</span>
             <Button
               className="ml-[0.5rem]"
-              icon={{ src: '/assets/icons/go.png', size: 22 }}
-            />
+              icon={{ src: '/assets/icons/go.png', size: 22 }} />
           </div>
         </div>
       </GamePage>
@@ -574,11 +561,10 @@ export function Home() {
       <GamePage>
         <div className='mr-[100px] flex flex-col items-end w-full'>
           <div className='flex flex-col justify-center items-center'>
-
-            <span className='defaultSpan !text-white'>Tempo</span>
-            <span className='defaultSpan text-[60px] mt-3'>
-              {timer}
-            </span>
+          <span className='defaultSpan !text-white'
+            >Tempo</span>
+          <span className='defaultSpan text-[60px] mt-3'
+            >{timer}</span>
           </div>
         </div>
         <div className="animate-wiggle mb-[1rem]">
@@ -586,11 +572,10 @@ export function Home() {
             src="/assets/images/bigLogo.png"
             width={390}
             height={300}
-            alt="Garlic Monkey logo"
-          />
+            alt="Garlic Monkey logo" />
         </div>
         <span className="defaultSpan mb-5 text-3xl"
-        >ESCREVA UMA FRASE</span>
+          >ESCREVA UMA FRASE</span>
         <form
           className='mb-10'
           onSubmit={e => {
@@ -602,24 +587,22 @@ export function Home() {
               }));
             setInputData("")
             setDisable(true);
-          }}
-        >
+          }} >
           <fieldset
             disabled={disable}
-            className="flex flex-row"
-          >
+            className="flex flex-row" >
             <Input
               className="w-[30rem] h-11 mr-2"
               value={inputData}
-              onChange={(e) => setInputData(e.target.value)}
-            />
+              onChange={(e) => setInputData(e.target.value)} />
             <Buttons
               type={"submit"}
               className="h-10"
               icon={{ src: '/assets/icons/go.png', size: 22 }}
-              children={<span className="defaultSpan">PRONTO</span>}
-            />
-          </ fieldset>
+              children={
+                <span className="defaultSpan">PRONTO</span>
+              } />
+          </fieldset>
         </form>
       </GamePage>
     );
@@ -634,18 +617,17 @@ export function Home() {
         <div className='flex justify-between w-full'>
           <div className='ml-[520px] text-center'>
             <p
-            >Desenhe essa frase bizonha:</p>
+              >Desenhe essa frase bizonha:</p>
             <span
-            >{testingNull("phrase", randomPhraseOrUrl)}</span>
+              >{testingNull("phrase", randomPhraseOrUrl)}</span>
           </div>
           <div className='mr-[22px] flex flex-col items-center'>
-            <span>Tempo</span>
-            <span className='defaultSpan text-[60px] mt-3'>
-              {timer}
-            </span>
+            <span
+              >Tempo</span>
+            <span className='defaultSpan text-[60px] mt-3'
+              >{timer}</span>
           </div>
         </div>
-        {/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */}
         <div
           ref={ContainerRef}
           className="flex flex-col items-center w-full max-w-7xl h-fit" >
@@ -695,7 +677,8 @@ export function Home() {
         </div>
         <div
           className="flex flex-row"
-        ></div>
+          onClick={() => console.log('click received')}
+          ></div>
       </GamePage>
     );
   }
@@ -713,11 +696,10 @@ export function Home() {
             src={testingNull("URL", randomPhraseOrUrl)}
             width={canvasSize.width}
             height={canvasSize.height}
-            alt="Garlic Monkey logo"
-          />
+            alt="Garlic Monkey logo" />
         </div>
         <span className="defaultSpan mb-5 text-3xl"
-        >ESCREVA UMA FRASE</span>
+          >ESCREVA UMA FRASE</span>
         <form
           onSubmit={e => {
             e.preventDefault();
@@ -728,23 +710,19 @@ export function Home() {
               }));
             setInputData("")
             setDisable(true);
-          }}
-        >
+          }} >
           <fieldset
             disabled={disable}
-            className="flex flex-row"
-          >
+            className="flex flex-row" >
             <Input
               className="w-[30rem] h-11 mr-2"
               value={inputData}
-              onChange={(e) => setInputData(e.target.value)}
-            />
+              onChange={(e) => setInputData(e.target.value)} />
             <Buttons
               type={"submit"}
               className="h-10"
               icon={{ src: '/assets/icons/go.png', size: 22 }}
-              children={<span className="defaultSpan">PRONTO</span>}
-            />
+              children={<span className="defaultSpan">PRONTO</span>} />
           </fieldset>
         </form>
       </GamePage>
@@ -765,14 +743,13 @@ export function Home() {
             src="/assets/images/logo.png"
             width={150}
             height={116}
-            alt="Garlic Monkey logo"
-          />
+            alt="Garlic Monkey logo" />
         </div>
         <div className="flex flex-row h-[470px] w-[45rem] justify-between">
-          <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-gradient-to-b from-black/25 to-black/50 rounded-l-[1rem]">
+          <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-gradient-to-b from-black/25 to-black/50 rounded-l-[1rem]" >
             <div className="flex flex-col items-center">
               <span className="defaultSpan uppercase mt-[1rem]"
-              >JOGADORES</span>
+                >JOGADORES</span>
               <div className="flex flex-col gap-2 mt-[1rem]">
                 <Player players={players} finalPlayer={finalPlayer}></Player>
               </div>
@@ -803,10 +780,10 @@ export function Home() {
       <GamePage>
         <div className='mr-[100px] flex flex-col justify-center items-end w-full'>
           <div className='flex flex-col items-center'>
-            <span className='defaultSpan !text-white'>Rodada</span>
-            <span className='defaultSpan text-[60px] mt-3'>
-              {waiterRound}
-            </span>
+            <span className='defaultSpan !text-white'
+              >Rodada</span>
+            <span className='defaultSpan text-[60px] mt-3'
+              >{waiterRound}</span>
           </div>
         </div>
         <div className="animate-wiggle mb-[1rem] mb-[50px]">
@@ -814,12 +791,10 @@ export function Home() {
             src="/assets/images/bigLogo.png"
             width={390}
             height={300}
-            alt="Garlic Monkey logo"
-          />
+            alt="Garlic Monkey logo" />
         </div>
-        <span className="defaultSpan mb-[100px] text-[50px]">
-          Partida em andamento
-        </span>
+        <span className="defaultSpan mb-[100px] text-[50px]"
+          >Partida em andamento</span>
       </GamePage>
     )
   }

@@ -44,15 +44,15 @@ export function Final({ owner, data, img }: ChatProps) {
       }
       <div className={`p-1 min-w-full flex flex-col bg-white/25 ${roundedLast} items-center justify-center`}>
         <span className='bg-[#000000]/50 text-sm w-full text-white p-1 rounded'
-        >{
-          img ? 
-            <img
-              className="top-5"
-              src={testingNull("URL", data)}
-              width={350}
-              height={200}
-              alt="Garlic Monkey logo"
-            /> : data
+          >{
+            img ? 
+              <img
+                className="top-5"
+                src={testingNull("URL", data)}
+                width={350}
+                height={200}
+                alt="Garlic Monkey logo"
+              /> : data
         }</span>
       </div>
     </div>
