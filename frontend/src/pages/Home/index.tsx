@@ -43,7 +43,6 @@ export function Home() {
   let timerId: number = 0;
 
   function sender(bool: boolean) {
-    setPlayers([]);
     setScreen(1);
     socket?.send(
       JSON.stringify({
@@ -80,8 +79,8 @@ export function Home() {
     return aux;
   }
 
-  let isWaiting = false;
-  let waiterCounter = 1;
+  let isWaiting: boolean = false;
+  let waiterCounter: number = 1;
 
   function waitingManager(isWaiter: boolean) {
     isWaiting = isWaiter;
@@ -227,6 +226,7 @@ export function Home() {
     else if (data.msgType === 'finalData') {
       waitingManager(true);
       setScreen(5);
+      setPlayers([]);
       waitingCountManager(true);
       if (data.msgContent) {
         if (data.msgContent.update === 'requireNewParticipationStatus')

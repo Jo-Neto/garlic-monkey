@@ -7,7 +7,7 @@ module.exports = function partStatChanger(Session, data, playerWs) {
                 playerWs.isUndecidedOldPlayer = false;
                 let allActivePlayersName = Session.activeSockets.map(webs => { if (webs !== null) return webs.garlicName; });
                 let allWaitingPlayersName = Session.waitingSockets.map(webs => { if (webs !== null) return webs.garlicName; });
-                if (playerWs.aID !== null && playerWs.readyState === 1) {
+                if (playerWs !== null && playerWs.readyState === 1) {
                     playerWs.send(JSON.stringify({
                         msgType: 'playerRow',
                         msgContent: { activeNick: allActivePlayersName, waitingNick: allWaitingPlayersName }
