@@ -157,13 +157,6 @@ module.exports = class SessionObject {
             else {
                 clearTimeout(this.finishertimerID);
                 this.finishertimerID = null;
-                this.waitingSockets.forEach(ws => {
-                    if (ws !== null && ws.readyState === 1) {
-                        if (ws.isUndecidedOldPlayer) {
-                            ws.close(1001, 'player has been kicked for not deciding fast enough');
-                        }
-                    }
-                });
                 this.waitingSockets = this.waitingSockets.filter(ws => { return ws !== null });
                 return;
             }
