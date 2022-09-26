@@ -32,7 +32,7 @@ export function Home() {
   const [finalPlayer, setFinalPlayer] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState({ title: '', description: '' })
-  const [screen, setScreen] = useState<Number>(3);
+  const [screen, setScreen] = useState<Number>(0);
   const [socket, setSocket] = useState<WebSocket>();
   const [timer, setTimer] = useState<any>(15);
   const [disable, setDisable] = useState(false);
