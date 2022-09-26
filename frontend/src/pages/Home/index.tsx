@@ -201,7 +201,7 @@ export function Home() {
     //+------------------------------------------------------------------+
 
     else if (data.msgType === 'finalData') {
-      if (data.msgContent.finalData.update)
+      if (data.msgContent.finalData?.update)
         setEndModal(true);
       setScreen(5);
       setFinalPlayer(data.msgContent[0]?.owner || '');
