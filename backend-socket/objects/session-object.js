@@ -52,53 +52,28 @@ module.exports = class SessionObject {
         this.gamerTimerID = setTimeout(() => {
 
             this.currentTurn++;
-            console.log("interval called round number --> " + this.currentTurn);
+            console.log("interval called round number --> " + this.currentTurn)         
 
-
-
+            
             if (this.currentTurn === this.activeSockets.length) {
-                console.log("chamando finisher");
                 this.waitingSockets = this.waitingSockets.concat(this.activeSockets);
                 this.activeSockets = [null, null, null, null, null, null];
-                this.waitingSockets.forEach(ws => { 
+                this.waitingSockets.forEach(ws => {
                     if (ws !== null && ws.readyState === 1) {
                         ws.aID = null;
                         ws.isUndecidedOldPlayer = true;
                         ws.hasPlayedThisTurn = true;
                     }
                 });
-                this.finisherTimeout(1, 0);
-            }
-
-
-
-            if (this.activeSockets.length < this.currentTurn) { //match ended
-                if (this.gamerTimerID)
+                if(this.gamerTimerID)
                     clearTimeout(this.gamerTimerID);
+                this.finisherTimeout(1, 0);
                 return;
             }
 
-            /*this.activeSockets.forEach(ws => { //send new msg to all players in session
-                if (ws !== null && ws.readyState === 1) {
-                    ws.send(JSON.stringify({
-                        msgType: 'gameUpdate',
-                        msgContent: { update: 'roundChange', newRound: this.currentTurn }
-                    }));
-                }
-            });
-            this.waitingSockets.forEach(ws => { //send new msg to all players in session
-                if (ws !== null && ws.readyState === 1) {
-                    ws.send(JSON.stringify({
-                        msgType: 'gameUpdate',
-                        msgContent: { update: 'roundChange', newRound: this.currentTurn }
-                    }));
-                }
-            });*/
 
-
-
+  
             if (this.currentTurn > 0) {
-                console.log("sending round info of round --> " + (this.currentTurn - 1) + " (previous round)");
                 this.activeSockets.forEach((ws) => {
                     if (ws !== null && ws.readyState === 1) {
                         if ((ws.aID + this.currentTurn /*- 1*/) < this.activeSockets.length) {
@@ -124,7 +99,6 @@ module.exports = class SessionObject {
                 });
             }
 
-            console.log("activating new timer");
             if ((this.currentTurn % 2) === 0)
                 this.gameMaster(15000); //MARKUP: timer para descriição
             else
@@ -139,22 +113,25 @@ module.exports = class SessionObject {
         console.log("finisher interval running");
         this.finishertimerID = setTimeout(() => {
 
-            if (i < (this.currentTurn - 1)) {
+            console.log("i = " + i)
+            console.log("currentTurn = " + this.currentTurn)
+
+            if (i < this.currentTurn ) {
                 console.log("finisherTimeout(fn) --> first if");
                 this.waitingSockets.forEach((ws) => {
                     if (ws !== null && ws.readyState === 1) {
-                        if ((ws.aID + this.currentTurn /*- 1*/) < this.activeSockets.length) {
-                            ws.send(JSON.stringify({
-                                msgType: 'finalData',
-                                msgContent: this.game[i]
-                            }));
-                        }
+                        ws.send(JSON.stringify({
+                            msgType: 'finalData',
+                            msgContent: this.game[i]
+                        }));
                     }
                 });
+                if(this.finishertimerID)
+                    clearTimeout(this.finishertimerID);
                 this.finisherTimeout(15000, ++i);   //MARKUP: finsher time
             }
 
-            else if (i === (this.currentTurn - 1)) {
+            else if (i === this.currentTurn ) {
                 console.log("finisherTimeout(fn) --> else if");
                 this.saveOnDB(false);
                 this.currentTurn = -1;
@@ -171,6 +148,8 @@ module.exports = class SessionObject {
                         }));
                     }
                 });
+                if(this.finishertimerID)
+                    clearTimeout(this.finishertimerID);
                 this.finisherTimeout(15000, ++i);   //MARKUP: finsher time
             }
 
