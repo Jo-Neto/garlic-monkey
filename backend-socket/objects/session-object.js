@@ -55,7 +55,7 @@ module.exports = class SessionObject {
 
             
 
-            if ( this.currentTurn === (this.activeSockets.length - 1)) {
+            if ( this.currentTurn === (this.activeSockets.length - 2)) {
                 console.log("chamando finisher");
                 this.finisherTimeout(1, 0);
             }
