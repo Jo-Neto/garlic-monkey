@@ -37,7 +37,6 @@ export function Home() {
   let timerId: number = 0;
 
   function timerFn() {
-    console.log("timerfn");
     setTimer(trueTime);
     if (trueTime === 0) {
       clearInterval(timerId);
@@ -165,9 +164,7 @@ export function Home() {
       }
 
       function timerResetter() {
-        console.log("timerResetter");
         if (timerId) {
-          console.log("clearing interval");
           clearInterval(timerId);
           timerId = 0;
           trueTime = 0;
@@ -176,16 +173,12 @@ export function Home() {
           trueTime = 15; //description timer
           timerFn();
           timerId = setInterval(timerFn, 1000);
-          console.log("setting screen to 3");
           screenSetter(3);
-          console.log("isScreenDescription = " + isScreenDescription)
         } else if (isScreenDescription) {
           trueTime = 15; //drawing timer
           timerFn();
           timerId = setInterval(timerFn, 1000);
-          console.log("setting screen to 4");
           screenSetter(4);
-          console.log("isScreenDescription = " + isScreenDescription)
         }
       }
     }
@@ -195,11 +188,11 @@ export function Home() {
     //+------------------------------------------------------------------+
 
     else if (data.msgType === 'finalData') {
+      console.log('final data index ' + (data.msgContent.round) + " below");
+      console.log(data.msgContent.finalData);
       setScreen(5);
       setFinalPlayer(data.msgContent[0].owner || '');
       setfinalScreen(data.msgContent)
-      console.log('final data index ' + (data.msgContent.round) + " below");
-      console.log(data.msgContent.finalData);
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //+------------------------------------------------------------------+
