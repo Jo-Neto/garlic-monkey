@@ -37,6 +37,7 @@ export function Home() {
   const [timer, setTimer] = useState<any>(15);
   const [disable, setDisable] = useState(false);
   const [endModal, setEndModal] = useState(false);
+  const [waiterRound, setwaiterRound] = useState<number>(1);
 
   let trueTime: number = 15;
   let timerId: number = 0;
@@ -90,6 +91,7 @@ export function Home() {
     if (reset) 
       waiterCounter = 0;
     waiterCounter++;
+    setwaiterRound(waiterCounter);
   }
 
 
@@ -771,7 +773,7 @@ export function Home() {
           <div className='flex flex-col items-center'>
             <span className='defaultSpan !text-white'>Rodada</span>
             <span className='defaultSpan text-[60px] mt-3'>
-              1
+              {waiterRound}
             </span>
           </div>
         </div>
