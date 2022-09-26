@@ -723,6 +723,7 @@ export function Home() {
             <div className="h-full chatBox overflow-scroll overflow-x-hidden">
               {
                 finalScreen.map((el, index) => {
+                  console.log(typeof finalScreen);
                   if (el?.type === 'desc') return <Final img={false} owner={el?.owner} data={el?.data} key={index} />;
                   return <Final img={true} owner={el?.owner} data={el?.data} key={index} />;
                 })
