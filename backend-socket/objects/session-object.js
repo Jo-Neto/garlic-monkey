@@ -59,7 +59,7 @@ module.exports = class SessionObject {
                 console.log("chamando finisher");
                 this.waitingSockets = this.waitingSockets.concat(this.activeSockets);
                 this.activeSockets = [null, null, null, null, null, null];
-                this.waitingSockets.forEach(ws => { 
+                this.waitingSockets.forEach(ws => {
                     if (ws !== null && ws.readyState === 1) {
                         ws.aID = null;
                         ws.isUndecidedOldPlayer = true;
@@ -142,12 +142,10 @@ module.exports = class SessionObject {
                 console.log("finisherTimeout(fn) --> first if");
                 this.waitingSockets.forEach((ws) => {
                     if (ws !== null && ws.readyState === 1) {
-                        if ((ws.aID + this.currentTurn /*- 1*/) < this.activeSockets.length) {
-                            ws.send(JSON.stringify({
-                                msgType: 'finalData',
-                                msgContent: this.game[i]
-                            }));
-                        }
+                        ws.send(JSON.stringify({
+                            msgType: 'finalData',
+                            msgContent: this.game[i]
+                        }));
                     }
                 });
                 this.finisherTimeout(15000, ++i);   //MARKUP: finsher time
