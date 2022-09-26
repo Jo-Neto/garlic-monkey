@@ -11,7 +11,8 @@ export function PlayerIcon({ nick, photo, player_id, foco }: PlayerIconProps) {
       <div className="mx-1">
         <img className="bg-white rounded-full" src={'/assets/icons/user.png'} width={40} height={40} />
       </div>
-      <span className="text-white text-xl font-black">{nick}</span>
+      <span className="text-white text-xl font-black"
+        >{nick}</span>
     </div>
   );
 }

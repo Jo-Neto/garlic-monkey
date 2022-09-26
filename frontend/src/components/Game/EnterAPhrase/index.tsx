@@ -9,12 +9,13 @@ export function EnterAPhrase() {
         src="/assets/images/logo.png"
         alt="Garlic Monkey logo"
         width={387}
-        height={301}
-      />
-      <span className="font-black text-4xl">ESCREVA UMA FRASE</span>
+        height={301} />
+      <span className="font-black text-4xl"
+        >ESCREVA UMA FRASE</span>
       <div className="flex flex-row">
         <Input className="w-[28.5rem]" />
-        <Button icon={{ src: '/assets/icons/go.png', size: 22 }}>PRONTO</Button>
+        <Button icon={{ src: '/assets/icons/go.png', size: 22 }}
+          >PRONTO</Button>
       </div>
     </GamePage>
   );

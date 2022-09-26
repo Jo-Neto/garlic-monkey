@@ -9,19 +9,19 @@ interface PlayerProps {
 }
 
 export function Player( {players, finalPlayer}: PlayerProps ) {
-    return (
-        <div className='flex flex-col gap-2'>
-            {
-              players.map((element, index) => {
-                return <PlayerIcon 
-                nick={element.nick} 
-                photo={element.photo} 
-                player_id={index} 
-                key={index} 
+  return (
+    <div className='flex flex-col gap-2'>
+      {
+        players.map((element, index) => {
+          return <PlayerIcon 
+          nick={element.nick} 
+          photo={element.photo} 
+          player_id={index} 
+          key={index} 
                 foco={element.nick === finalPlayer ? true : false }/>
-              })
-            }
-        </div>
-    );
+        })
+      }
+    </div>
+  );
 }
   

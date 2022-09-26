@@ -14,10 +14,11 @@ export function Timer({ duration, onTimeEnd }: TimerProps) {
         isPlaying
         onComplete={onTimeEnd}
         colors={['#008000', '#FFFF00', '#FF0000']}
-        colorsTime={[0.99 * duration, 0.66 * duration, 0.33 * duration, 0]}
-      >
-        {({ color, remainingTime }) => (
-          <span style={{ color }}>{remainingTime}</span>
+        colorsTime={[0.99 * duration, 0.66 * duration, 0.33 * duration, 0]} >
+        {
+          ({ color, remainingTime }) => (
+            <span style={{ color }}
+              >{remainingTime}</span>
         )}
       </CountdownCircleTimer>
     </div>

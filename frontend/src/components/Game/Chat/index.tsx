@@ -80,23 +80,24 @@ export function Chat({ className }: ChatProps) {
       className={twMerge(
         'w-80 pt-2 flex flex-col items-center max-h-52 overflow-y-scroll bg-slate-800',
         className,
-      )}
-    >
-      {messages &&
-        messages.map(({ user, message, time }, index) => (
-          <div
-            className="w-11/12 flex flex-col items-center"
-            key={user + message + time + index}
-          >
-            <div className="w-full flex flex-row justify-between p-2 rounded-t-md bg-slate-600 text-xs">
-              <span>{user}</span>
-              <span>{time}</span>
+      )} >
+      {
+        messages &&
+          messages.map(({ user, message, time }, index) => (
+            <div
+              className="w-11/12 flex flex-col items-center"
+              key={user + message + time + index} >
+              <div className="w-full flex flex-row justify-between p-2 rounded-t-md bg-slate-600 text-xs">
+                <span
+                  >{user}</span>
+                <span
+                  >{time}</span>
+              </div>
+              <span className="w-full rounded-b-md p-2 mb-2 bg-slate-600"
+                >{message}</span>
             </div>
-            <span className="w-full rounded-b-md p-2 mb-2 bg-slate-600">
-              {message}
-            </span>
-          </div>
-        ))}
+          ))
+        }
     </div>
   );
 }
