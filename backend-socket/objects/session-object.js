@@ -52,19 +52,8 @@ module.exports = class SessionObject {
         this.gamerTimerID = setTimeout(() => {
 
             this.currentTurn++;
-            console.log("interval called round number --> " + this.currentTurn);
+            console.log("interval called round number --> " + this.currentTurn)         
 
-            
-
-            if (this.activeSockets.length < this.currentTurn) { //match ended
-                console.log("match ended")
-                if(this.gamerTimerID)
-                    clearTimeout(this.gamerTimerID);
-                return;
-            }
-            console.log("did not return")
-            
-            
             
             if (this.currentTurn === this.activeSockets.length) {
                 this.waitingSockets = this.waitingSockets.concat(this.activeSockets);
@@ -76,7 +65,10 @@ module.exports = class SessionObject {
                         ws.hasPlayedThisTurn = true;
                     }
                 });
+                if(this.gamerTimerID)
+                    clearTimeout(this.gamerTimerID);
                 this.finisherTimeout(1, 0);
+                return;
             }
 
 
