@@ -1,9 +1,10 @@
 interface ChatProps {
     endModal?: boolean;
     setEndModal: any;
-    sender: any
+    sender: any;
+    socket: WebSocket | undefined;
 }
-export function EndModal({ endModal, setEndModal, sender }: ChatProps) {
+export function EndModal({ endModal, setEndModal, sender, socket }: ChatProps) {
 
     return (
         <div className={`w-[100vw] absolute h-[100vh] ${endModal ? 'flex' : 'hidden'}  items-center justify-center`}>
@@ -19,12 +20,13 @@ export function EndModal({ endModal, setEndModal, sender }: ChatProps) {
                         }}
                         className="flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105"
                     >
-                        <img className='mr-1' src={'/assets/icons/Reset.png'} width={22} height={22} />
+                        <img className='mr-1' src={'/assets/icons/Resetar.png'} width={22} height={22} />
                         Jogar novamente
                     </button>
                     <button
                         onClick={() => {
                             setEndModal(false);
+                            socket?.close(1000);
                         }}
                         className="flex ml-8 flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105"
                     >

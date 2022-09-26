@@ -737,7 +737,7 @@ export function Home() {
   else if (screen === 5) {
     return (
       <GamePage className="flex justify-between">
-        <EndModal endModal={endModal} sender={sender} setEndModal={setEndModal} />
+        <EndModal endModal={endModal} sender={sender} setEndModal={setEndModal} socket={socket} />
         <div className="flex flex-row justify-center align-middle items-center  w-[90%]">
           <img
             className="top-5"
@@ -793,7 +793,6 @@ export function Home() {
         <span className="defaultSpan mb-[100px] text-[50px]">
           Partida em andamento
         </span>
-
       </GamePage>
     )
   }
