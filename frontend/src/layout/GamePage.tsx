@@ -8,19 +8,15 @@ type GamePageProps = {
 
 export function GamePage({ children, className }: GamePageProps) {
   return (
-    <div
-      className={twMerge(
+    <div className={twMerge(
         'w-full h-full flex items-center justify-center',
         'bg-[url("/assets/images/background.png")] bg-center bg-cover',
-      )}
-    >
-      <div
-        className={twMerge(
+      )} >
+      <div className={twMerge(
           'flex flex-col items-center justify-center w-[80%] h-[90%] p-[1rem]',
           'shadow-md shadow-gray-600 rounded-[3.125rem] border-solid border-2 border-white/[0.3] backdrop-blur-sm  bg-gradient-to-b from-white/[12%] to-white/25',
           className,
-        )}
-      >
+        )} >
         {children}
       </div>
     </div>

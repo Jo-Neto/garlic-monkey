@@ -12,7 +12,7 @@ const app = express();
 let i = 0;
 
 app.use(cors({
-    origin : "https://localhost:9999",
+    origin : "https://66.135.2.21:9999",
     credentials: true,
 }));
 

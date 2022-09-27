@@ -21,27 +21,26 @@ export function Players(socket: WebSocket) {
             className='mr-[0.5rem]' 
             icon={{ src: '/assets/icons/goFlip.png', size: 22 }}/>
           <span className="defaultSpan"
-          >VOLTAR</span> 
+            >VOLTAR</span> 
         </div>
         <img
           className="top-5"
           src="/assets/images/logo.png"
           width={150}
           height={116}
-          alt="Garlic Monkey logo"
-        />
+          alt="Garlic Monkey logo" />
         <div className='flex flex-col text-center' >
           <span className="defaultSpan uppercase"
-          >Codigo de sala</span>
+            >Codigo de sala</span>
           <span className="defaultSpan uppercase"
-          >6565</span>
+            >6565</span>
         </div>
       </div>
       <div className="flex flex-row h-[20rem] w-[45rem] justify-between">
         <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-black/50 rounded-l-[1rem]">   
           <div className="flex flex-col items-center">
             <span className="defaultSpan uppercase mt-[0.5rem]"
-            >JOGADORES 1</span>
+              >JOGADORES 1</span>
             <div className='flex flex-col gap-2 mt-[1rem]'>
               { 
                 players.map( (element, index) => {
@@ -54,8 +53,8 @@ export function Players(socket: WebSocket) {
         <div className="border-8 border-select-brown rounded-md w-[30rem] bg-black/25">
           <div className='chatBox'>
             { 
-              chatMessages.map( el => {
-                return <Chat user={el?.user} msg={el?.msg} />
+              chatMessages.map( (el, index) => {
+                return <Chat user={el?.user} msg={el?.msg} key={index} />
               })
             }
           </div>
@@ -64,11 +63,11 @@ export function Players(socket: WebSocket) {
       <div className="flex flex-row">
         <div className='flex flex-row justify-center items-center bg-white w-[7rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105 mr-10'>
           <span className="defaultSpan"
-          >PRONTO</span> 
+            >PRONTO</span> 
         </div>
         <div className='flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'>
           <span className="defaultSpan"
-          >INICIAR JOGO</span> 
+            >INICIAR JOGO</span> 
           <Button 
             className='ml-[0.5rem]' 
             icon={{ src: '/assets/icons/go.png', size: 22 }}/>

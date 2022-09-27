@@ -10,9 +10,9 @@ export function Input({ className, errors, ...props }: InputProps) {
           'text-center rounded-md border-solid border-2 border-white',
           className,
         )}
-        {...props}
-      />
-      <span>{errors?.message}</span>
+        {...props} />
+      <span
+        >{errors?.message}</span>
     </div>
   );
 }
@@ -27,9 +27,9 @@ export function Inputs({ className, errors, ...props }: InputProps) {
           'text-center rounded-md border-solid border-2 border-white',
           className,
         )}
-        {...props}
-      />
-      <span>{errors?.message}</span>
+        {...props} />
+      <span
+        >{errors?.message}</span>
     </div>
   );
 }

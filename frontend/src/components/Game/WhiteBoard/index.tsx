@@ -86,15 +86,13 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
   return (
     <div
       ref={ContainerRef}
-      className="flex flex-col items-center w-full max-w-7xl h-fit"
-    >
-      <div className="flex flex-row items-center justify-between">
+      className="flex flex-col items-center w-full max-w-7xl h-fit" >
+      <div className="flex flex-row items-center justify-between" >
         <Colors
           title="CORES"
           colors={COLORS}
           callback={setSelectedColor}
-          selectedColor={selectedColor}
-        />
+          selectedColor={selectedColor} />
         <div className="shadow-md border-8 border-[#3F1802] rounded-md">
           <CanvasDraw
             ref={WhiteBoardRef}
@@ -106,15 +104,13 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
             brushRadius={selectedRadius}
             canvasHeight={canvasSize.height}
             canvasWidth={canvasSize.width}
-            enablePanAndZoom
-          />
+            enablePanAndZoom />
         </div>
         <Radius
           radius={SIZES}
           callback={setSelectedRadius}
           selectedRadius={selectedRadius}
-          selectedColor={selectedColor}
-        />
+          selectedColor={selectedColor} />
       </div>
       <div className="flex flex-row ">
         <Actions
@@ -122,8 +118,7 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
             { name: 'Reset', callback: () => resetCanvas() },
             { name: 'Desfazer', callback: () => undo() },
             //{ name: 'Salvar', callback: () => print() },
-          ]}
-        />
+          ]} />
         <input
           className="cursor-pointer"
           type="range"
@@ -131,8 +126,7 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
           max={100}
           step={1}
           value={gradient}
-          onChange={(e) => setGradient(Number(e.target.value))}
-        />
+          onChange={(e) => setGradient(Number(e.target.value))} />
       </div>
     </div>
   );
