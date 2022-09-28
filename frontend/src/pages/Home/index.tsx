@@ -322,8 +322,8 @@ export function Home() {
     const actualWidth = ContainerRef.current?.offsetWidth;
     // const newWidth = actualWidth && actualWidth * 0.7;
     // const newHeight = newWidth && newWidth * (1 / (16 / 9));
-    const newWidth = 500 // actualWidth && actualWidth * 0.7;
-    const newHeight = 500 // newWidth && newWidth * (1 / (16 / 9));
+    const newWidth = 600 // actualWidth && actualWidth * 0.7;
+    const newHeight = 400 // newWidth && newWidth * (1 / (16 / 9));
     const size = { width: newWidth, height: newHeight };
     setCanvasSize(size);
   }, []);

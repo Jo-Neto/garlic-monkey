@@ -49,8 +49,8 @@ export function Final({ owner, data, img }: ChatProps) {
               <img
                 className="top-5"
                 src={testingNull("URL", data)}
-                width={350}
-                height={200}
+                width={600}
+                height={400}
                 alt="Garlic Monkey logo"
               /> : data
         }</span>
