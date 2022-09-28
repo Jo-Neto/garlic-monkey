@@ -534,18 +534,21 @@ export function Home() {
               }}
                 >QUERO JOGAR!</span>
           </div>
-          <div className="flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105">
+          <div 
+          className="flex flex-row justify-center items-center bg-white w-[10rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105"
+            onClick={() => {
+              socket?.send(
+                JSON.stringify({
+                  msgType: 'participationStatus',
+                  msgContent: false,
+                }),
+              );
+              setMessage('');
+            }}
+          >
             <span
               className="defaultSpan"
-              onClick={() => {
-                socket?.send(
-                  JSON.stringify({
-                    msgType: 'participationStatus',
-                    msgContent: false,
-                  }),
-                );
-                setMessage('');
-              }}
+              
               >SÓ CHAT!</span>
             <Button
               className="ml-[0.5rem]"
