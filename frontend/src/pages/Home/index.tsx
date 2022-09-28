@@ -521,12 +521,14 @@ export function Home() {
                 className="ml-1"
                 icon={{ src: '/assets/icons/go.png', size: 22 }}
                 onClick={() => {
-                  socket?.send(
-                    JSON.stringify({
-                      msgType: 'chatNew',
-                      msgContent: message,
-                    }),
-                  );
+                  if(message){
+                    socket?.send(
+                      JSON.stringify({
+                        msgType: 'chatNew',
+                        msgContent: message,
+                      }),
+                    );
+                  }
                   setMessage('');
                 }} />
             </form>
