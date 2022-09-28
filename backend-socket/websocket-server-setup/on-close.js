@@ -16,7 +16,6 @@ module.exports = function onClose(ws) {
                 activeSessionsArr[ws.sID].waitingSockets[removeIndexInactive] = null;
         }
     } catch (e) {
-        console.log(e);
         return;
     }
     if (ws !== null)
@@ -43,6 +42,5 @@ module.exports = function onClose(ws) {
             });
         }
     } catch (e) {
-        console.log(e);
     }
 };

@@ -17,7 +17,6 @@ export function Players(socket: WebSocket) {
       <div className='flex flex-row justify-between align-middle items-center  w-[90%]'>
         <div className='flex flex-row justify-center items-center bg-white w-[7rem] h-[2.5rem] rounded-[0.25rem] drop-shadow-customShadow duration-100 hover:cursor-pointer hover:scale-105'>
           <Button 
-            onClick={()=>{console.log(socket.send('kkkkkkkkkkkkkkkkkkkkkkkkkk'))}}
             className='mr-[0.5rem]' 
             icon={{ src: '/assets/icons/goFlip.png', size: 22 }}/>
           <span className="defaultSpan"

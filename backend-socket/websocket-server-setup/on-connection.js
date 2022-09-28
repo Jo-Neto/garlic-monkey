@@ -45,7 +45,6 @@ module.exports = function onConnection(ws, req) {
         activeSessionsArr[matchedIndex].activeSockets.forEach(webs => {
             if (webs !== null && webs.readyState === 1) {
                 if (webs.garlicName === playerChoiceArr[1]) {
-                    console.log("closing 4003");
                     ws.takenName = true;
                     ws.close(4003, 'player name already taken');
                     shouldReturn = true;
@@ -55,7 +54,6 @@ module.exports = function onConnection(ws, req) {
         activeSessionsArr[matchedIndex].waitingSockets.forEach(webs => {
             if (webs !== null && webs.readyState === 1) {
                 if (webs.garlicName === playerChoiceArr[1]) {
-                    console.log("closing 4003");
                     ws.takenName = true;
                     ws.close(4003, 'player name already taken');
                     shouldReturn = true;
@@ -65,7 +63,6 @@ module.exports = function onConnection(ws, req) {
         if (shouldReturn)
             return;
             if (activeSessionsArr[matchedIndex].currentTurn !== -1) { 
-            console.log("closing 1003");
             if (ws.readyState === 1)
                 ws.close(1013, 'ongoing match, try again later');
             return;

@@ -1,0 +1,17 @@
+// vite.config.ts
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import readFileSync from "file-system";
+var vite_config_default = defineConfig({
+  plugins: [react()],
+  server: {
+    https: {
+      key: readFileSync("../keys-and-certificates/key-rsa.pem"),
+      cert: readFileSync("../keys-and-certificates/cert.pem")
+    }
+  }
+});
+export {
+  vite_config_default as default
+};
+//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsidml0ZS5jb25maWcudHMiXSwKICAic291cmNlc0NvbnRlbnQiOiBbImltcG9ydCB7IGRlZmluZUNvbmZpZyB9IGZyb20gJ3ZpdGUnO1xyXG5pbXBvcnQgcmVhY3QgZnJvbSAnQHZpdGVqcy9wbHVnaW4tcmVhY3QnO1xyXG5pbXBvcnQgcmVhZEZpbGVTeW5jIGZyb20gJ2ZpbGUtc3lzdGVtJztcclxuXHJcbi8vIGh0dHBzOi8vdml0ZWpzLmRldi9jb25maWcvXHJcbmV4cG9ydCBkZWZhdWx0IGRlZmluZUNvbmZpZyh7XHJcbiAgcGx1Z2luczogW3JlYWN0KCldLFxyXG4gIHNlcnZlcjoge1xyXG4gICAgaHR0cHM6IHtcclxuICAgICAga2V5OiByZWFkRmlsZVN5bmMoJy4uL2tleXMtYW5kLWNlcnRpZmljYXRlcy9rZXktcnNhLnBlbScpLFxyXG4gICAgICBjZXJ0OiByZWFkRmlsZVN5bmMoJy4uL2tleXMtYW5kLWNlcnRpZmljYXRlcy9jZXJ0LnBlbScpLFxyXG4gICAgfVxyXG4gIH1cclxufSk7Il0sCiAgIm1hcHBpbmdzIjogIjtBQUFBLFNBQVMsb0JBQW9CO0FBQzdCLE9BQU8sV0FBVztBQUNsQixPQUFPLGtCQUFrQjtBQUd6QixJQUFPLHNCQUFRLGFBQWE7QUFBQSxFQUMxQixTQUFTLENBQUMsTUFBTSxDQUFDO0FBQUEsRUFDakIsUUFBUTtBQUFBLElBQ04sT0FBTztBQUFBLE1BQ0wsS0FBSyxhQUFhLHNDQUFzQztBQUFBLE1BQ3hELE1BQU0sYUFBYSxtQ0FBbUM7QUFBQSxJQUN4RDtBQUFBLEVBQ0Y7QUFDRixDQUFDOyIsCiAgIm5hbWVzIjogW10KfQo=

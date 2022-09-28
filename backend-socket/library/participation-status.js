@@ -115,9 +115,6 @@ module.exports = function partStatChanger(Session, data, playerWs) {
                     }
                 }
             }
-        } else
-            console.log("ERROR --> participation-status.js --> msgContent type error");
+        } 
     }
-    else
-        console.log("ERROR --> participation-status.js --> msgContent property not found on received object");
 }

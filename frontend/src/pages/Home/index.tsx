@@ -27,7 +27,7 @@ export function Home() {
   const [players, setPlayers] = useState<{ nick: string; photo: string }[]>([]);
   const [inputData, setInputData] = useState('');
   const [nick, setNick] = useState('');
-  const [room, setRoom] = useState('1');
+  const [room, setRoom] = useState('');
   const [message, setMessage] = useState('');
   const [randomPhraseOrUrl, setRandomPhraseOrUrl] = useState('');
   const [chatMessages, setChatMessages] = useState<{ user: string; msg: string }[]>([]);
@@ -37,13 +37,13 @@ export function Home() {
   const [alertMessage, setAlertMessage] = useState({ title: '', description: '' })
   const [screen, setScreen] = useState<Number>(0);
   const [socket, setSocket] = useState<WebSocket>();
-  const [timer, setTimer] = useState<any>(15);
+  const [timer, setTimer] = useState<any>(60);
   const [disable, setDisable] = useState(false);
   const [endModal, setEndModal] = useState(false);
   const [waiterRound, setwaiterRound] = useState<number>(1);
   const [kicker, setKicker] = useState<number>(60);
 
-  let trueTime: number = 15;
+  let trueTime: number = 60;
   let timerId: number = 0;
   
   function sender(bool: boolean) {
@@ -64,7 +64,7 @@ export function Home() {
       trueTime--;
   }
 
-  let isScreenDescription = true; // TRUE!
+  let isScreenDescription = false; // TRUE!
   function screenSetter(whichScreen: number) {
     isScreenDescription = !isScreenDescription;
     setScreen(whichScreen);
@@ -167,14 +167,14 @@ export function Home() {
     //+------------------------------------------------------------------+
     else if (data.msgType === 'timerUpdate') {
       if (data.msgContent.msgContent === 'timerStart') {
-        trueTime = 15;
+        trueTime = 59;  //MARKUP: description timer
         timerFn();
         if (timerId)
           clearInterval(timerId);
         timerId = setInterval(timerFn, 1000);
       } else if (data.msgContent.msgContent === 'timerStop') {
         clearInterval(timerId);
-        trueTime = 15;
+        trueTime = 60;  //MARKUP: description timer
         timerFn();
       }
     }
@@ -184,7 +184,7 @@ export function Home() {
     //+------------------------------------------------------------------+
     else if (data.msgType === 'gameUpdate') {
       if (data.msgContent.update === 'gameStart') {
-        timerResetter();
+        timerResetter(true);
         if (data.msgContent.type === 'activePlayer') {
           waitingManager(false);
           setScreen(2);
@@ -208,21 +208,30 @@ export function Home() {
         timerResetter();
       }
 
-      function timerResetter() {
+      function timerResetter(firstCall = false) {
         if (timerId) {
           clearInterval(timerId);
           timerId = 0;
           trueTime = 0;
         }
         if (!isScreenDescription) {
-          trueTime = 15; //MARKUP: description timer
+          if (firstCall) {
+            console.log("firstCall");
+            trueTime = 20;  //MARKUP: first description timer
+          }
+          else {
+            console.log("drawing timer else");
+            trueTime = 60; //MARKUP: drawing timer
+          }
           timerFn();
           timerId = setInterval(timerFn, 1000);
+          console.log("setting 3 ");
           screenSetter(3);
         } else if (isScreenDescription) {
-          trueTime = 15; //MARKUP: drawing timer
+          trueTime = 20; //MARKUP: description timer
           timerFn();
           timerId = setInterval(timerFn, 1000);
+          console.log("setting 4 ");
           screenSetter(4);
         }
       }
@@ -240,7 +249,7 @@ export function Home() {
           kickerCounterID = setInterval(() => { kickerTimer(); }, 1000)
           waitingManager(true);
           setEndModal(true);
-          trueTime = 15;
+          trueTime = 60;
           timerFn();
           setPlayers([]);
           waitingCountManager(true);
@@ -260,10 +269,8 @@ export function Home() {
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     else if (data.msgType === 'devReport') {
       console.log('WARNING, RECEIVED DEV REPORT FROM BACK-END, DATA BELOW: ');
-      console.log(data.msgContent.report);
     } else {
       console.log('ERROR: -->>>  invalid socket data received, data below:');
-      console.log(data);
     }
   }, []);
   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -692,7 +699,6 @@ export function Home() {
         </div>
         <div
           className="flex flex-row"
-          onClick={() => console.log('click received')}
           ></div>
       </GamePage>
     );

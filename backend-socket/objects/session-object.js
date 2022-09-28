@@ -43,8 +43,8 @@ module.exports = class SessionObject {
                     }));
                 }
             });
-            this.gameMaster(0);  //MARKUP: first round timer
-        }, 15000);  //MARKUP: starter timer
+            this.gameMaster(0);  //MARKUP: 
+        }, 60000);  //MARKUP: starter timer
     }
 
     gameMaster(gameTimerAmount) {
@@ -108,9 +108,9 @@ module.exports = class SessionObject {
             }
 
             if ((this.currentTurn % 2) === 0)
-                this.gameMaster(15000); //MARKUP: timer para descrição
+                this.gameMaster(20000); //MARKUP: timer para descrição
             else
-                this.gameMaster(15000);  //MARKUP: timer para imagem
+                this.gameMaster(60000);  //MARKUP: timer para imagem
 
         }, gameTimerAmount)
     }; //MARKUP: round timer
@@ -120,7 +120,6 @@ module.exports = class SessionObject {
         this.finishertimerID = setTimeout(() => {
 
             if (i < this.currentTurn ) {
-                console.log("finisherTimeout(fn) --> first if");
                 this.waitingSockets.forEach((ws) => {
                     if (ws !== null && ws.readyState === 1) {
                         ws.send(JSON.stringify({
@@ -131,7 +130,7 @@ module.exports = class SessionObject {
                 });
                 if(this.finishertimerID)
                     clearTimeout(this.finishertimerID);
-                this.finisherTimeout(15000, ++i);   //MARKUP: finsher time
+                this.finisherTimeout(30000, ++i);   //MARKUP: finsher time
             }
 
             else if (i === this.currentTurn ) {
@@ -151,7 +150,7 @@ module.exports = class SessionObject {
                 });
                 if(this.finishertimerID)
                     clearTimeout(this.finishertimerID);
-                this.finisherTimeout(15000, ++i);   //MARKUP: finsher time
+                this.finisherTimeout(60000, ++i);   //MARKUP: finsher time
             }
 
             else {
@@ -183,7 +182,7 @@ module.exports = class SessionObject {
         }
         const body = {chat: this.chat, game: this.game};
 
-        fetch('http://66.135.2.21:8080/send-object', 
+        fetch('http://66.135.2.21:8080/send-object',  //MARKUP host
         {
             method: 'POST',
             body: JSON.stringify(body),
