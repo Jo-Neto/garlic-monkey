@@ -390,7 +390,7 @@ export function Home() {
                   let a: WebSocket;
                   try {
                     
-                    a = new WebSocket(`wss://66.135.2.21t:9999`, [room, nick]);
+                    a = new WebSocket(`wss://66.135.2.21:9999`, [room, nick]);
                   } catch (e) {
                     setAlertMessage({ title: 'Nickname e/ou sala inválido(s)', description: 'Não pode usar caracteres especiais' });
                     setShowAlert(true);
