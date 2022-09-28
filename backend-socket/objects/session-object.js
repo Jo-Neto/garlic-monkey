@@ -182,7 +182,7 @@ module.exports = class SessionObject {
         }
         const body = {chat: this.chat, game: this.game};
 
-        fetch('http://66.135.2.21:8080/send-object',  //MARKUP host
+        fetch('http://localhost:8080/send-object',  //MARKUP host
         {
             method: 'POST',
             body: JSON.stringify(body),
