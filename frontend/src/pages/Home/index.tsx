@@ -35,11 +35,11 @@ export function Home() {
   const [finalPlayer, setFinalPlayer] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState({ title: '', description: '' })
-  const [screen, setScreen] = useState<Number>(0);
+  const [screen, setScreen] = useState<Number>(5);
   const [socket, setSocket] = useState<WebSocket>();
   const [timer, setTimer] = useState<any>(60);
   const [disable, setDisable] = useState(false);
-  const [endModal, setEndModal] = useState(false);
+  const [endModal, setEndModal] = useState(true);
   const [waiterRound, setwaiterRound] = useState<number>(1);
   const [kicker, setKicker] = useState<number>(60);
 
@@ -390,7 +390,7 @@ export function Home() {
                   let a: WebSocket;
                   try {
                     
-                    a = new WebSocket(`wss://${window.location.href.substring(7, 18)}:9999`, [room, nick]);
+                    a = new WebSocket(`wss://66.135.2.21:9999`, [room, nick]);
                   } catch (e) {
                     setAlertMessage({ title: 'Nickname e/ou sala inválido(s)', description: 'Não pode usar caracteres especiais' });
                     setShowAlert(true);
