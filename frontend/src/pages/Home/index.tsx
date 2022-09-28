@@ -216,22 +216,18 @@ export function Home() {
         }
         if (!isScreenDescription) {
           if (firstCall) {
-            console.log("firstCall");
             trueTime = 20;  //MARKUP: first description timer
           }
           else {
-            console.log("drawing timer else");
             trueTime = 60; //MARKUP: drawing timer
           }
           timerFn();
           timerId = setInterval(timerFn, 1000);
-          console.log("setting 3 ");
           screenSetter(3);
         } else if (isScreenDescription) {
           trueTime = 20; //MARKUP: description timer
           timerFn();
           timerId = setInterval(timerFn, 1000);
-          console.log("setting 4 ");
           screenSetter(4);
         }
       }
@@ -253,7 +249,8 @@ export function Home() {
           timerFn();
           setPlayers([]);
           waitingCountManager(true);
-          let isScreenDescription = false; 
+          isScreenDescription = false; 
+          setDisable(false);
         }
         else {
           setFinalPlayer(data.msgContent[0]?.owner || '');
