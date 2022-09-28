@@ -8,11 +8,11 @@ interface ChatProps {
 }
 export function EndModal({ endModal, setEndModal, sender, socket, setScreen, kickerCount }: ChatProps) {
     return (
-        <div className={`w-[100vw] absolute h-[100vh] ${endModal ? 'flex' : 'hidden'}  items-center justify-center`}>
-            <div className={`mb-20 border-[4px] border-white flex-col bg-[#0056DF] items-center drop-shadow-customShadow duration-100 flex justify-center w-[700px] pl-4 pr-[40px] h-[400px] z-50 rounded-2xl`} >
+        <div className={`w-[100vw] absolute h-[100vh] ${endModal ? 'flex' : 'hidden'}  items-center justify-center `}>
+            <div className={`mb-20 border-[4px] border-white flex-col bg-cyan-300 items-center drop-shadow-customShadow duration-100 flex justify-center w-[700px] pl-4 pr-[40px] h-[400px] z-50 rounded-2xl`} >
                 <span className="font-semibold text-[80px] !text-white defaultSpan"
                   >Fim de jogo!!</span>
-                <div className="flex mt-[100px]">
+                <div className="flex mt-[100px] gap-4">
                     <button
                       onClick={() => {
                         sender(true);
@@ -42,8 +42,8 @@ export function EndModal({ endModal, setEndModal, sender, socket, setScreen, kic
                       <span
                         >Voltar ao inicio</span> 
                     </button>
-                    <span className="font-semibold text-[80px] !text-white defaultSpan">{kickerCount}</span>
-                </div>
+                  </div>
+                  <span className="font-semibold text-[23px] !text-white defaultSpan mt-12">{kickerCount} segundos para ser kickado, se decide aí irmão!</span>
             </div>
         </div>
     );
