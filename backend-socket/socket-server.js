@@ -11,7 +11,7 @@ const HTTPSserver = https.createServer({
 }, app)
 
 app.get('/', (req, res) => {
-  res.redirect('https://localhost:443/');  //MARKUP host
+  res.redirect('https://66.135.2.21:443/');  //MARKUP host
 });
 
 const wss = new Websocket.WebSocketServer({ server: HTTPSserver });
