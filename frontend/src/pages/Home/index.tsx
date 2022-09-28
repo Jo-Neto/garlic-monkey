@@ -15,6 +15,7 @@ import { Player } from '../../components/Player';
 
 /////////////////////////////////////////////// White Board imports //
 import CanvasDraw from 'react-canvas-draw';
+import ReactScrollableFeed from 'react-scrollable-feed'
 import { Actions } from '../../components/Game/Actions';
 import { Colors } from '../../components/Game/Colors';
 import { ColorObj } from '../../components/Game/Colors/type';
@@ -373,7 +374,7 @@ export function Home() {
           <div className="flex flex-row">
             <form
               onSubmit={(e) => {
-                e.preventDefault()
+                e.preventDefault(); 
                 let a: WebSocket;
                 try {
                   a = new WebSocket(`wss://${window.location.href.substring(7, 18)}:9999`, [room, nick]);
@@ -432,17 +433,20 @@ export function Home() {
             </form>
             <div className="flex flex-col items-center"></div>
           </div>
-          <div className="text-center flex flex-col  bg-gradient-to-r from-white/[12%] to-white/25 items-center w-[15rem] border-solid border-2 border-white/[0.50] rounded-1 p-[1.5rem]">
-            <p className="defaultSpan mb-[1rem] uppercase"
+          <div className="text-justify flex flex-col bg-gradient-to-r from-white/[12%] to-white/25 
+          justify-ce w-[15rem] border-solid border-2 border-white/[0.50] rounded-1 p-[1.5rem]">
+            <p className="defaultSpan mb-[1rem] uppercase text-center"
               >Como Jogar</p>
             <p className="text-[0.75rem]"
-              >1. Digite um apelido engraçado.</p>
+              >1. Aguarde de 4~6 jogadores entrarem na sala.</p>
             <p className="text-[0.75rem]"
-              >2. Coloque o codigo da sala dos seus amigos,  ou crie uma nova.</p>
+              >2. Escreva uma frase para os jogadores desenharem</p>
             <p className="text-[0.75rem]"
-              >3. Espere de 4 a 6 jogadores entrar na sala, para o jogo começar automaticamente.</p>
+              >3. Desenhe a frase de outro jogador.</p>
             <p className="text-[0.75rem]"
-              >4. Siga as instruções das telas</p>
+              >4. Descreva da melhor forma o desenho que você receber.</p>
+            <p className="text-[0.75rem]"
+              >5. Repita esse processo até o final do jogo.</p>
           </div>
         </div>
       </GamePage>
@@ -455,8 +459,8 @@ export function Home() {
   //+------------------------------------------------------------------+
   else if (screen === 1) {
     return (
-      <GamePage className="flex justify-between">
-        <div className="flex flex-row justify-between align-middle items-center  w-[90%]" >
+      <GamePage className="flex">
+        <div className="flex flex-row justify-between align-middle items-center mb-10 w-[50rem]" >
           <img
             className="top-5"
             src="/assets/images/logo.png"
@@ -476,7 +480,7 @@ export function Home() {
               >{timer}</span>
           </div>
         </div>
-        <div className="flex flex-row h-[20rem] w-[45rem] justify-between">
+        <div className="flex flex-row h-[20rem] w-[45rem] justify-between mb-2 ">
           <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-gradient-to-b from-black/25 to-black/50 rounded-l-[1rem]" >
             <div className="flex flex-col items-center">
               <span className="defaultSpan uppercase mt-[1rem]"
@@ -486,16 +490,16 @@ export function Home() {
               </div>
             </div>
           </div>
-          <div className="border-solid border-2 p-2 border-white/[0.75] rounded-r-md w-[30rem] bg-gradient-to-r from-black/[12%] to-black/25 flex flex-col">
-            <div className="h-full chatBox overflow-scroll overflow-x-hidden">
+          <div className="flex flex-col justify-between border-solid border-2 p-2 border-white/[0.75] rounded-r-md w-[30rem] bg-gradient-to-r from-black/[12%] to-black/25">
+            <ReactScrollableFeed className="chatBox flex flex-col overflow-scroll overflow-x-hidden">
               {
                 chatMessages.map((el, index) => {
                   if (el.user === nick) return <Chat chatUser={true} user={el?.user} msg={el?.msg} key={index} />;
                   return <Chat chatUser={false} user={el?.user} msg={el?.msg} key={index} />;
                 })
               }
-            </div>
-            <form onSubmit={e => e.preventDefault()} className=" inputs flex flex-row ml-2 w-[30rem]">
+            </ReactScrollableFeed>
+            <form onSubmit={(e) => e.preventDefault()} className="inputs flex flex-row ml-2 w-[30rem]">
               <Input
                 className="w-[27rem] h-[2rem] normal-case"
                 value={message}
@@ -559,12 +563,12 @@ export function Home() {
   else if (screen === 2) {
     return (
       <GamePage>
-        <div className='mr-[100px] flex flex-col items-end w-full'>
+        <div className='flex flex-col items-end w-[50rem]'>
           <div className='flex flex-col justify-center items-center'>
-          <span className='defaultSpan !text-white'
-            >Tempo</span>
-          <span className='defaultSpan text-[60px] mt-3'
-            >{timer}</span>
+            <span className='defaultSpan !text-white'
+              >Tempo</span>
+            <span className='defaultSpan text-[60px] mt-3'
+              >{timer}</span>
           </div>
         </div>
         <div className="animate-wiggle mb-[1rem]">
@@ -575,7 +579,7 @@ export function Home() {
             alt="Garlic Monkey logo" />
         </div>
         <span className="defaultSpan mb-5 text-3xl"
-          >ESCREVA UMA FRASE</span>
+          >ESCREVA UMA FRASE ENGRAÇADA</span>
         <form
           className='mb-10'
           onSubmit={e => {
@@ -614,15 +618,17 @@ export function Home() {
   else if (screen === 3) {
     return ( //TODO , melhorar o ux do "desenhe a frase", deixar mais claro pro player o que ele tem que fazer, destacar, explicar melhor, etc
       <GamePage>
-        <div className='flex justify-between w-full'>
-          <div className='ml-[520px] text-center'>
+        <div className='flex justify-around items-center w-full'>
+          <div className='h-5 flex flex-col items-center'>
             <p
               >Desenhe essa frase bizonha:</p>
             <span
               >{testingNull("phrase", randomPhraseOrUrl)}</span>
           </div>
-          <div className='mr-[22px] flex flex-col items-center'>
-            <span
+        </div>
+        <div className='flex justify-end items-center w-[50rem]'>
+          <div className='flex flex-col items-center'>
+            <span className='defaultSpan !text-white'
               >Tempo</span>
             <span className='defaultSpan text-[60px] mt-3'
               >{timer}</span>
@@ -690,6 +696,14 @@ export function Home() {
   else if (screen === 4) {  //TODO , melhorar o ux do "escreva uma frase", deixar mais claro pro player o que ele tem que fazer, destacar, explicar melhor, etc
     return (
       <GamePage>
+      <div className='flex flex-col items-end w-[50rem]'>
+        <div className='flex flex-col justify-center items-center'>
+          <span className='defaultSpan !text-white'
+            >Tempo</span>
+          <span className='defaultSpan text-[60px] mt-3'
+            >{timer}</span>
+        </div>
+      </div>
         <div className="mb-[1rem] shadow-md border-8 border-[#3F1802] rounded-md">
           <img
             className='bg-white'
@@ -698,8 +712,8 @@ export function Home() {
             height={canvasSize.height}
             alt="Garlic Monkey logo" />
         </div>
-        <span className="defaultSpan mb-5 text-3xl"
-          >ESCREVA UMA FRASE</span>
+        <span className="defaultSpan mb-5 uppercase text-3xl"
+          >descreva essa tentativa de desenho</span>
         <form
           onSubmit={e => {
             e.preventDefault();
@@ -735,9 +749,9 @@ export function Home() {
   //+------------------------------------------------------------------+
   else if (screen === 5) {
     return (
-      <GamePage className="flex justify-between">
+      <GamePage>
         <EndModal endModal={endModal} sender={sender} setEndModal={setEndModal} socket={socket} setScreen={setScreen} kickerCount = {kicker} />
-        <div className="flex flex-row justify-center align-middle items-center  w-[90%]">
+        <div className="flex flex-row justify-center align-middle items-center mb-10">
           <img
             className="top-5"
             src="/assets/images/logo.png"
@@ -745,7 +759,7 @@ export function Home() {
             height={116}
             alt="Garlic Monkey logo" />
         </div>
-        <div className="flex flex-row h-[470px] w-[45rem] justify-between">
+        <div className="flex flex-row h-[22rem] w-[45rem] justify-between">
           <div className="flex flex-col w-[14rem] border-solid border-2 border-white/[0.75] bg-gradient-to-b from-black/25 to-black/50 rounded-l-[1rem]" >
             <div className="flex flex-col items-center">
               <span className="defaultSpan uppercase mt-[1rem]"
@@ -778,7 +792,7 @@ export function Home() {
   else if (screen === 6) {
     return (
       <GamePage>
-        <div className='mr-[100px] flex flex-col justify-center items-end w-full'>
+        <div className='mr-[100px] flex flex-col justify-center items-end w-[50rem]'>
           <div className='flex flex-col items-center'>
             <span className='defaultSpan !text-white'
               >Rodada</span>
@@ -786,7 +800,7 @@ export function Home() {
               >{waiterRound}</span>
           </div>
         </div>
-        <div className="animate-wiggle mb-[1rem] mb-[50px]">
+        <div className="animate-wiggle mb-[2.5rem]">
           <img
             src="/assets/images/bigLogo.png"
             width={390}
