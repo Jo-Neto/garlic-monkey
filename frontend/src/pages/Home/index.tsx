@@ -15,7 +15,7 @@ import { Player } from '../../components/Player';
 
 /////////////////////////////////////////////// White Board imports //
 import CanvasDraw from 'react-canvas-draw';
-import ReactScrollableFeed from 'react-scrollable-feed'
+import ReactScrollableFeed from 'react-scrollable-feed';
 import { Actions } from '../../components/Game/Actions';
 import { Colors } from '../../components/Game/Colors';
 import { ColorObj } from '../../components/Game/Colors/type';
