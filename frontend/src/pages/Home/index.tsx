@@ -322,8 +322,8 @@ export function Home() {
     const actualWidth = ContainerRef.current?.offsetWidth;
     // const newWidth = actualWidth && actualWidth * 0.7;
     // const newHeight = newWidth && newWidth * (1 / (16 / 9));
-    const newWidth = 500 // actualWidth && actualWidth * 0.7;
-    const newHeight = 500 // newWidth && newWidth * (1 / (16 / 9));
+    const newWidth = 600 // actualWidth && actualWidth * 0.7;
+    const newHeight = 400 // newWidth && newWidth * (1 / (16 / 9));
     const size = { width: newWidth, height: newHeight };
     setCanvasSize(size);
   }, []);
@@ -390,7 +390,7 @@ export function Home() {
                   let a: WebSocket;
                   try {
                     
-                    a = new WebSocket(`wss://66.135.2.21:9999`, [room, nick]);
+                    a = new WebSocket(`wss://localhost:9999`, [room, nick]);
                   } catch (e) {
                     setAlertMessage({ title: 'Nickname e/ou sala inválido(s)', description: 'Não pode usar caracteres especiais' });
                     setShowAlert(true);
