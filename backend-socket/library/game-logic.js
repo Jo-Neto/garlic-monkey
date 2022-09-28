@@ -46,8 +46,6 @@ module.exports = function mainLogic(Session, data, playerWs) {
                 }
             }
             playerWs.hasPlayedThisTurn = true;
-        } else
-            console.log("ERROR --> game-logic.js --> msgType type error or player has tried playing twice");
-    } else
-        console.log("ERROR --> game-logic.js --> object has no msgType property");
+        } 
+    } 
 }

@@ -43,7 +43,6 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
     const newWidth = actualWidth && actualWidth * 0.7;
     const newHeight = newWidth && newWidth * (1 / proportion);
     const size = { width: newWidth, height: newHeight };
-    console.log(size);
     setCanvasSize(size);
   }, []);
 
@@ -59,7 +58,6 @@ export function WhiteBoard({ proportion }: WhiteBoardProps): JSX.Element {
     const data = WhiteBoardRef.current?.getSaveData(); // Its stringied
     const objData = JSON.parse(data || '');
     setDrawData(objData);
-    console.log(objData);
   }
 
   const parseToURL = () => {

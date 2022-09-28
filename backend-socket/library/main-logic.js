@@ -38,11 +38,8 @@ module.exports = function mainLogic(Session, data, playerWs) {
                     partLogic(Session, data, playerWs);
                     break;
                 default:
-                    console.log("ERROR --> main-logic.js --> default triggered")
                     break;
             }
-        } else
-            console.log("ERROR --> main-logic.js --> msgType type error");
-    } else
-        console.log("ERROR --> main-logic.js --> object has no msgType property");
+        } 
+    } 
 }

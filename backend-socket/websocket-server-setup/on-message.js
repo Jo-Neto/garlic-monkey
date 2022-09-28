@@ -6,7 +6,6 @@ module.exports = function onMessage(data, isBinary, ws) {
     try {
         parsedData = JSON.parse(data);
     } catch (error) {
-        console.log('WARNING -->> on-message.js -->> catch condition: ' + error);
         return false;
     }
     if (!(parsedData !== null && typeof parsedData === 'object' && !Array.isArray(parsedData)))
