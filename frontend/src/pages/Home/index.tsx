@@ -509,8 +509,8 @@ export function Home() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col justify-between border-solid border-2 p-2 border-white/[0.75] rounded-r-md w-[30rem] bg-gradient-to-r from-black/[12%] to-black/25">
-            <ReactScrollableFeed className="chatBox flex flex-col overflow-scroll overflow-x-hidden">
+          <div className="flex flex-col justify-between border-solid break-words border-2 p-2 border-white/[0.75] rounded-r-md w-[30rem] bg-gradient-to-r from-black/[12%] to-black/25">
+            <ReactScrollableFeed className="chatBox flex flex-col break-words overflow-scroll overflow-x-hidden">
               {
                 chatMessages.map((el, index) => {
                   if (el.user === nick) return <Chat chatUser={true} user={el?.user} msg={el?.msg} key={index} />;
@@ -527,12 +527,14 @@ export function Home() {
                 className="ml-1"
                 icon={{ src: '/assets/icons/go.png', size: 22 }}
                 onClick={() => {
-                  socket?.send(
-                    JSON.stringify({
-                      msgType: 'chatNew',
-                      msgContent: message,
-                    }),
-                  );
+                  if(message){
+                    socket?.send(
+                      JSON.stringify({
+                        msgType: 'chatNew',
+                        msgContent: message,
+                      }),
+                    );
+                  }
                   setMessage('');
                 }} />
             </form>
