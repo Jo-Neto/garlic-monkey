@@ -375,42 +375,50 @@ export function Home() {
             <form
               onSubmit={(e) => {
                 e.preventDefault(); 
-                let a: WebSocket;
-                try {
-                  a = new WebSocket(`wss://${window.location.href.substring(7, 18)}:9999`, [room, nick]);
-                } catch (e) {
-                  setAlertMessage({ title: 'Nickname e/ou sala inválido(s)', description: 'Não pode usar caracteres especiais' });
+                
+                if ( nick.length >= 10 ){
+                  setAlertMessage({ title: 'Nickname com mais de 10 caracteres', description: 'Não foi possível entrar no jogo' });
                   setShowAlert(true);
-                  return;
-                }
-                //+------------------------------------------------------------------+
-                //|                     SOCKET CLOSE EVENT                           |
-                //+------------------------------------------------------------------+
-                a.onclose = (event) => {
-                  if (event.code === 1001) {
-                    setScreen(0);
-                    setAlertMessage({ title: 'Voce foi kickado', description: 'Voce não decidiu se jogava ou não!' });
+                } else {
+                  let a: WebSocket;
+                  try {
+                    
+                    a = new WebSocket(`wss://${window.location.href.substring(7, 18)}:9999`, [room, nick]);
+                  } catch (e) {
+                    setAlertMessage({ title: 'Nickname e/ou sala inválido(s)', description: 'Não pode usar caracteres especiais' });
                     setShowAlert(true);
-                  } else if (event.code === 1002 || event.code === 1003) {
-                    setScreen(0);
-                    setAlertMessage({ title: 'Nickname inválido', description: 'Não pode usar caracteres especiais' });
-                    setShowAlert(true);
-                  } else if (event.code === 1013) {
-                    setScreen(0);
-                    setAlertMessage({ title: 'Partida em andamento', description: 'Não foi possível entrar no jogo' });
-                    setShowAlert(true);
-                  } else if (event.code === 4003) {
-                    setScreen(0);
-                    setShowAlert(true);
-                    setAlertMessage({ title: 'Nickname existente', description: 'Já existe player com o mesmo nome' });
-                    setShowAlert(true)
+                    return;
                   }
-                };
-                //////////////////////////////////////////////////////////////////////////////
-                //////////////////////////////////////////////////////////////////////////////
-                //////////////////////////////////////////////////////////////////////////////
-                setSocket(a);
-                setScreen(1);
+                  //+------------------------------------------------------------------+
+                  //|                     SOCKET CLOSE EVENT                           |
+                  //+------------------------------------------------------------------+
+                  a.onclose = (event) => {
+                    if (event.code === 1001) {
+                      setScreen(0);
+                      setAlertMessage({ title: 'Voce foi kickado', description: 'Voce não decidiu se jogava ou não!' });
+                      setShowAlert(true);
+                    } else if (event.code === 1002 || event.code === 1003) {
+                      setScreen(0);
+                      setAlertMessage({ title: 'Nickname inválido', description: 'Não pode usar caracteres especiais' });
+                      setShowAlert(true);
+                    } else if (event.code === 1013) {
+                      setScreen(0);
+                      setAlertMessage({ title: 'Partida em andamento', description: 'Não foi possível entrar no jogo' });
+                      setShowAlert(true);
+                    } else if (event.code === 4003) {
+                      setScreen(0);
+                      setShowAlert(true);
+                      setAlertMessage({ title: 'Nickname existente', description: 'Já existe player com o mesmo nome' });
+                      setShowAlert(true)
+                    }
+                  };
+                  //////////////////////////////////////////////////////////////////////////////
+                  //////////////////////////////////////////////////////////////////////////////
+                  //////////////////////////////////////////////////////////////////////////////
+                  setSocket(a);
+                  setScreen(1);
+                  
+                }
               }}
               className="flex flex-col items-center w-[30rem] h-fit gap-5 rounded-[0.625rem]" >
               <span className="defaultSpan"
@@ -547,9 +555,7 @@ export function Home() {
             }}
           >
             <span
-              className="defaultSpan"
-              
-              >SÓ CHAT!</span>
+              className='defaultSpan'>SÓ CHAT!</span>
             <Button
               className="ml-[0.5rem]"
               icon={{ src: '/assets/icons/go.png', size: 22 }} />
