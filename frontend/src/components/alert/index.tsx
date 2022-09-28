@@ -8,7 +8,7 @@ export function Alert({ setShowAlert, showAlert, alertMessage }: ChatProps) {
   return (
     <div
       onClick={() => setShowAlert(false)}
-      className={`absolute border-[2px] border-white top-2 bg-[#0056DF] items-start drop-shadow-customShadow duration-100 ${showAlert ? 'flex' : 'hidden'} justify-between w-[500px] pl-4 pr-[40px] items-center  h-[80px] z-50 rounded-lg`}>
+      className={`absolute border-[2px] border-white top-2 bg-cyan-300 items-start drop-shadow-customShadow duration-100 ${showAlert ? 'flex' : 'hidden'} justify-between w-[500px] pl-4 pr-[40px] items-center  h-[80px] z-50 rounded-lg`}>
       <div className=" flex flex-col">
         <span className="font-semibold text-lg text-white"
           >{alertMessage.title}</span>
