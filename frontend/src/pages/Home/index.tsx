@@ -64,7 +64,7 @@ export function Home() {
       trueTime--;
   }
 
-  let isScreenDescription = false; // TRUE!
+  let isScreenDescription = false; 
   function screenSetter(whichScreen: number) {
     isScreenDescription = !isScreenDescription;
     setScreen(whichScreen);
@@ -246,13 +246,14 @@ export function Home() {
       if (data.msgContent) {
         if (data.msgContent.update === 'requireNewParticipationStatus') {
           kickerCounter--;
-          kickerCounterID = setInterval(() => { kickerTimer(); }, 1000)
+          kickerCounterID = setInterval(() => { kickerTimer(); }, 1000);
           waitingManager(true);
           setEndModal(true);
           trueTime = 60;
           timerFn();
           setPlayers([]);
           waitingCountManager(true);
+          let isScreenDescription = false; 
         }
         else {
           setFinalPlayer(data.msgContent[0]?.owner || '');
