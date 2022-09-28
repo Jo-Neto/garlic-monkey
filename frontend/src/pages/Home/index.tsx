@@ -215,17 +215,23 @@ export function Home() {
           trueTime = 0;
         }
         if (!isScreenDescription) {
-          if (firstCall)
+          if (firstCall) {
+            console.log("firstCall");
             trueTime = 20;  //MARKUP: first description timer
-          else
+          }
+          else {
+            console.log("drawing timer else");
             trueTime = 60; //MARKUP: drawing timer
+          }
           timerFn();
           timerId = setInterval(timerFn, 1000);
+          console.log("setting 3 ");
           screenSetter(3);
         } else if (isScreenDescription) {
           trueTime = 20; //MARKUP: description timer
           timerFn();
           timerId = setInterval(timerFn, 1000);
+          console.log("setting 4 ");
           screenSetter(4);
         }
       }
@@ -378,7 +384,7 @@ export function Home() {
                 e.preventDefault(); 
                 let a: WebSocket;
                 try {
-                  a = new WebSocket(`wss://localhost:9999`, [room, nick]); //MARKUP host
+                  a = new WebSocket(`wss://66.135.2.21:9999`, [room, nick]); //MARKUP host
                 } catch (e) {
                   setAlertMessage({ title: 'Nickname e/ou sala inválido(s)', description: 'Não pode usar caracteres especiais' });
                   setShowAlert(true);

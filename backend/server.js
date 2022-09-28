@@ -12,7 +12,7 @@ const app = express();
 let i = 0;
 
 app.use(cors({
-    origin : "https://localhost:9999", //MARKUP host
+    origin : "https://66.135.2.21:9999", //MARKUP host
     credentials: true,
 }));
 
@@ -59,8 +59,4 @@ app.post('/send-object', jsonParser, (req, res) => {
     
 });
 
-<<<<<<< HEAD
 app.listen(8080, ()=>{ console.log('redis server is listening'); });
-=======
-app.listen(8080, ()=>{ console.log('https backend server is listening'); });
->>>>>>> cee6151bb138c64e49078e1591209086e22416c1

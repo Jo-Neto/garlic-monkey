@@ -10,6 +10,7 @@ export default defineConfig({
     https: {
       key: fs.readFileSync('../keys-and-certificates/key-rsa.pem'),
       cert: fs.readFileSync('../keys-and-certificates/cert.pem'),
-    }
+    },
+    port: 443
   }
 });
